@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="362dp"
+        android:layout_height="127dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/logo1"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textStatus"
+            android:layout_width="2dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/select_toy_address"
+            android:textSize="30dp" />
+
+
+        <Button
+            android:id="@+id/buttonScan"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:text="Scan" />
+    </LinearLayout>
+
+            <Spinner
+            android:id="@+id/spinnerWifi"
+                android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown" />
+
+    <Button
+        android:id="@+id/buttonPair"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Connect"
+        android:onClick="connectToToy"/>
+
+    <Button
+        android:id="@+id/buttonExit"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Exit"
+        android:onClick="goToWelcome"/>
+
+    <!--ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"></ListView-->
+</LinearLayout>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top|center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="322dp"
+        android:layout_height="83dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/logo1"
+        tools:ignore="ContentDescription" />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title1"
+        android:layout_width="311dp"
+        android:layout_height="33dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="top|center_horizontal"
+        android:text=" usage experience data"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="25dp" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/in_date"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SELECT DATE"
+        android:id="@+id/btn_date"
+        android:layout_alignBottom="@+id/in_date"
+        android:layout_toRightOf="@+id/in_date"
+        android:layout_toEndOf="@+id/in_date"
+        android:onClick="selectDate"/>
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title2"
+        android:layout_width="fill_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text=" Mary played today for 1H and 25 minutes"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="25dp" />
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
+        android:layout_width="match_parent"
+        android:layout_height="200dip" />
+    <!--<com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:id="@+id/graph1" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:onClick="navigateBackLogin"
+        android:text="Exit" />
+
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="1"
+
+        android:onClick="updateGraph"
+        android:text="Update data" />
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    >
+
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/myTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="Register new product"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="30dp" />
+
+    <ImageView
+        android:layout_width="370dp"
+        android:layout_height="151dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/logo1"
+        tools:ignore="ContentDescription" />
+
+
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/selectToy"
+        android:layout_width="311dp"
+        android:layout_height="33dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:text="Select product"
+        android:textSize="25dp"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginTop="10dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:background="@android:drawable/btn_dropdown" />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/selectToyNumber"
+        android:layout_width="311dp"
+        android:layout_height="33dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:text="Insert product number"
+        android:textSize="25dp"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/serialNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Find a product number on the box"
+        android:imeActionId="6"
+        android:imeOptions="actionUnspecified"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/giveAlias"
+        android:layout_width="311dp"
+        android:layout_height="33dp"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:text="Create an alias"
+        android:textSize="25dp"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginTop="10dp"/>
+    <EditText
+        android:id="@+id/productAlias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Give unique name to the toy"
+        android:imeActionId="6"
+        android:imeOptions="actionUnspecified"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true" />
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <Button
+            android:id="@+id/backToWiFi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Assign "
+            android:onClick="backTo_"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+
+        <Button
+            android:id="@+id/quit_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="back"
+            android:layout_marginTop="10dp"
+            android:onClick="quitApp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context="com.example.ldobriakova.plet_03.RegisterBaby">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/myTitle"
+        android:layout_width="fill_parent"
+        android:layout_height="61dp"
+        android:gravity="center"
+        android:text="Baby Register Page"
+        android:textSize="30dp"
+        android:textColor="@android:color/holo_blue_dark" />
+
+    <ImageView
+        android:layout_width="332dp"
+        android:layout_height="105dp"
+        android:layout_gravity="center_horizontal"
+        android:adjustViewBounds="true"
+        android:src="@drawable/logo1"
+        tools:ignore="ContentDescription" />
+
+    <ScrollView
+        android:id="@+id/register_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/email_register_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="UserName"
+                    android:imeActionId="6"
+                    android:imeActionLabel="Sign in"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/babyAlias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Baby Alias"
+                    android:imeActionId="6"
+                    android:imeActionLabel="Sign in"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/baby_birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Baby Birthday"
+                    android:imeActionId="6"
+                    android:imeActionLabel="Sign in"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="date"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/baby_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Baby Gender"
+                    android:imeActionId="6"
+                    android:imeActionLabel="Sign in"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:singleLine="true" />
+            </android.support.design.widget.TextInputLayout>
+
+
+        <LinearLayout
+            android:layout_width="357dp"
+            android:layout_height="349dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="37dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+
+            <Button
+                android:id="@+id/removeBaby"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_horizontal"
+                android:onClick="backToSelectBaby"
+                android:text="BACK" />
+
+
+            <Button
+                android:id="@+id/add_baby"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_horizontal"
+                android:onClick="registerBaby"
+                android:text="Add Baby"
+                android:textStyle="bold" />
+            <!-- -->
+            <!--android:layout_marginLeft="20pt"
+                android:layout_marginTop="22dp"
+                -->
+        </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
