@@ -118,6 +118,7 @@ public class RegisterActivity extends Activity {
 		String email = emailET.getText().toString();
 		// Get Password ET control value
 		String password = pwdET.getText().toString();
+		if(checkBox.isChecked()){
 		if(!userName.isEmpty()&&!password.isEmpty()&&!name.isEmpty()&&!surName.isEmpty()&&!birthDate.isEmpty()&&!gender.isEmpty()&&!city.isEmpty()) {
 			matcher = Pattern.compile(DATE_PATTERN).matcher(birthDate);
 
@@ -161,7 +162,10 @@ public class RegisterActivity extends Activity {
 		}
 		else
 			Toast.makeText(getApplicationContext(), "Please fill all information to proceed", Toast.LENGTH_LONG).show();
-		}
+		}}
+		else
+		Toast.makeText(getApplicationContext(), "Please accept the privacy policy", Toast.LENGTH_LONG).show();
+
 }
 			private void navigatetoLoginActivity(){
 			runOnUiThread(new Runnable(){

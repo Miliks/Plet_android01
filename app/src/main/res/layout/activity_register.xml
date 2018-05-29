@@ -213,6 +213,8 @@
                     android:layout_weight="1"
                     android:text="I agree to PLET Terms of Service" />
 
+
+
                 <Button
                     android:id="@+id/exit_button"
                     style="?android:textAppearanceSmall"
