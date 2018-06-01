@@ -122,9 +122,9 @@ public class RegisterAPI {
         }
     }
 
-    public void registerEmail(String username, String email, String surname, String firstname, String gender, String birthDate, String password, final RegistrationCallback callback) {
+    public void registerEmail(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
-            String requestBody = "createCustomer?username="+username+"&surname="+surname+"&firstname="+firstname+"&password=" + password+"&gender="+gender+"&birthDate="+birthDate;
+            String requestBody = "createCustomer?username="+userName+"&surname="+surName+"&firstname="+name+"&email=" + email + "&password=" + password+"&cellular=" +phone+"&city="+city+"&country="+country_short+"&birthDate="+birthDate+ "&gender="+gender;
             Request request = new Request.Builder()
                     .url(BASE_URL + requestBody)
                     .get()
@@ -283,6 +283,37 @@ public class RegisterAPI {
                 }
             } });
 
+    }
+
+    //Get product list introduced by manufacturer
+    public void getCountryList(final RegistrationCallback callback){
+        String requestBody = "getCountries";
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE getCountry = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("List of countries",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
     }
 
     //Get product list introduced by manufacturer

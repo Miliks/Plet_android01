@@ -4,14 +4,22 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,6 +35,7 @@ public class RegisterBaby extends Activity {
 	// User Name Edit View Object
 	EditText userNameET, babyAliasET, genderET, birthdayET;
 	String userName;
+	Spinner genderSpinner;
 
 
 	@Override
@@ -40,7 +49,7 @@ public class RegisterBaby extends Activity {
 		// Find Gender Edit View control by ID
 		genderET = (EditText)findViewById(R.id.baby_gender);
 		// Find Age Edit View control by ID
-		birthdayET = (EditText)findViewById(R.id.baby_birthday);
+		//birthdayET = (EditText)findViewById(R.id.baby_birthday);
 
 		// Instantiate Progress Dialog object
 		prgDialog = new ProgressDialog(this);
@@ -52,6 +61,33 @@ public class RegisterBaby extends Activity {
 		userNameET.setText(extras.getString("userName"));
 		userName = userNameET.getText().toString();
 		//userNameET.setText();
+		birthdayET  = (EditText)findViewById(R.id.baby_birthday);
+
+		MaskedTextChangedListener listener = new MaskedTextChangedListener(
+				"[00]/[00]/[0000]",	birthdayET,
+				new MaskedTextChangedListener.ValueListener() {
+					@Override
+					public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+						Log.d(RegisterActivity.class.getSimpleName(),extractedValue);
+						Log.d(RegisterActivity.class.getSimpleName(), String.valueOf(maskFilled));
+					}
+				}
+		);
+		birthdayET.addTextChangedListener(listener);
+		birthdayET.setOnFocusChangeListener(listener);
+		birthdayET.setHint(listener.placeholder());
+		addItemOnGender();
+	}
+
+	public void addItemOnGender(){
+		genderSpinner =  (Spinner)findViewById(R.id.spinnerGender);
+		List<String> list = new ArrayList<String>();
+		list.add("male");
+		list.add("female");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, list);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		genderSpinner.setAdapter(dataAdapter);
 	}
 	@Override
 	public void onBackPressed()
@@ -75,7 +111,8 @@ public class RegisterBaby extends Activity {
 		// Get age ET control value
 		String babybirthDate = birthdayET.getText().toString();
 		//Get gender
-		String babyGender = genderET.getText().toString();
+		// genderET.getText().toString();
+		String babyGender = genderSpinner.getSelectedItem().toString();
 
 		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!babyGender.isEmpty()) {
 

@@ -17,7 +17,7 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Plet Login Page"
+        android:text="Login"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
 
@@ -82,7 +82,7 @@
             <Button
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
-                android:layout_width="80pt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
@@ -96,7 +96,7 @@
 
             <TextView
                 android:id="@+id/or"
-                android:layout_width="340dp"
+                android:layout_width="wrap_content"
                 android:layout_height="42dp"
                 android:layout_marginTop="22dp"
                 android:ems="10"
@@ -105,7 +105,7 @@
                 android:textAlignment="center"
                 android:visibility="visible"
                 android:layout_gravity="center_horizontal"
-                tools:text="OR" />
+                 />
 
             <Button
                 android:id="@+id/go_to_register_button"
@@ -114,13 +114,13 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:text="First Time Register"
+                android:text="Register"
                 android:onClick="navigatetoRegisterActivity"
                 android:textStyle="bold" />
             <Button
                 android:id="@+id/quit_app"
                 style="?android:textAppearanceSmall"
-                android:layout_width="100pt"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="20dp"

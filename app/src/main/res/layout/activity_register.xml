@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="61dp"
         android:gravity="center"
-        android:text="Plet Register Page"
+        android:text="Registration"
         android:textSize="30dp"
         android:textColor="@android:color/holo_blue_dark" />
 
@@ -92,7 +92,7 @@
                     android:id="@+id/owner_birthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Birthday"
+                    android:hint="                       DD/MM/YYYY Birthday"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -103,7 +103,7 @@
 
 
 
-            <android.support.design.widget.TextInputLayout
+            <!--android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -118,7 +118,21 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
+            </android.support.design.widget.TextInputLayout-->
+
+            <Spinner
+                android:id="@+id/spinnerGender"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:drawable/btn_dropdown">
+            </Spinner>
+
+            <Spinner
+                android:id="@+id/spinnerCountry"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@android:drawable/btn_dropdown">
+            </Spinner>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -128,7 +142,7 @@
                     android:id="@+id/owner_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="City(Country)"
+                    android:hint="City"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -192,7 +206,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
 
                 <Button
                     android:id="@+id/register_button"
@@ -211,7 +226,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="I agree to PLET Terms of Service" />
+                     />
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:text="TextView"
+                    android:clickable="true" />
 
 
 

@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="61dp"
         android:gravity="center"
-        android:text="Baby Register Page"
+        android:text="Register Baby"
         android:textSize="30dp"
         android:textColor="@android:color/holo_blue_dark" />
 
@@ -78,7 +78,7 @@
                     android:id="@+id/baby_birthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Baby Birthday"
+                    android:hint="                        DD/MM/YYYY Baby Birthday"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
