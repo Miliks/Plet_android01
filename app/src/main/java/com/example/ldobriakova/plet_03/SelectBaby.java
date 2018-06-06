@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SelectBaby extends Activity {
-    private Spinner spinnerBaby;
+    private Spinner spinnerBaby, spinnerHidden;
     private Button goFwd, addBaby, delete_user;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
@@ -36,7 +36,7 @@ public class SelectBaby extends Activity {
     String myEtText;
     JSONObject json = new JSONObject();
     JSONArray babylist = new JSONArray();
-    List<String> list = new ArrayList<String>();
+    List<String> listComplete = new ArrayList<String>();
     List<String> listMag = new ArrayList<String>();
     String ITEM_KEY = "key";
     ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
@@ -62,6 +62,7 @@ public class SelectBaby extends Activity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
+
 
         if (extras != null) {
 
@@ -92,6 +93,7 @@ public class SelectBaby extends Activity {
             public void run() {
                 addListenerOnSpinnerBabySelection();
                 addItemOnSpinneraddBaby(list);
+                //addItemOnSpinneraddBabyCompleted(listCompleted);
                 addListenerOnButtonFwd();
             }
         });
@@ -100,6 +102,7 @@ public class SelectBaby extends Activity {
     private void addListenerOnSpinnerBabySelection() {
         Log.d("We are in listener on spinner","....");
         spinnerBaby = (Spinner)findViewById(R.id.spinnerBaby);
+
         spinnerBaby.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
     public void deleteUser(View view) {
@@ -161,8 +164,20 @@ public class SelectBaby extends Activity {
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,selection);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerBaby.setAdapter(dataAdapter);
+       //ArrayAdapter<String> dataAdapterComplete = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,listCompleted);
+
+      // Log.d("Data adapter", spinnerBaby.getSelectedItem().toString());
 
     }
+    /*private void addItemOnSpinneraddBabyCompleted(List<String> selection) {
+       // spinnerHidden = (Spinner) findViewById(R.id.spinnerHidden);
+        spinnerHidden.
+        Log.d("LArray returned ========", selection.toString());
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,selection);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerHidden.setAdapter(dataAdapter);
+
+    }*/
 
     public void getBabies(String myEtText){
         enableProgressDialog(true);
@@ -191,9 +206,12 @@ public class SelectBaby extends Activity {
                                 Log.d("What is returned on get baby query ......", babylist.getString(0) + "-------" + babylist.length());
                                 for (int i = 0; i < babylist.length(); i++) {
                                     JSONObject b = babylist.getJSONObject(i);
-                                    Log.d("Inside cycle for ......", b.toString());
+                                   // Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
+                                   // String babyGender = b.getString("Baby_Gender");
+                                    //String babyDB = b.getString("Baby_Birthdate");
                                     listMag.add(babyAlias);
+                                    //listComplete.add(babyAlias + "_" + babyGender + "_"+babyDB);
                                     Log.d("Array returned1111 ========", listMag.toString());
                                 }
                                 updateUISpinner(listMag);

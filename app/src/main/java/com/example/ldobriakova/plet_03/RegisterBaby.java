@@ -47,7 +47,7 @@ public class RegisterBaby extends Activity {
 		// Find Name Edit View control by ID
 		babyAliasET = (EditText)findViewById(R.id.babyAlias);
 		// Find Gender Edit View control by ID
-		genderET = (EditText)findViewById(R.id.baby_gender);
+
 		// Find Age Edit View control by ID
 		//birthdayET = (EditText)findViewById(R.id.baby_birthday);
 
@@ -78,6 +78,18 @@ public class RegisterBaby extends Activity {
 		birthdayET.setHint(listener.placeholder());
 		addItemOnGender();
 	}
+    private void enableProgressDialog(final boolean enable)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(enable)
+                    prgDialog.show();
+                else
+                    prgDialog.hide();
+            }
+        });
+    }
 
 	public void addItemOnGender(){
 		genderSpinner =  (Spinner)findViewById(R.id.spinnerGender);
@@ -104,7 +116,8 @@ public class RegisterBaby extends Activity {
 	 * @param view
 	 */
 	public void registerBaby(View view){
-		// Get NAme ET control value
+        enableProgressDialog(true);
+	    // Get NAme ET control value
 		//userName = userNameET.getText().toString();
 		// Get NAme ET control value
 		String babyAlias = babyAliasET.getText().toString();
@@ -120,7 +133,7 @@ public class RegisterBaby extends Activity {
 				@Override
 				public void onResponse(String str) {
 					try {
-
+                        enableProgressDialog(false);
 						JSONObject jsonResponse = new JSONObject(str);
 						String result = jsonResponse.getString("result");
 						Log.d("What is returned on activity Login view ......", result);
@@ -139,12 +152,12 @@ public class RegisterBaby extends Activity {
 
 				@Override
 				public void onError(RegistrationResponse.RegistrationError error) {
-
+                    enableProgressDialog(false);
 				}
 
 				@Override
 				public void onNetworkError() {
-
+                    enableProgressDialog(false);
 				}
 			});
 		}

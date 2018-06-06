@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -20,18 +21,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static android.R.layout.simple_spinner_dropdown_item;
+import static android.R.layout.simple_spinner_item;
+
 public class RemoveModBaby extends Activity {
     private Spinner spinnerBaby;
+    private SpinnerAdapter newAdapter;
+    Child[] child = new Child[10];
     private Button removeBaby, modifyBaby;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
-    String result, result_baby;
+    String result, result_baby, childGender, childBD;
     String myEtText;
     String babyAlias;
     JSONObject json = new JSONObject();
     JSONArray babylist = new JSONArray();
     List<String> list = new ArrayList<String>();
     List<String> listMag = new ArrayList<String>();
+    List<String> onlyAlias = new ArrayList<String>();
     String ITEM_KEY = "key";
     //SimpleAdapter adapter;
     ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
@@ -54,12 +61,12 @@ public class RemoveModBaby extends Activity {
 
             myEtText = extras.getString("userName");
            // babyAlias = extras.getString("babyAlias");
-            Log.d("User to query in onCreate in RemoveModify Baby.....=",myEtText);
+           // Log.d("User to query in onCreate in RemoveModify Baby.....=",myEtText);
 
         }
 
         getBabies(myEtText);
-        Log.d("List of babies on remove/modify available  .....=",list.toString());
+        Log.d("List of babies on remove/modify available 111111  .....=",list.toString());
        // this.adapter = new SimpleAdapter(SelectBaby.this, arraylist, R.layout.row, new String[] { ITEM_KEY }, new int[] { R.id.list_value });
     }
     @Override
@@ -103,8 +110,24 @@ public class RemoveModBaby extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                /*if(!list.isEmpty()){
+                int i = list.size();
+
+                for (int j=0; j<i;j++){
+
+                String fullString = list.get(j);
+                    Log.d("alias ========", fullString);
+                    int counter = fullString.indexOf("+");
+                    Log.d("counter ========", String.valueOf(counter));
+
+                        String alias = fullString.substring(0,counter);
+                        onlyAlias.add(alias);
+
+                }}*/
+                //Log.d("updateUISpinner ========", String.valueOf(i));
                 addListenerOnSpinnerBabySelection();
                 addItemOnSpinneraddBaby(list);
+                //addItemOnSpinneraddBaby(list,onlyAlias);
                 //addListenerOnButtonFwd();
             }
         });
@@ -116,14 +139,28 @@ public class RemoveModBaby extends Activity {
         spinnerBaby.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
-   private void addItemOnSpinneraddBaby(List<String> selection) {
+   /*private void addItemOnSpinneraddBaby(List<String> selection) {
         spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
+        //newAdapter = new SpinnerAdapter(RemoveModBaby.this, simple_spinner_item,child);
         Log.d("LArray returned ========", selection.toString());
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,selection);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, simple_spinner_item,selection);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerBaby.setAdapter(dataAdapter);
 
+    }*/
+    private void addItemOnSpinneraddBaby(List<String> selection) {
+        spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
+        //newAdapter = new SpinnerAdapter(RemoveModBaby.this, simple_spinner_item,child);
+        Log.d("selection ========", selection.toString());
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, simple_spinner_item,selection);
+       // ArrayAdapter<String> onlyAliasadapter = new ArrayAdapter<String>(this,simple_spinner_item, onlyAlias);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+       // onlyAliasadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerBaby.setAdapter(dataAdapter);
+       // childGender =
+
     }
+
 
     public void getBabies(String myEtText){
         enableProgressDialog(true);
@@ -152,11 +189,25 @@ public class RemoveModBaby extends Activity {
                                     JSONObject b = babylist.getJSONObject(i);
                                     Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
+                                     String babyGender = b.getString("Baby_Gender");
+                                    String babyDB = b.getString("Baby_Birthdate");
                                     listMag.add(babyAlias);
+                                    list.add(babyAlias+" "+babyGender+" "+babyDB);
+                                    /*child[i] = new Child();
+                                    child[i].setAlias(babyAlias);
+                                    child[i].setChild_birthDay(babyDB);
+                                    child[i].setGender(babyGender);*/
 
+                                    //listComplete.add(babyAlias + "_" + babyGender + "_"+babyDB);
                                 }
-                                Log.d("Array returned1111 ========", listMag.toString());
-                                updateUISpinner(listMag);
+                                //Log.d("Array returned1111 ========", listMag.toString());
+                                //Log.d("Array returned1111 ========", child.toString());
+                               // int count = listMag.size();
+                                //Child[] child = new Child[count];
+                                //for (int i=0; i<count; i++) {
+
+                                //}
+                                updateUISpinner(list);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -193,8 +244,31 @@ public class RemoveModBaby extends Activity {
         Intent modifyBaby = new Intent(getApplicationContext(),ModifyBaby.class);
         modifyBaby.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         modifyBaby.putExtra("userName",myEtText);
-        babyAlias = spinnerBaby.getSelectedItem().toString();
+        String fullString = spinnerBaby.getSelectedItem().toString();
+        int i = fullString.indexOf(" ");
+        Log.d("Modify Baby index i  ......", fullString + "...." + String.valueOf(i));
+        babyAlias = fullString.substring(0,i);
+        Log.d("Modify Baby babyAlias ......", babyAlias );
+        if(fullString.contains("female")) {
+
+            i=i+8;
+            childGender = "female";
+            Log.d("Modify Baby index i  ......", fullString + "...." + String.valueOf(i));
+        }
+        else {
+            childGender = "male";
+        i=i+6;
+            Log.d("Modify Baby index i  ......", fullString + "...." + String.valueOf(i));
+        }
+        Log.d("Modify Baby gender  ......", childGender);
+        Log.d("Modify Baby index i outside if  ......", fullString + "...." + String.valueOf(i));
+        int t = fullString.length();
+        childBD = fullString.substring(i,t);
         modifyBaby.putExtra("babyAlias",babyAlias );
+        modifyBaby.putExtra("babyGender",childGender);
+        modifyBaby.putExtra("birthDay", childBD);
+        Log.d("Modify Baby  ......", babyAlias + childGender+childBD);
+        //modifyBaby.putExtra("childArray",child);
         startActivity(modifyBaby);
     }
     public void navigatetoWelcome(View view) {

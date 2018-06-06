@@ -16,7 +16,7 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Choose or modify baby"
+        android:text="Choose or modify child"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
 
@@ -32,7 +32,7 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Select baby from list"
+        android:text="Select child from list"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp"
         tools:paddingBottom="10dp" />

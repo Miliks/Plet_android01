@@ -264,13 +264,13 @@ public class RegisterActivity extends Activity {
 		// Get Password ET control value
 		String password = pwdET.getText().toString();
 		String country = countrySpinner.getSelectedItem().toString();
-		Log.d("country = ", country);
+		//Log.d("country = ", country);
 
 		int i = country.indexOf("_");
-		Log.d("country index  _  = ", String.valueOf(i));
+		//Log.d("country index  _  = ", String.valueOf(i));
 
 		String  country_short = country.substring(0,country.indexOf("_"));
-		Log.d("BD = ", birthDate);
+		//Log.d("BD = ", birthDate);
 
 //Verify is all mandatory fields are filled
 		if(!userName.isEmpty()&&!password.isEmpty()&&!name.isEmpty()&&!surName.isEmpty()&&!birthDate.isEmpty()&&!gender.isEmpty()&&!city.isEmpty()&&!country.isEmpty()) {

@@ -4,14 +4,22 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,7 +34,8 @@ public class ModifyBaby extends Activity {
 	TextView errorMsg;
 	// Edit View Objects
 	EditText userNameET, babyAliasET, genderET,birthdayET;
-	String userName, babyAlias, oldbabyAlias;
+	String userName, babyAlias, oldbabyAlias, childGender, childBD;
+	Spinner genderSpinner;
 
 
 	@Override
@@ -40,7 +49,7 @@ public class ModifyBaby extends Activity {
 		// Find Name Edit View control by ID
 		babyAliasET = (EditText)findViewById(R.id.babyAlias);
 		// Find Gender Edit View control by ID
-		genderET = (EditText)findViewById(R.id.baby_gender);
+		//genderET = (EditText)findViewById(R.id.baby_gender);
 		// Find Age Edit View control by ID
 		birthdayET = (EditText)findViewById(R.id.baby_birthday);
 
@@ -53,15 +62,63 @@ public class ModifyBaby extends Activity {
 		Bundle extras = getIntent().getExtras();
 		userName = extras.getString("userName");
 		oldbabyAlias = extras.getString("babyAlias");
+		childGender = extras.getString("babyGender");
+		childBD = extras.getString("birthDay");
 		userNameET.setText(userName);
 		babyAliasET.setText(oldbabyAlias);
+		MaskedTextChangedListener listener = new MaskedTextChangedListener(
+				"[00]-[00]-[0000]",	birthdayET,
+				new MaskedTextChangedListener.ValueListener() {
+					@Override
+					public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+						Log.d(RegisterActivity.class.getSimpleName(),extractedValue);
+						Log.d(RegisterActivity.class.getSimpleName(), String.valueOf(maskFilled));
+					}
+				}
+		);
+		birthdayET.addTextChangedListener(listener);
+		birthdayET.setOnFocusChangeListener(listener);
+		birthdayET.setHint(listener.placeholder());
+		birthdayET.setText(childBD);
+
+
+		//Log.d("get child data",extras.getString("childArray"));
+		addItemOnGender();
 
 	}
+	public void addItemOnGender(){
 
-public void getBabyData (String userName, String oldbabyAlias)
-{
+		genderSpinner =  (Spinner)findViewById(R.id.spinnerGender);
+		List<String> list = new ArrayList<String>();
+		Log.d("get child gender = ",childGender);
+		if(childGender.contains("female")){
+			list.add("female");
+			list.add("male");
+		}
+		else{
+		list.add("male");
+		list.add("female");
+		}
 
-}
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, list);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		genderSpinner.setAdapter(dataAdapter);
+	}
+	private void enableProgressDialog(final boolean enable)
+	{
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(enable)
+					prgDialog.show();
+				else
+					prgDialog.hide();
+			}
+		});
+	}
+
+
 	/**
 	 * Method gets triggered when Register button is clicked
 	 * 
@@ -69,25 +126,26 @@ public void getBabyData (String userName, String oldbabyAlias)
 	 */
 
 	public void updateBaby(View view){
+		enableProgressDialog(true);
 		String babyAlias = babyAliasET.getText().toString();
 		// Get age ET control value
 		String babybirthDate = birthdayET.getText().toString();
 		//Get gender
-		String babyGender = genderET.getText().toString();
+		String gender = genderSpinner.getSelectedItem().toString();
 
-		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!babyGender.isEmpty()) {
+		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!gender.isEmpty()) {
 
-			RegisterAPI.getInstance(this).updateBaby(userName, babyAlias, oldbabyAlias, babyGender, babybirthDate, new RegisterAPI.RegistrationCallback() {
+			RegisterAPI.getInstance(this).updateBaby(userName, babyAlias, oldbabyAlias, gender, babybirthDate, new RegisterAPI.RegistrationCallback() {
 				@Override
 				public void onResponse(String str) {
 					try {
-
+						enableProgressDialog(false);
 						JSONObject jsonResponse = new JSONObject(str);
 						String result = jsonResponse.getString("result");
-						Log.d("What is returned on update baby view ......", result);
+						//Log.d("What is returned on update baby view ......", result);
 						//Log.d("What is returned on activity Login view ......", jsonResponse.toString());
 						if (result.equals("OK")) {
-							Log.d("attemptToUpdate baby", "SUCCESSSSSSSS!!!!!..");
+							//Log.d("attemptToUpdate baby", "SUCCESSSSSSSS!!!!!..");
 							navigatetoSelectBaby();
 						} else {
 							onFailRegistration(jsonResponse.getString("message"));
@@ -99,12 +157,12 @@ public void getBabyData (String userName, String oldbabyAlias)
 
 				@Override
 				public void onError(RegistrationResponse.RegistrationError error) {
-
+					enableProgressDialog(false);
 				}
 
 				@Override
 				public void onNetworkError() {
-
+					enableProgressDialog(false);
 				}
 			});
 		}

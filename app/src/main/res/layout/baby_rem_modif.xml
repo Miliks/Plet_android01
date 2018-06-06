@@ -30,7 +30,7 @@
         android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:text="Modify or Remove Baby"
+        android:text="Modify or Remove child"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
 
@@ -74,7 +74,7 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:onClick="removeBaby"
-            android:text="remove Baby" />
+            android:text="remove child" />
 
         <Button
             android:id="@+id/modifyBaby"
@@ -87,7 +87,7 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:onClick="modifyBaby"
-            android:text="modify Baby" />
+            android:text="modify child" />
 
         <Button
             android:id="@+id/back"

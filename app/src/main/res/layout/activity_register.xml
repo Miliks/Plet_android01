@@ -42,7 +42,7 @@
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="UserName"
+                    android:hint="User Name"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"

@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="61dp"
         android:gravity="center"
-        android:text="Register Baby"
+        android:text="Register Child"
         android:textSize="30dp"
         android:textColor="@android:color/holo_blue_dark" />
 
@@ -43,7 +43,7 @@
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="UserName"
+                    android:hint="User Name"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -60,7 +60,7 @@
                     android:id="@+id/babyAlias"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Baby Alias"
+                    android:hint="Child Alias"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -91,17 +91,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/baby_gender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Baby Gender"
-                    android:imeActionId="6"
-                    android:imeActionLabel="Sign in"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true" />
+                <Spinner
+                    android:id="@+id/spinnerGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:drawable/btn_dropdown">
+                </Spinner>
             </android.support.design.widget.TextInputLayout>
 
 
@@ -138,7 +133,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:onClick="registerBaby"
-                android:text="Add Baby"
+                android:text="Add Child"
                 android:textStyle="bold" />
             <!-- -->
             <!--android:layout_marginLeft="20pt"
