@@ -37,7 +37,7 @@ public class LoginActivity extends Activity {
 
         usernameET = findViewById(R.id.username);
         // Find Password Edit View control by ID
-       pwdET = findViewById(R.id.password);
+        pwdET = findViewById(R.id.password);
 
         // Instantiate Progress Dialog object
         prgDialog = new ProgressDialog(this);
@@ -54,62 +54,61 @@ public class LoginActivity extends Activity {
 
         String userNameView = usernameET.getText().toString();
         String passwordView = pwdET.getText().toString();
-        if(!userNameView.isEmpty()&&!passwordView.isEmpty()) {
+        if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
             enableProgressDialog(true);
 
-                RegisterAPI.getInstance(this).userLogin(userNameView, passwordView, new RegisterAPI.RegistrationCallback() {
+            RegisterAPI.getInstance(this).userLogin(userNameView, passwordView, new RegisterAPI.RegistrationCallback() {
                 @Override
-                    public void onResponse(String str) {
+                public void onResponse(String str) {
                     try {
-                enableProgressDialog(false);
-                JSONObject jsonResponse = new JSONObject(str);
-                String result = jsonResponse.getString("result");
-                //Log.d("What is returned on activity Login view ......", result);
-                if (result.equals("OK")) {
-                    Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
-                    Intent i = new Intent(LoginActivity.this, SelectBaby.class);
-                    String userName = usernameET.getText().toString();
-                    i.putExtra("userName", userName);
-                    prgDialog.dismiss();
-                    startActivity(i);
-                } else {
-                    cleanText(jsonResponse.getString("message"));
+                        enableProgressDialog(false);
+                        JSONObject jsonResponse = new JSONObject(str);
+                        String result = jsonResponse.getString("result");
+                        //Log.d("What is returned on activity Login view ......", result);
+                        if (result.equals("OK")) {
+                           // Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
+                            Intent i = new Intent(LoginActivity.this, SelectChild.class);
+                            String userName = usernameET.getText().toString();
+                            i.putExtra("userName", userName);
+                            prgDialog.dismiss();
+                            startActivity(i);
+                        } else {
+                            cleanText(jsonResponse.getString("message"));
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
-        }
+                @Override
+                public void onError(RegistrationResponse.RegistrationError error) {
+                    enableProgressDialog(false);
+                }
 
-        @Override
-        public void onError(RegistrationResponse.RegistrationError error) {
-            enableProgressDialog(false);
-        }
+                @Override
+                public void onNetworkError() {
+                    enableProgressDialog(false);
+                }
+            });
+        } else
+            Toast.makeText(getApplicationContext(), "No data inserted", Toast.LENGTH_LONG).show();
+    }
 
-        @Override
-        public void onNetworkError() {
-            enableProgressDialog(false);
-        }
-    });
-}
-else
-    Toast.makeText(getApplicationContext(), "No data inserted", Toast.LENGTH_LONG).show();
- }
-    private void enableProgressDialog(final boolean enable)
-    {
+    private void enableProgressDialog(final boolean enable) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(enable)
+                if (enable)
                     prgDialog.show();
                 else
                     prgDialog.hide();
             }
         });
     }
-    private void cleanText(final String message)
-    {
+
+    private void cleanText(final String message) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -125,38 +124,56 @@ else
      *
      * @param view
      */
-   public void navigatetoRegisterActivity(View view){
-        Intent loginIntent = new Intent(getApplicationContext(),RegisterActivity.class);
-       loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-       startActivity(loginIntent);
-    }
-    private void navigatetoWelcomerActivity(){
-        runOnUiThread(new Runnable(){
-        @Override
-        public void run() {
-            startActivity(new Intent(LoginActivity.this,Welcome.class));
-        }
-    });
-
-    }
-    private void navigatetoBabyActivity(){
-        runOnUiThread(new Runnable(){
-            @Override
-            public void run() {
-                startActivity(new Intent(LoginActivity.this,SelectBaby.class));
-            }
-        });
-
-    }
-//TODO
-// //Verify if this is a correct way to quit app
-    public void quitApp(View view) {
-        //finishAndRemoveTask();
-        finishAffinity();
-        System.exit(0);
+    public void navigatetoRegisterActivity(View view) {
+        Intent loginIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(loginIntent);
     }
 
 
+    public void forgetPwd(View view) {
+        //TODO
+        //Call API to passwor reset wich will send email to email assotiated with the user name
+        String userNameView = usernameET.getText().toString();
+        //String passwordView = pwdET.getText().toString();
+        if (!userNameView.isEmpty()) {
+            enableProgressDialog(true);
 
+            RegisterAPI.getInstance(this).resetPwd(userNameView, new RegisterAPI.RegistrationCallback() {
+                @Override
+                public void onResponse(String str) {
+                    try {
+                        enableProgressDialog(false);
+                        JSONObject jsonResponse = new JSONObject(str);
+                        String result = jsonResponse.getString("result");
+                        //Log.d("What is returned on activity Login view ......", result);
+                        if (result.equals("OK")) {
+                            Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
+                            Toast.makeText(getApplicationContext(), "Check your mail box for the password reset information", Toast.LENGTH_LONG).show();
+                            prgDialog.dismiss();
+
+                        } else {
+                            cleanText(jsonResponse.getString("message"));
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onError(RegistrationResponse.RegistrationError error) {
+                    enableProgressDialog(false);
+                }
+
+                @Override
+                public void onNetworkError() {
+                    enableProgressDialog(false);
+                }
+            });
+        } else
+            Toast.makeText(getApplicationContext(), "No data inserted", Toast.LENGTH_LONG).show();
+    }
 
 }

@@ -9,7 +9,7 @@
 
 
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/myTitle"
         android:layout_width="327dp"
         android:layout_height="54dp"
@@ -18,7 +18,7 @@
         android:gravity="center_horizontal"
         android:textSize="30dp"
         android:text="Welcome to PLET"
-        android:textColor="@android:color/holo_blue_dark" />
+        android:textColor="@android:color/holo_blue_dark" /-->
 
     <ImageView
         android:layout_width="370dp"
@@ -81,7 +81,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:onClick="navigateStat"
-            android:text="Go to statistic" />
+            android:text="TOY USAGE INFO" />
 
         <Button
             android:id="@+id/btnNetwork"
@@ -109,8 +109,8 @@
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:onClick="startLogging"
-            android:text="Collect Data" />
-        <Button
+            android:text="Start Data Collection" />
+        <!--Button
             android:id="@+id/backToLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:onClick="quitApp"
-            android:text="Quit app" />
+            android:text="Quit app" /-->
 
     </LinearLayout>
 

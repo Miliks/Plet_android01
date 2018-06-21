@@ -17,13 +17,15 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
         android:text="Login"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
 
     <ImageView
-        android:layout_width="308dp"
-        android:layout_height="101dp"
+        android:layout_width="309dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
         android:src="@drawable/logo1"
         tools:ignore="ContentDescription" />
@@ -52,8 +54,8 @@
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="User Name"
-                    android:inputType="text"
+                    android:hint="Your email"
+                    android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
@@ -66,7 +68,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter password"
+                    android:hint="Password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -85,11 +87,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="left"
                 android:text="SIGN-IN"
                 android:onClick="attemptLogin"
+                android:textStyle="bold" />
+            <Button
+                android:id="@+id/forget_pwd"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="right"
+                android:text="Forget PWD"
+                android:onClick="forgetPwd"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -106,28 +118,31 @@
                 android:visibility="visible"
                 android:layout_gravity="center_horizontal"
                  />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
 
             <Button
                 android:id="@+id/go_to_register_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+               android:layout_gravity="right"
                 android:text="Register"
                 android:onClick="navigatetoRegisterActivity"
                 android:textStyle="bold" />
-            <Button
-                android:id="@+id/quit_app"
+            <!--Button
+                android:id="@+id/profile"
                 style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:text="Quit App"
-                android:onClick="quitApp"
-                android:textStyle="bold" />
-
+               android:layout_gravity="right"
+                android:text="YOUR Profile"
+                android:onClick="goToProfile"
+                android:textStyle="bold" /-->
+        </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

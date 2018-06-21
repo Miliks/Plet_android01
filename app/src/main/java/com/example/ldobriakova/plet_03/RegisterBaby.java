@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,8 +35,8 @@ public class RegisterBaby extends Activity {
 	TextView errorMsg;
 	// User Name Edit View Object
 	EditText userNameET, babyAliasET, genderET, birthdayET;
-	String userName;
-	Spinner genderSpinner;
+	String userName, gender_adult;
+	//Spinner genderSpinner;
 
 
 	@Override
@@ -64,7 +65,7 @@ public class RegisterBaby extends Activity {
 		birthdayET  = (EditText)findViewById(R.id.baby_birthday);
 
 		MaskedTextChangedListener listener = new MaskedTextChangedListener(
-				"[00]/[00]/[0000]",	birthdayET,
+				"[00]-[00]-[0000]",	birthdayET,
 				new MaskedTextChangedListener.ValueListener() {
 					@Override
 					public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
@@ -76,7 +77,7 @@ public class RegisterBaby extends Activity {
 		birthdayET.addTextChangedListener(listener);
 		birthdayET.setOnFocusChangeListener(listener);
 		birthdayET.setHint(listener.placeholder());
-		addItemOnGender();
+		//addItemOnGender();
 	}
     private void enableProgressDialog(final boolean enable)
     {
@@ -90,8 +91,23 @@ public class RegisterBaby extends Activity {
             }
         });
     }
+	public void onRadioButtonClicked(View view) {
+		// Is the button now checked?
+		boolean checked = ((RadioButton) view).isChecked();
 
-	public void addItemOnGender(){
+		// Check which radio button was clicked
+		switch(view.getId()) {
+			case R.id.radio_gender_f:
+				if (checked)
+					gender_adult = "female";
+				break;
+			case R.id.radio_gender_m:
+				if (checked)
+					gender_adult = "male";
+				break;
+		}
+	}
+	/*public void addItemOnGender(){
 		genderSpinner =  (Spinner)findViewById(R.id.spinnerGender);
 		List<String> list = new ArrayList<String>();
 		list.add("male");
@@ -100,11 +116,11 @@ public class RegisterBaby extends Activity {
 				android.R.layout.simple_spinner_item, list);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		genderSpinner.setAdapter(dataAdapter);
-	}
+	}*/
 	@Override
 	public void onBackPressed()
 	{
-		Intent i = new Intent(RegisterBaby.this,SelectBaby.class);
+		Intent i = new Intent(RegisterBaby.this,SelectChild.class);
 		i.putExtra("userName",userName);
 		startActivity(i);
 
@@ -125,7 +141,8 @@ public class RegisterBaby extends Activity {
 		String babybirthDate = birthdayET.getText().toString();
 		//Get gender
 		// genderET.getText().toString();
-		String babyGender = genderSpinner.getSelectedItem().toString();
+		String babyGender = gender_adult;
+				//genderSpinner.getSelectedItem().toString();
 
 		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!babyGender.isEmpty()) {
 
@@ -169,7 +186,7 @@ public class RegisterBaby extends Activity {
 				@Override
 				public void run() {
 
-					Intent i = new Intent(RegisterBaby.this,SelectBaby.class);
+					Intent i = new Intent(RegisterBaby.this,SelectChild.class);
 					//String userName = userNameET.getText().toString();
 					i.putExtra("userName",userName);
 					startActivity(i);

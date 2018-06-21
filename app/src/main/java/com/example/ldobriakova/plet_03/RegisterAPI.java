@@ -122,6 +122,8 @@ public class RegisterAPI {
         }
     }
 
+    //create a new user in DB
+
     public void registerEmail(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
             String requestBody = "createCustomer?username="+userName+"&surname="+surName+"&firstname="+name+"&email=" + email + "&password=" + password+"&cellular=" +phone+"&city="+city+"&country="+country_short+"&birthDate="+birthDate+ "&gender="+gender;
@@ -218,7 +220,77 @@ public class RegisterAPI {
             } });
     }
 
-   //Delete user from DB
+    //update user
+    public void updateUser(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
+        JSONObject json = new JSONObject();
+        String requestBody = "updatecustomer?username="+userName+"&surname="+surName+"&firstname="+name+"&email=" + email + "&password=" + password+"&cellular=" +phone+"&city="+city+"&country="+country_short+"&birthDate="+birthDate+ "&gender="+gender;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    callback.onResponse(alternate);
+
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+
+            } });
+    }
+
+   //reset password
+
+    public void resetPwd(String username, final RegistrationCallback callback)
+    {
+        //deletebaby?username={USERNAME}&babyAlias={BABYALIAS}
+      /*  String requestBody = "deletecustomer?username=" + username;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });*/
+
+      callback.onResponse("OK");
+    }
+
+
+    //Delete user from DB
 
       public void userDelete(String username, final RegistrationCallback callback)
     {
@@ -407,6 +479,41 @@ public class RegisterAPI {
                 if (response.isSuccessful()) {
                     String alternate = response.body().string();
                     Log.d("remove baby",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+
+    }
+
+    //get user data from DB
+    //
+
+    public void getUserInfo(String username, final RegistrationCallback callback) {
+
+        String requestBody = "getUserData?username="+username;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("User data ",alternate);
                     callback.onResponse(alternate);
                 }
                 else {

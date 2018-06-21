@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,8 +35,9 @@ public class ModifyBaby extends Activity {
 	TextView errorMsg;
 	// Edit View Objects
 	EditText userNameET, babyAliasET, genderET,birthdayET;
-	String userName, babyAlias, oldbabyAlias, childGender, childBD;
-	Spinner genderSpinner;
+	String userName, babyAlias, oldbabyAlias, childGender, childBD, gender_adult;
+	RadioButton gender_m, gender_f;
+	//Spinner genderSpinner;
 
 
 	@Override
@@ -80,31 +82,31 @@ public class ModifyBaby extends Activity {
 		birthdayET.setOnFocusChangeListener(listener);
 		birthdayET.setHint(listener.placeholder());
 		birthdayET.setText(childBD);
-
-
-		//Log.d("get child data",extras.getString("childArray"));
-		addItemOnGender();
-
+		gender_m = (RadioButton)findViewById(R.id.radio_gender_m);
+		gender_f = (RadioButton)findViewById(R.id.radio_gender_f);
+		if (childGender.contains("female"))
+			gender_f.setChecked(true);
+		else
+			gender_m.setChecked(true);
 	}
-	public void addItemOnGender(){
 
-		genderSpinner =  (Spinner)findViewById(R.id.spinnerGender);
-		List<String> list = new ArrayList<String>();
-		Log.d("get child gender = ",childGender);
-		if(childGender.contains("female")){
-			list.add("female");
-			list.add("male");
-		}
-		else{
-		list.add("male");
-		list.add("female");
-		}
+	public void onRadioButtonClicked(View view) {
+		// Is the button now checked?
+		boolean checked = ((RadioButton) view).isChecked();
 
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, list);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		genderSpinner.setAdapter(dataAdapter);
+		// Check which radio button was clicked
+		switch(view.getId()) {
+			case R.id.radio_gender_f:
+				if (checked)
+					gender_adult = "female";
+				break;
+			case R.id.radio_gender_m:
+				if (checked)
+					gender_adult = "male";
+				break;
+		}
 	}
+
 	private void enableProgressDialog(final boolean enable)
 	{
 		runOnUiThread(new Runnable() {
@@ -131,7 +133,8 @@ public class ModifyBaby extends Activity {
 		// Get age ET control value
 		String babybirthDate = birthdayET.getText().toString();
 		//Get gender
-		String gender = genderSpinner.getSelectedItem().toString();
+		//String gender = genderSpinner.getSelectedItem().toString();
+		String gender = gender_adult;
 
 		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!gender.isEmpty()) {
 
@@ -142,10 +145,7 @@ public class ModifyBaby extends Activity {
 						enableProgressDialog(false);
 						JSONObject jsonResponse = new JSONObject(str);
 						String result = jsonResponse.getString("result");
-						//Log.d("What is returned on update baby view ......", result);
-						//Log.d("What is returned on activity Login view ......", jsonResponse.toString());
 						if (result.equals("OK")) {
-							//Log.d("attemptToUpdate baby", "SUCCESSSSSSSS!!!!!..");
 							navigatetoSelectBaby();
 						} else {
 							onFailRegistration(jsonResponse.getString("message"));
@@ -174,7 +174,7 @@ public class ModifyBaby extends Activity {
 				@Override
 				public void run() {
 
-					Intent i = new Intent(ModifyBaby.this,SelectBaby.class);
+					Intent i = new Intent(ModifyBaby.this,RemoveModBaby.class);
 					i.putExtra("userName",userName);
 					startActivity(i);
 				}
@@ -185,7 +185,7 @@ public class ModifyBaby extends Activity {
 	@Override
 	public void onBackPressed()
 	{
-		Intent i = new Intent(ModifyBaby.this,SelectBaby.class);
+		Intent i = new Intent(ModifyBaby.this,RemoveModBaby.class);
 		i.putExtra("userName",userName);
 		startActivity(i);
 

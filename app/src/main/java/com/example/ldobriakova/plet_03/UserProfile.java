@@ -5,9 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +34,7 @@ import java.util.List;
  * 
  * Register Activity Class
  */
-public class RegisterActivity extends Activity {
+public class UserProfile extends Activity {
 
 	// Progress Dialog Object
 	ProgressDialog prgDialog;
@@ -50,14 +47,17 @@ public class RegisterActivity extends Activity {
 	CheckBox checkBox;
 	Spinner countrySpinner, genderSpinner;
 	JSONArray countryList = new JSONArray();
-	String combined, gender_adult;
+	String combined, gender_adult, userBD, cel, city, country, email, gend, name, username, surname, userData, userBD_external;
 	List<String> listName = new ArrayList<String>();
+	JSONArray userDatalist = new JSONArray();
+	RadioButton gender_m, gender_f;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register);
+		setContentView(R.layout.profile);
+		Bundle extras = getIntent().getExtras();
 		checkBox = (CheckBox) findViewById(R.id.checkbox);
 		final Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
@@ -96,8 +96,8 @@ public class RegisterActivity extends Activity {
 				new MaskedTextChangedListener.ValueListener() {
 					@Override
 					public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
-						Log.d(RegisterActivity.class.getSimpleName(),extractedValue);
-						Log.d(RegisterActivity.class.getSimpleName(), String.valueOf(maskFilled));
+						Log.d(UserProfile.class.getSimpleName(),extractedValue);
+						Log.d(UserProfile.class.getSimpleName(), String.valueOf(maskFilled));
 					}
 				}
 		);
@@ -120,11 +120,19 @@ public class RegisterActivity extends Activity {
         prgDialog.setMessage("Please wait...");
         // Set Cancelable as False
         prgDialog.setCancelable(false);
-		getCountryList();
-		//addItemOnGender();
-		//addListenerOnSpinnerItemSelection();
-	}
 
+		if (extras != null) {
+			username = extras.getString("userName");
+		}
+		getUserInfo(username);
+
+		Log.d("User to query in onCreate in RemoveModify Baby.....=",username);
+		userNameET.setText(username);
+		gender_m = (RadioButton)findViewById(R.id.radio_gender_m);
+		gender_f = (RadioButton)findViewById(R.id.radio_gender_f);
+		//getCountryList();
+
+	}
 
 	private void enableProgressDialog(final boolean enable)
 	{
@@ -135,6 +143,38 @@ public class RegisterActivity extends Activity {
 					prgDialog.show();
 				else
 					prgDialog.hide();
+			}
+		});
+	}
+	private void createProfile(final JSONArray userData){
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					JSONObject usr = userData.getJSONObject(0);
+					Log.d("User to query in onCreate in RemoveModify Baby.....=",usr.toString());
+					userBD = usr.getString("Birthdate");
+					birthdayET.setText(userBD);
+					cel = usr.getString("CellularNumber");
+					//phoneET.setText(cel);
+					city = usr.getString("City");
+					cityET.setText(city);
+					name = usr.getString("Name");
+					nameET.setText(name);
+					surname = usr.getString("Surname");
+					surnameET.setText(surname);
+					country = usr.getString("Country");
+					getCountryList();
+					gender_adult = usr.getString("Gender");
+					if (gender_adult.contains("female"))
+						gender_f.setChecked(true);
+					else
+						gender_m.setChecked(true);
+
+				}
+				catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
@@ -173,7 +213,8 @@ public class RegisterActivity extends Activity {
 					JSONObject jsonResponse = new JSONObject(str);
 					String result = jsonResponse.getString("result");
 					JSONObject result_obj = jsonResponse.getJSONObject("content");
-                    listName.add("COUNTRY");
+                    //listName.add("COUNTRY");
+					listName.add(country);
 					if (result.equals("OK")) {
 						countryList = result_obj.getJSONArray("CountryList");
 						if(countryList.length()>0) {
@@ -214,9 +255,62 @@ public class RegisterActivity extends Activity {
 			}
 		});
 
+	}
+
+
+	//get info about user from ARAS to update it
+	public void getUserInfo(String userName)
+	{
+		enableProgressDialog(true);
+
+		RegisterAPI.getInstance(this).getUserInfo(userName, new RegisterAPI.RegistrationCallback() {
+			@Override
+			public void onResponse(String str) {
+				try {
+					enableProgressDialog(false);
+					JSONObject jsonResponse = new JSONObject(str);
+					JSONObject result_obj = jsonResponse.getJSONObject("content");
+					userData = jsonResponse.getString("result");
+
+					if(userData.equals("OK")) {
+						if (!userData.isEmpty()) {
+							try {
+								userDatalist = result_obj.getJSONArray("UserData");
+
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							createProfile(userDatalist);
+						}
+					}
+					else{
+						Log.d("Inside cycle for ......", "No data associated with this user");
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public void onError(RegistrationResponse.RegistrationError error) {
+				enableProgressDialog(false);
+			}
+			@Override
+			public void onNetworkError() {
+				enableProgressDialog(false);
+
+			}
+		});
+
 
 
 	}
+
+
+
+
 	private void cleanText(final String message)
 	{
 		runOnUiThread(new Runnable() {
@@ -235,7 +329,7 @@ public class RegisterActivity extends Activity {
 	 *
 	 */
 
-	public void registerUser(View view){
+	public void updateUser(View view){
 
 		// Get NAme ET control value
 		final String userName = userNameET.getText().toString();
@@ -258,13 +352,11 @@ public class RegisterActivity extends Activity {
 		String password = pwdET.getText().toString();
 		String country = countrySpinner.getSelectedItem().toString();
 		//Log.d("country = ", country);
-		String  country_short = null;
-        if(!country.isEmpty()&&!country.contains("COUNTRY")){
-		int i = country.indexOf("_");
-            Log.d("country = ", country);
 
-		  country_short = country.substring(0,country.indexOf("_"));
-        }
+		int i = country.indexOf("_");
+		//Log.d("country index  _  = ", String.valueOf(i));
+
+		String  country_short = country.substring(0,country.indexOf("_"));
 		//Log.d("BD = ", birthDate);
 
 //Verify is all mandatory fields are filled
@@ -275,7 +367,8 @@ public class RegisterActivity extends Activity {
 				if (isValidDate(birthDate)) {
 
 					if (validateAdult(birthDate)) {
-
+//TODO
+						//substitute with the new API to update user data
 						RegisterAPI.getInstance(this).registerEmail(userName, surName, name,email, password,phone, city,country_short,birthDate,gender_adult, new RegisterAPI.RegistrationCallback() {
 							@Override
 							public void onResponse(String str) {
@@ -285,7 +378,8 @@ public class RegisterActivity extends Activity {
 									if (result.equals("OK")) {
 										String user = userName;
 										//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
-										navigatetoAddChild(user);
+										Toast.makeText(getApplicationContext(), "Data have been updated successfully!", Toast.LENGTH_LONG).show();
+
 										//navigatetoLoginActivity();
 									} else {
 										onFailRegistration(jsonResponse.getString("message"));
@@ -320,25 +414,10 @@ public class RegisterActivity extends Activity {
 			runOnUiThread(new Runnable(){
 				@Override
 				public void run() {
-					startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+					startActivity(new Intent(UserProfile.this,LoginActivity.class));
 				}
 			});}
-				private void navigatetoAddChild(final String userName){
-					runOnUiThread(new Runnable(){
-						@Override
-						public void run() {
 
-							Intent i = new Intent(RegisterActivity.this, RegisterBaby.class);
-							String userNameInternal = userName;
-									//usernameET.getText().toString();
-							i.putExtra("userName", userNameInternal);
-							prgDialog.dismiss();
-							startActivity(i);
-							//startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
-						}
-					});
-
-		}
 
 
 	private void onFailRegistration(final String message)
@@ -424,5 +503,38 @@ return true;
 					gender_adult = "male";
 					break;
 		}
+	}
+
+	/*private void navigatetoAddChild(final String userName){
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+
+				Intent i = new Intent(UserProfile.this, RegisterBaby.class);
+				String userNameInternal = userName;
+				//usernameET.getText().toString();
+				i.putExtra("userName", userNameInternal);
+				prgDialog.dismiss();
+				startActivity(i);
+				//startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+			}
+		});
+
+	}*/
+
+	public void navigatetoAddChild(View view) {
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+
+				Intent i = new Intent(UserProfile.this, RemoveModBaby.class);
+				String userNameInternal = userNameET.getText().toString();
+				//usernameET.getText().toString();
+				i.putExtra("userName", userNameInternal);
+				prgDialog.dismiss();
+				startActivity(i);
+
+			}
+		});
 	}
 }

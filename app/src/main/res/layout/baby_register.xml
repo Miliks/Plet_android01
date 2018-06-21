@@ -12,13 +12,13 @@
         android:layout_width="fill_parent"
         android:layout_height="61dp"
         android:gravity="center"
-        android:text="Register Child"
+        android:text="Add Child to you profile"
         android:textSize="30dp"
         android:textColor="@android:color/holo_blue_dark" />
 
     <ImageView
-        android:layout_width="332dp"
-        android:layout_height="105dp"
+        android:layout_width="329dp"
+        android:layout_height="132dp"
         android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
         android:src="@drawable/logo1"
@@ -43,7 +43,7 @@
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="User Name"
+                    android:hint="*User Name"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -60,7 +60,7 @@
                     android:id="@+id/babyAlias"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Child Alias"
+                    android:hint="*Child Alias"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -78,7 +78,7 @@
                     android:id="@+id/baby_birthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="                        DD/MM/YYYY Baby Birthday"
+                    android:hint="                        *DD-MM-YYYY Child Birthday"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -90,13 +90,34 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="*GENDER: "
+                        />
+                    <RadioButton android:id="@+id/radio_gender_m"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gender_male"
+                        android:onClick="onRadioButtonClicked"/>
+                    <RadioButton android:id="@+id/radio_gender_f"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/gender_female"
+                        android:onClick="onRadioButtonClicked"/>
+                </RadioGroup>
 
-                <Spinner
+                <!--Spinner
                     android:id="@+id/spinnerGender"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:background="@android:drawable/btn_dropdown">
-                </Spinner>
+                </Spinner-->
             </android.support.design.widget.TextInputLayout>
 
 
@@ -111,7 +132,7 @@
             android:gravity="center_horizontal">
 
 
-            <Button
+            <!--Button
                 android:id="@+id/removeBaby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,7 +141,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:onClick="backToSelectBaby"
-                android:text="BACK" />
+                android:text="BACK" /-->
 
 
             <Button

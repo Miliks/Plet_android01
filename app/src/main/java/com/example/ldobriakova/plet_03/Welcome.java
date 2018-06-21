@@ -136,7 +136,7 @@ public class Welcome extends Activity  {
     @Override
     public void onBackPressed()
     {
-        Intent i = new Intent(Welcome.this,SelectBaby.class);
+        Intent i = new Intent(Welcome.this,SelectChild.class);
         i.putExtra("userName",userName);
         startActivity(i);
 
@@ -184,7 +184,7 @@ public class Welcome extends Activity  {
 
     }
 
-    private void addItemOnSpinnerProduct_old() {
+    /*private void addItemOnSpinnerProduct_old() {
         spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
         List<String> list = new ArrayList<String>();
         list.add("DOLPHINE_001");
@@ -193,7 +193,7 @@ public class Welcome extends Activity  {
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,list);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerProduct.setAdapter(dataAdapter);
-    }
+    }*/
     // get the selected dropdown list value
     private void addListenerOnButton() {
         spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
@@ -229,14 +229,9 @@ public class Welcome extends Activity  {
         Intent i = new Intent(Welcome.this,Statistic.class);
         i.putExtra("userName",userName);
         i.putExtra("babyAlias", babyAlias);
-        String productS = spinnerProduct.getSelectedItem().toString();
-        Log.d("Product selected ========", productS);
-        //i.putExtra("babyAlias", babyAlias);
         startActivity(i);
 
-       /* Intent statistic = new Intent(getApplicationContext(),Statistic.class);
-        statistic.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(statistic);*/
+
     }
     public void navigateLogin(View view) {
         Intent navLogin = new Intent(getApplicationContext(),LoginActivity.class);

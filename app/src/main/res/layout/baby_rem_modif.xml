@@ -15,22 +15,22 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="144dp"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/selectBaby"
-        android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
         android:src="@drawable/logo1"
         tools:ignore="ContentDescriptio" />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/selectBaby"
-        android:layout_width="311dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="22dp"
         android:gravity="center_horizontal"
-        android:text="Modify or Remove child"
+        android:text="Modify your child data"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
 
@@ -51,6 +51,7 @@
 
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginEnd="141dp"
         android:background="@android:drawable/btn_dropdown" />
     <!--/RelativeLayout-->
@@ -89,7 +90,7 @@
             android:onClick="modifyBaby"
             android:text="modify child" />
 
-        <Button
+        <!--Button
             android:id="@+id/back"
             style="?android:textAppearanceSmall"
             android:layout_width="wrap_content"
@@ -102,8 +103,20 @@
             android:gravity="center_horizontal"
             android:onClick="navigatetoWelcome"
             android:text="Back"
-            android:textStyle="bold" />
+            android:textStyle="bold" /-->
     </LinearLayout>
+
+    <Button
+        android:id="@+id/addBaby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="84dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:onClick="addBaby"
+        android:text="add child" />
 
 
 </RelativeLayout>

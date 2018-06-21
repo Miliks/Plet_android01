@@ -35,12 +35,14 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="select_toy_address">Search for Toy address</string>
+    <string name="select_toy_address">Search Toy WI-FI hotspot</string>
     <string name="add_baby">Add child</string>
     <string name="remove_baby">Remove/Modify child</string>
     <string name="modify_baby">Modify child</string>
-    <string name="continueApp">Continue</string>
+    <string name="continueApp">SELECT TOY</string>
     <string name="select_a_baby">Select child</string>
     <string name="country">COUNTRY</string>
+    <string name="gender_male">MALE</string>
+    <string name="gender_female">FEMALE</string>
 </resources>
 

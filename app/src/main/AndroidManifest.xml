@@ -48,6 +48,12 @@
             android:name=".RegisterBaby"
             android:label="@string/app_name"></activity>
         <activity
+            android:name=".SelectChild"
+            android:label="@string/app_name"></activity>
+        <activity
+            android:name=".UserProfile"
+            android:label="@string/app_name"></activity>
+        <activity
             android:name=".SelectBaby"
             android:label="@string/app_name"></activity>
         <activity

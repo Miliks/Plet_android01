@@ -51,6 +51,8 @@ public class WiFiDemo extends Activity implements View.OnClickListener
 
     List<String> list = new ArrayList<String>();
 
+    NsdHelper mNsdHelper;
+
     /* Called when the activity is first created. */
 
     public void onCreate(Bundle savedInstanceState)
@@ -58,14 +60,16 @@ public class WiFiDemo extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wifidemo);
         addListenerOnSpinnerWifi();
+        mNsdHelper = new NsdHelper(this);
+        mNsdHelper.initializeNsd();
+        mNsdHelper.discoverServices();
+
         Bundle extras = getIntent().getExtras();
         userName = extras.getString("userName");
         babyAlias = extras.getString("babyAlias");
+
         buttonScan = (Button) findViewById(R.id.buttonScan);
         buttonScan.setOnClickListener(this);
-
-        // lv = (ListView)findViewById(R.id.list);
-
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         if (wifi.isWifiEnabled() == false)
@@ -75,7 +79,6 @@ public class WiFiDemo extends Activity implements View.OnClickListener
         }
 
         this.adapter = new SimpleAdapter(WiFiDemo.this, arraylist, R.layout.row, new String[] { ITEM_KEY }, new int[] { R.id.list_value });
-        //lv.setAdapter(this.adapter);
 
         registerReceiver(new BroadcastReceiver()
         {
@@ -92,56 +95,75 @@ public class WiFiDemo extends Activity implements View.OnClickListener
 
 
     }
+    @Override
+    protected void onPause() {
+        if (mNsdHelper != null) {
+            mNsdHelper.tearDown();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mNsdHelper != null) {
+//            mNsdHelper.registerService(mConnection.getLocalPort());
+//            mNsdHelper.discoverServices();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mNsdHelper.tearDown();
+//        mConnection.tearDown();
+        super.onDestroy();
+    }
 
     private void updateUISpinner( final List<String> list){
-        Log.d("WIFI =", "We r in updateUISpinner  .............");
-        runOnUiThread(new Runnable() {
+               runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                addListenerOnSpinnerWifi();
+
+                //addListenerOnSpinnerWifi();
+                addOneItemOnSpinner(list);
             }
         });
     }
 
     private void addListenerOnSpinnerWifi() {
-        Log.d("WIFI =", "We r in addListenerOnSpinnerWifi  .............");
         spinnerWiFi = (Spinner)findViewById(R.id.spinnerWifi);
         spinnerWiFi.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
      private void addOneItemOnSpinner(List<String> selection){
-         Log.d("WIFI =", "We r in addOneItemOnSpinner  .............");
-        wifiSpinnerValue = null;
+        // Log.d("WIFI =", "We r in addOneItemOnSpinner  .............");
+        //wifiSpinnerValue = null;
         spinnerWiFi = (Spinner) findViewById(R.id.spinnerWifi);
         Log.d("list ........................=",selection.toString());
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,selection);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerWiFi.setAdapter(dataAdapter);
-
         wifiSpinnerValue = spinnerWiFi.getSelectedItem().toString();
         Log.d("wifiSpinnerValue =  ........................=",wifiSpinnerValue);
 
     }
     public void connectToToy_old(View view)
     {
-        //Trying to connect to selected network
-        //TODO
-        //Vrify what the WiFi network is selected
-        Log.d("WIFI =", "We r in connect.............");
 
         if(spinnerWiFi != null && spinnerWiFi.getSelectedItem() !=null ) {
-            String str = spinnerWiFi.getSelectedItem().toString();
-            Log.d("WIFI =", str);
-            String networkSSID = str;
-            String networkPass = "";
+            String wifi_ssid = spinnerWiFi.getSelectedItem().toString();
+            Log.d("WIFI........... =", wifi_ssid);
+            String networkPass = "12345678";
             WifiConfiguration conf = new WifiConfiguration();
+            conf.SSID = String.format("\"%s\"", wifi_ssid);
+            conf.preSharedKey = String.format("\"%s\"", networkPass);
             WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-            //remember id
             int netId = wifiManager.addNetwork(conf);
-            wifiManager.disconnect();
-            wifiManager.enableNetwork(netId, true);
-            wifiManager.reconnect();
-            String url = "https://www.polimi.it/";
+                    wifiManager.disconnect();
+                    wifiManager.enableNetwork(netId, true);
+                    wifiManager.reconnect();
+
+            String url = "http://192.168.4.1/";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
@@ -153,15 +175,15 @@ public class WiFiDemo extends Activity implements View.OnClickListener
 
     }
 
-    public void connectToToy(View view)
+    /*public void connectToToy(View view)
     {
-
-        Intent i = new Intent(WiFiDemo.this, GetProduct.class);
+        connectToToy_old(view);
+        *//*Intent i = new Intent(WiFiDemo.this, GetProduct.class);
         i.putExtra("userName", userName);
         startActivity(i);
+*//*
 
-
-    }
+    }*/
 
     public void onClick(View view)
     {
@@ -187,7 +209,7 @@ public class WiFiDemo extends Activity implements View.OnClickListener
                 size--;
                 adapter.notifyDataSetChanged();
             }
-            addOneItemOnSpinner(list);
+            //addOneItemOnSpinner(list);
             updateUISpinner(list);
 
         } catch (Exception e)
