@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class GetProduct extends Activity  {
     private Spinner spinnerProduct;
-    EditText serialNumber;
+    EditText serialNumber, ETprodAlias;
     ProgressDialog prgDialog;
     private Button btnNetwork;
     String userName, babyAlias, productID, productName, combined, combined1;
@@ -45,6 +46,7 @@ public class GetProduct extends Activity  {
         // Set Cancelable as False
         prgDialog.setCancelable(false);
         prgDialog.setIndeterminate(true);
+        ETprodAlias = (EditText)findViewById(R.id.productAlias);
         if (extras != null) {
 
             userName = extras.getString("userName");
@@ -56,7 +58,7 @@ public class GetProduct extends Activity  {
     @Override
     public void onBackPressed()
     {
-        Intent i = new Intent(GetProduct.this,SelectBaby.class);
+        Intent i = new Intent(GetProduct.this,SelectChild.class);
         i.putExtra("userName",userName);
         i.putExtra("babyAlias",babyAlias);
         startActivity(i);
@@ -242,7 +244,7 @@ public class GetProduct extends Activity  {
 */
         //After we get the product serial number we need to map the userID and product uniqui identifier to strt session
         enableProgressDialog(true);
-        String toyAl = "My Toy";
+        String toyAl = ETprodAlias.getText().toString();
 
         RegisterAPI.getInstance(this).registerProdInstance(userName, productID, serialNumberString, toyAl, new RegisterAPI.RegistrationCallback() {
             @Override
@@ -254,7 +256,7 @@ public class GetProduct extends Activity  {
 
                     if (result.equals("OK")) {
                         Log.d("attemptToRegister", "SUCCESSSSSSSS!!!!!..");
-                        Intent i = new Intent(GetProduct.this, Welcome.class);
+                        Intent i = new Intent(GetProduct.this, WiFiDemo.class);
                         //Intent scanner = new Intent(getApplicationContext(), WiFiDemo.class);
                         i.putExtra("userName",userName);
                         i.putExtra("babyAlias",babyAlias);

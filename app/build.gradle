@@ -34,7 +34,9 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.41'
     implementation 'nl.dionsegijn:konfetti:1.1.2'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    compile 'com.github.rafakob:NsdHelper:0.1.4'
 }
 repositories {
     mavenCentral()
+    maven { url "https://jitpack.io" }
 }

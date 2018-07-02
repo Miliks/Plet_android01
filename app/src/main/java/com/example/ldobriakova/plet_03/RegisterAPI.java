@@ -32,6 +32,7 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -486,6 +487,38 @@ public class RegisterAPI {
                         callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
                 }
             } });
+
+    }
+
+    public void setAdress(String ipAddr, final RegistrationCallback callback){
+        String requestBody = "";
+        RequestBody postBody = new FormBody.Builder().add("message","{\"requestType\" : \"changeHttp\",\"ipTarget\" : \"91.218.225.130\",\"portTarget\" : 443}").build();
+        Request request = new Request.Builder().url("http:/" + ipAddr)
+                .post(postBody)
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("User data ",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+
 
     }
 

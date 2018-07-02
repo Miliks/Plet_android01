@@ -2,7 +2,10 @@ package com.example.ldobriakova.plet_03;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.nsd.NsdManager;
+import android.net.nsd.NsdServiceInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +33,14 @@ public class Welcome extends Activity  {
     ProgressDialog progressDialog;
     JSONArray productList = new JSONArray();
     List<String> listMag = new ArrayList<String>();
+    NsdServiceInfo serviceInfo = new NsdServiceInfo();
+    final String SERVICE_TYPE = "_smartobject._tcp.";
+    final String SERVICE_NAME = "smartobject";
+    public static final String TAG = "WELCOME";
+    Boolean listenerFlag = false;
+    private InetAddress hostAddress;
+    private int hostPort;
+    private NsdManager mNsdManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +65,7 @@ public class Welcome extends Activity  {
         }
 
         getProducts(userName);
+        mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
     }
     private void enableProgressDialog(final boolean enable)
     {
@@ -75,7 +89,7 @@ public class Welcome extends Activity  {
             }
         });
     }
-
+//Select toys registered on this user account
     public void getProducts(String myEtText){
         enableProgressDialog(true);
 
@@ -91,16 +105,17 @@ public class Welcome extends Activity  {
                     {
 
                         try {
-                            //TODO
-                            //Need to handle empty list returned in case there is no babies registered on the user
+
                             productList = result_obj.getJSONArray("UserInstanceList");
                             if(productList.length()>0) {
                                 for (int i = 0; i < productList.length(); i++) {
                                     JSONObject b = productList.getJSONObject(i);
                                     String productAlias = b.getString("productName");
                                     String serialNumber = b.getString("serialNumber");
+                                    String toyAlias = b.getString("toyAlias");
                                     pruductAndID = productAlias + "_" + serialNumber;
-                                    listMag.add(pruductAndID);
+                                    //listMag.add(pruductAndID);
+                                    listMag.add(toyAlias);
                                     int j = pruductAndID.indexOf("_");
                                     Log.d("Index of _ ========",String.valueOf(j));
                                    }
@@ -132,6 +147,7 @@ public class Welcome extends Activity  {
         });
 
     }
+
 
     @Override
     public void onBackPressed()
@@ -208,9 +224,20 @@ public class Welcome extends Activity  {
                                 "\nSpinner 1 : "+ String.valueOf(spinnerProduct.getSelectedItem()) +
                                 "\nSpinner 2 : "+ String.valueOf(spinnerActivity.getSelectedItem()),
                         Toast.LENGTH_SHORT).show();*/
-                navigatetoWiFiSearch();
+               // navigatetoWiFiSearch();
+                navigateToRegisterNewToy();
             }
         });
+    }
+
+    private void navigateToRegisterNewToy() {
+        Intent registerNewToy = new Intent(getApplicationContext(), GetProduct.class);
+        registerNewToy.putExtra("userName",userName);
+        registerNewToy.putExtra("babyAlias", babyAlias);
+        //Log.d("Product selected ========", spinnerProduct.toString());
+        //scanner.putExtra("productID",spinnerProduct.toString());
+        registerNewToy.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(registerNewToy);
     }
 
 
@@ -219,7 +246,7 @@ public class Welcome extends Activity  {
         scanner.putExtra("userName",userName);
         scanner.putExtra("babyAlias", babyAlias);
         Log.d("Product selected ========", spinnerProduct.toString());
-        scanner.putExtra("productID",spinnerProduct.toString());
+        //scanner.putExtra("productID",spinnerProduct.toString());
         scanner.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(scanner);
     }
@@ -244,9 +271,177 @@ public class Welcome extends Activity  {
         System.exit(0);
         onBackPressed();
     }
+    private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
+
+        @Override
+        public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
+            // Called when the resolve fails. Use the error code to debug.
+            Log.e(TAG, "Resolve failed " + errorCode);
+            Log.e(TAG, "service = " + serviceInfo);
+        }
+
+        @Override
+        public void onServiceResolved(NsdServiceInfo serviceInfo) {
+            Log.d(TAG, "Resolve Succeeded. " + serviceInfo);
+
+            if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
+                Log.d(TAG, "Same IP.");
+                return;
+            }
+
+            // Obtain port and IP
+            hostPort = serviceInfo.getPort();
+            hostAddress = serviceInfo.getHost();
+            Log.d(TAG, "Resolve listener ..........." + hostAddress);
+            // setIPUI(hostAddress);
+            // mNsdManager.unregisterService(mRegistrationListener);
+            // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+        }
+    };
+
+    private final NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
+        // Called as soon as service discovery begins.
+        @Override
+        public void onDiscoveryStarted(String regType) {
+
+            Log.d(TAG, "Service discovery started............");
+        }
+
+        @Override
+        public void onServiceFound(NsdServiceInfo service) {
+
+            // A service was found! Do something with it.
+            Log.d(TAG, "Service discovery success : " + service);
+            Log.d(TAG, "Host = "+ service.getServiceName());
+            Log.d(TAG, "Host port = " + service.getHost());
+            Log.d(TAG, "port = " + String.valueOf(service.getPort()));
+            //if(!listenerFlag){
+            if (!service.getServiceType().equals(SERVICE_TYPE)) {
+                // Service type is the string containing the protocol and
+                // transport layer for this service.
+                Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
+            } else if (service.getServiceName().equals(SERVICE_NAME)&&(!listenerFlag)) {
+                // The name of the service tells the user what they'd be
+                // connecting to. It could be "Bob's Chat App".
+                //mNsdManager.resolveService(service, mResolveListener);
+                Log.d(TAG, "Same machine: " + SERVICE_NAME);
+
+                hostAddress = service.getHost();
+                Log.d(TAG, "NOT working hostadress: " + hostAddress);
+                //TODO
+                //Since the simulator do not work properly and do not return the IP adress of the service i'll set it up manually
+                try {
+                    hostAddress = InetAddress.getByName("192.168.0.164");
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "Same machine hostadress: " + hostAddress);
+                //mNsdManager.resolveService(service,mResolveListener);
+                //Let's call the service to set up the IP to send the sensors datac
+
+                // setAdress
+                //mNsdManager.resolveService(service,mResolveListener);
+                listenerFlag=true;
+                setIPUI(hostAddress);
+
+
+                mNsdManager.stopServiceDiscovery(this);
+                // mNsdManager.unregisterService(this);
+
+            } else {
+                Log.d(TAG, "Diff Machine : " + service.getServiceName());
+                // connect to the service and obtain serviceInfo
+                mNsdManager.resolveService(service, mResolveListener);
+            }
+            //  }
+        }
+
+        @Override
+        public void onServiceLost(NsdServiceInfo service) {
+            // When the network service is no longer available.
+            // Internal bookkeeping code goes here.
+            Log.e(TAG, "service lost" + service);
+        }
+
+        @Override
+        public void onDiscoveryStopped(String serviceType) {
+            Log.i(TAG, "Discovery stopped: " + serviceType);
+        }
+
+        @Override
+        public void onStartDiscoveryFailed(String serviceType, int errorCode) {
+            Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+            mNsdManager.stopServiceDiscovery(this);
+        }
+
+        @Override
+        public void onStopDiscoveryFailed(String serviceType, int errorCode) {
+            Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+            mNsdManager.stopServiceDiscovery(this);
+        }
+    };
+
+    private void setIPUI( final InetAddress hostAddress){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setIP(hostAddress);
+            }
+        });
+    }
+
+
+
+    private void setIP(InetAddress hostAddress) {
+        enableProgressDialog(true);
+        if(!hostAddress.equals(null)){
+            //g.d("Host adress in SetIP","HOST = " + hostAddress);
+            String internalHost = hostAddress.toString().replace("/","");
+            Log.d(TAG,"HOST = " + internalHost);
+            RegisterAPI.getInstance(this).setAdress(internalHost,new RegisterAPI.RegistrationCallback(){
+                @Override
+                public void onResponse(String str) {
+                    try {
+                        enableProgressDialog(false);
+                        Log.d(TAG, "SUCCESSSSSSSS!!!!!..");
+                        JSONObject jsonResponse = new JSONObject(str);
+                        String result = jsonResponse.getString("result");
+                        //Log.d("What is returned on activity Login view ......", result);
+                        if (result.equals("OK")) {
+                            Log.d(TAG, "SUCCESSSSSSSS!!!!!..");
+
+                        } else {
+
+                            Log.d(TAG, "FAILED!!!!!..");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                @Override
+                public void onError(RegistrationResponse.RegistrationError error) {
+                    enableProgressDialog(false);
+                    Log.d(TAG, "OnError FAILED!!!!!..");
+                }
+
+                @Override
+                public void onNetworkError() {
+
+                    enableProgressDialog(false);
+                    Log.d("onNetworkError SetIP", "FAILED!!!!!..");
+                }
+            });}
+
+
+    }
 
     public void startLogging(View view) {
         //TODO
         //Create a method to activate a data logging on the smart toy
+        listenerFlag = false;
+        mNsdManager.discoverServices(SERVICE_TYPE,
+                NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }
 }

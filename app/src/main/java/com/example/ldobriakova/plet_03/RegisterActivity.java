@@ -44,7 +44,7 @@ public class RegisterActivity extends Activity {
 	// Error Msg TextView Object
 	TextView errorMsg;
 	// Create Edit View Objects for all fields to fill for registration
-	EditText userNameET, nameET, surnameET, emailET, pwdET, birthdayET, phoneET,cityET;
+	EditText userNameET, nameET, surnameET, emailET, pwdET, birthdayET, phoneET,cityET,repeatpwdET;
 	//EditText genderET;
 	// Checkbox for privicy complience
 	CheckBox checkBox;
@@ -114,6 +114,7 @@ public class RegisterActivity extends Activity {
 		phoneET = (EditText)findViewById(R.id.owner_phone);
 		// Find Password Edit View control by ID
 		pwdET = (EditText)findViewById(R.id.password);
+		repeatpwdET = (EditText)findViewById(R.id.repeat_password);
 		// Instantiate Progress Dialog object
 		prgDialog = new ProgressDialog(this);
 		// Set Progress Dialog Text
@@ -259,6 +260,7 @@ public class RegisterActivity extends Activity {
 		String country = countrySpinner.getSelectedItem().toString();
 		//Log.d("country = ", country);
 		String  country_short = null;
+		String repeat_pwd = repeatpwdET.getText().toString();
         if(!country.isEmpty()&&!country.contains("COUNTRY")){
 		int i = country.indexOf("_");
             Log.d("country = ", country);
@@ -268,7 +270,7 @@ public class RegisterActivity extends Activity {
 		//Log.d("BD = ", birthDate);
 
 //Verify is all mandatory fields are filled
-		if(!userName.isEmpty()&&!password.isEmpty()&&!name.isEmpty()&&!surName.isEmpty()&&!birthDate.isEmpty()&&!gender_adult.isEmpty()&&!city.isEmpty()&&!country.isEmpty()) {
+		if(!userName.isEmpty()&&!password.isEmpty()&&password.equals(repeat_pwd)&&!name.isEmpty()&&!surName.isEmpty()&&!birthDate.isEmpty()&&!gender_adult.isEmpty()&&!city.isEmpty()&&!country.isEmpty()) {
 
 			if (checkBox.isChecked()) {
 				//Birthday formal validator
@@ -314,7 +316,9 @@ public class RegisterActivity extends Activity {
 				Toast.makeText(getApplicationContext(), "Please accept the privacy terms before proceeding!", Toast.LENGTH_SHORT).show();
 		}
 		else
-		Toast.makeText(getApplicationContext(), "Please fill all mandatory information to proceed", Toast.LENGTH_LONG).show();
+			//TODO
+		//Separate message if the password do not match with the confirmation
+		Toast.makeText(getApplicationContext(), "Please fill all mandatory information to proceed and check if it's correct", Toast.LENGTH_LONG).show();
 }
 			private void navigatetoLoginActivity(){
 			runOnUiThread(new Runnable(){

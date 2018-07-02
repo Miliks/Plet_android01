@@ -7,15 +7,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class SpinAdapter extends ArrayAdapter<Child> {
+public class ProductSpinAdapter extends ArrayAdapter<Product> {
 
     // Your sent context
     private Context context;
-    // Your custom values for the spinner (Child)
-    private Child[] values;
+    // Your custom values for the spinner (Product)
+    private Product[] values;
 
-    public SpinAdapter(Context context, int textViewResourceId,
-                       Child[] values) {
+    public ProductSpinAdapter(Context context, int textViewResourceId,
+                              Product[] values) {
         super(context, textViewResourceId, values);
         this.context = context;
         this.values = values;
@@ -27,7 +27,7 @@ public class SpinAdapter extends ArrayAdapter<Child> {
     }
 
     @Override
-    public Child getItem(int position){
+    public Product getItem(int position){
         return values[position];
     }
 
@@ -46,7 +46,7 @@ public class SpinAdapter extends ArrayAdapter<Child> {
         label.setTextColor(Color.BLACK);
         // Then you can get the current item using the values array (Child array) and the current position
         // You can NOW reference each method you has created in your bean object (Child class)
-        label.setText(values[position].getChild_alias());
+        label.setText(values[position].getProd_alias());
 
         // And finally return your dynamic (or custom) view for each spinner item
         return label;
@@ -59,7 +59,7 @@ public class SpinAdapter extends ArrayAdapter<Child> {
                                 ViewGroup parent) {
         TextView label = (TextView) super.getDropDownView(position, convertView, parent);
         label.setTextColor(Color.BLACK);
-        label.setText(values[position].getChild_alias());
+        label.setText(values[position].getProd_alias());
 
         return label;
     }
