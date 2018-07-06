@@ -5,7 +5,10 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -90,7 +93,7 @@ public class Statistic extends Activity {
 
     }
 
-   /* private void navigatetoLoginActivity() {
+  /* private void navigatetoLoginActivity() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -127,5 +130,6 @@ public class Statistic extends Activity {
         Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
         loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(loginIntent);
-    }
+
+}
 }

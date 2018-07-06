@@ -27,8 +27,9 @@ import java.util.List;
 
 public class Welcome extends Activity  {
     private Spinner spinnerProduct, spinnerActivity;
+    private ProductSpinAdapter newAdapter;
     private Button btnNetwork;
-    String userName, babyAlias, pruductAndID;
+    String userName, babyAlias, productID, serialNumb, productAlias;
     String result;
     ProgressDialog progressDialog;
     JSONArray productList = new JSONArray();
@@ -83,7 +84,7 @@ public class Welcome extends Activity  {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                addListenerOnSpinnerItemSelection();
+               // addListenerOnSpinnerItemSelection();
                 addItemOnSpinnerProductList(list);//change the function
 
             }
@@ -110,15 +111,11 @@ public class Welcome extends Activity  {
                             if(productList.length()>0) {
                                 for (int i = 0; i < productList.length(); i++) {
                                     JSONObject b = productList.getJSONObject(i);
-                                    String productAlias = b.getString("productName");
+                                    String productID = b.getString("productID");
                                     String serialNumber = b.getString("serialNumber");
                                     String toyAlias = b.getString("toyAlias");
-                                    pruductAndID = productAlias + "_" + serialNumber;
-                                    //listMag.add(pruductAndID);
-                                    listMag.add(toyAlias);
-                                    int j = pruductAndID.indexOf("_");
-                                    Log.d("Index of _ ========",String.valueOf(j));
-                                   }
+                                    listMag.add(productID + "+" + serialNumber + "++" + toyAlias);
+                                    }
                                 updateUISpinner(listMag);
                             }
                             else
@@ -191,27 +188,57 @@ public class Welcome extends Activity  {
      *
      */
     private void addItemOnSpinnerProductList(List<String> selection) {
-        spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
+        int i = selection.size();
+        Product [] product = new Product[i];
 
-        Log.d("LArray of products returned ========", selection.toString());
+        for (int j=0; j<i; j++){
+            Log.d("Array of products returned ========", selection.get(j));
+            int product_index = selection.get(j).indexOf("+");
+            Log.d("Index of last simbol of productID ========", String.valueOf(product_index));
+            product[j] = new Product();
+            productID = selection.get(j).substring(0, product_index);
+            Log.d("productID ========", productID);
+            int serial_index = selection.get(j).indexOf("++");
+            Log.d("Index of serial number ========", String.valueOf(serial_index));
+            serialNumb = selection.get(j).substring(product_index+1,serial_index);
+            Log.d("serial number ========", serialNumb);
+            Log.d("Index of alias ========", String.valueOf(selection.get(j).length()));
+
+            productAlias = selection.get(j).substring(serial_index+2,selection.get(j).length());
+            Log.d("alias ========", productAlias);
+            product[j].setProd_serial(serialNumb);
+            product[j].setProdAlias(productAlias);
+            product[j].setProdID(productID);
+        }
+        newAdapter = new ProductSpinAdapter(Welcome.this, android.R.layout.simple_spinner_item,product);
+        spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
+        spinnerProduct.setAdapter(newAdapter);
+       /* Log.d("LArray of products returned ========", selection.toString());
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,selection);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerProduct.setAdapter(dataAdapter);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);*/
+       spinnerProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+           @Override
+           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               Product product = (Product) newAdapter.getItem(position);
+               //  String cld_al =  newAdapter.getItem(position).getChild_alias();
+
+               Log.d(" Baby  at position =======", String.valueOf(position) + "....  " +product.getProd_alias());
+
+               productAlias =  product.getProd_alias();
+               productID = product.getProd_id();
+               serialNumb = product.getSerial_number();
+           }
+
+           @Override
+           public void onNothingSelected(AdapterView<?> parent) {
+
+           }
+       });
+
 
     }
 
-    /*private void addItemOnSpinnerProduct_old() {
-        spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
-        List<String> list = new ArrayList<String>();
-        list.add("DOLPHINE_001");
-        list.add("DOLPHINE_002");
-        list.add("DOLPHINE_003");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerProduct.setAdapter(dataAdapter);
-    }*/
-    // get the selected dropdown list value
-    private void addListenerOnButton() {
+     private void addListenerOnButton() {
         spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
         spinnerActivity = (Spinner) findViewById(R.id.spinnerActivity);
         btnNetwork = (Button)findViewById(R.id.btnNetwork);
@@ -219,12 +246,7 @@ public class Welcome extends Activity  {
         btnNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Toast.makeText(Welcome.this,
-                        "OnClickListener : " +
-                                "\nSpinner 1 : "+ String.valueOf(spinnerProduct.getSelectedItem()) +
-                                "\nSpinner 2 : "+ String.valueOf(spinnerActivity.getSelectedItem()),
-                        Toast.LENGTH_SHORT).show();*/
-               // navigatetoWiFiSearch();
+                // navigatetoWiFiSearch();
                 navigateToRegisterNewToy();
             }
         });
@@ -440,6 +462,8 @@ public class Welcome extends Activity  {
     public void startLogging(View view) {
         //TODO
         //Create a method to activate a data logging on the smart toy
+        //Verify what the productID of selected toy is the same returned by Toy firware
+        String prodID_selected = productID;
         listenerFlag = false;
         mNsdManager.discoverServices(SERVICE_TYPE,
                 NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);

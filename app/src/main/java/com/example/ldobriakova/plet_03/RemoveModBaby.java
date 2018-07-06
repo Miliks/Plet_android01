@@ -130,18 +130,6 @@ public class RemoveModBaby extends Activity {
     }
 
 
-    /*private void addItemOnSpinneraddBaby(List<String> selection) {
-        spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
-        //newAdapter = new SpinnerAdapter(RemoveModBaby.this, simple_spinner_item,child);
-        Log.d("selection ========", selection.toString());
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, simple_spinner_item,selection);
-       // ArrayAdapter<String> onlyAliasadapter = new ArrayAdapter<String>(this,simple_spinner_item, onlyAlias);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-       // onlyAliasadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBaby.setAdapter(dataAdapter);
-       // childGender =
-
-    }*/
 
    private void addItemOnSpinneraddBaby(List<String> selection) {
 

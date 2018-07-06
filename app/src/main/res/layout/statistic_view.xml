@@ -66,8 +66,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
-    <Button
+
+        <!--Button
         android:id="@+id/exit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,17 +78,17 @@
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:onClick="navigateBackLogin"
-        android:text="Exit" />
+        android:text="Exit" /-->
 
-    <Button
-        android:id="@+id/update_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_weight="1"
-
-        android:onClick="updateGraph"
-        android:text="Update data" />
+        <Button
+            android:id="@+id/update_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:onClick="updateGraph"
+            android:layout_weight="0"
+            android:text="Update data" />
     </LinearLayout>
 
 </LinearLayout>

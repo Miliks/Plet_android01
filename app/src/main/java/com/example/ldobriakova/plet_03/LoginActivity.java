@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.view.View;
@@ -134,9 +135,14 @@ public class LoginActivity extends Activity {
     public void forgetPwd(View view) {
         //TODO
         //Call API to passwor reset wich will send email to email assotiated with the user name
-        String userNameView = usernameET.getText().toString();
+        //String userNameView = usernameET.getText().toString();
+        String url = "http://plet.cloud.reply.eu/PletPlatform/Account/ResetPasswordMobile.aspx";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
         //String passwordView = pwdET.getText().toString();
-        if (!userNameView.isEmpty()) {
+/*        if (!userNameView.isEmpty()) {
             enableProgressDialog(true);
 
             RegisterAPI.getInstance(this).resetPwd(userNameView, new RegisterAPI.RegistrationCallback() {
@@ -174,6 +180,6 @@ public class LoginActivity extends Activity {
             });
         } else
             Toast.makeText(getApplicationContext(), "No data inserted", Toast.LENGTH_LONG).show();
-    }
+    }*/
 
 }

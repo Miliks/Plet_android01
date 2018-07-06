@@ -58,7 +58,7 @@ public class GetProduct extends Activity  {
     @Override
     public void onBackPressed()
     {
-        Intent i = new Intent(GetProduct.this,SelectChild.class);
+        Intent i = new Intent(GetProduct.this,Welcome.class);
         i.putExtra("userName",userName);
         i.putExtra("babyAlias",babyAlias);
         startActivity(i);
@@ -169,10 +169,10 @@ public class GetProduct extends Activity  {
                                 productName=b.getString("CommercialName");
                                 String temp = combined1.substring(0,combined1.indexOf("_"));
                                   //String temp1 = combined.substring(0,combined.indexOf("_"));
-                                  Log.d("product selected ======= ",combined1);
-                                  Log.d("product selected ======= ",temp);
+                                 // Log.d("product selected ======= ",combined1);
+                                  //Log.d("product selected ======= ",temp);
                                  // Log.d("combined truncated = ",combined.substring(combined.indexOf("__"),combined.indexOf("__")+combined.lastIndexOf(combined)));
-                                listMag.add(productID);
+                                //listMag.add(productID);
                                // listName.add(combined.substring(0,combined.indexOf("_")));
                                   listName.add(temp);
 
@@ -184,7 +184,7 @@ public class GetProduct extends Activity  {
                         else
                         {
                             Log.d("Array returned1111 ========", "No BABIES...........");
-                            updateUISpinner(listMag);
+                            updateUISpinner(listName);
                         }
 
 
