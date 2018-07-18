@@ -52,10 +52,12 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
     String ipString, result;
     String wifiSpinnerValue = null;
     Boolean listenerFlag = false;
+    Button collectData;
     String mServiceName;
     //NsdServiceInfo mServiceInfo;
     NsdServiceInfo serviceInfo = new NsdServiceInfo();
     final String SERVICE_TYPE = "_smartobject._tcp.";
+
     final String SERVICE_NAME = "smartobject";
     int mLocalPort;
 
@@ -84,6 +86,7 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
         userName = extras.getString("userName");
         babyAlias = extras.getString("babyAlias");
         buttonScan = (Button) findViewById(R.id.buttonScan);
+        collectData = (Button)findViewById(R.id.collectData);
         buttonScan.setOnClickListener(this);
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -484,12 +487,29 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
 
     public void assignToy(View view) {
         listenerFlag=false;
+        collectData.setTag(1);
+        collectData.setText("START DATA COLLECTION");
+        collectData.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick (View v) {
+                final int status =(Integer) v.getTag();
+                if(status == 1) {
+                    discoveryToy();
+                    collectData.setText("STOP DATA COLLECTION");
+                    collectData.setBackgroundColor(1);
+                    v.setTag(0); //started
+                } else {
+                    collectData.setText("START DATA COLLECTION");
+                    v.setTag(1); //stopped
+                }
+            }
+        });
         Log.d(TAG,"Assigning the toy to the network........");
        /* mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
 
                 registerService();*/
 
-                discoveryToy();
+               // discoveryToy();
     }
 
 

@@ -14,6 +14,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -27,6 +29,8 @@ public class Statistic extends Activity {
     Button btnDatePicker;
     private int mYear, mMonth, mDay;
     EditText txtDate;
+    private BarChart barcrt;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,15 +45,17 @@ public class Statistic extends Activity {
 
         title.setText("Mary" + babyName);
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
+       // barcrt chart =  findViewById(R.id.chart);
+
+        /*GraphView graph = (GraphView) findViewById(R.id.graph);
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
         staticLabelsFormatter.setHorizontalLabels(new String[] {"punch", "RFID", "hug"});
         staticLabelsFormatter.setVerticalLabels(new String[] {"1", "2", "3"});
 
-        /*GraphView graph1 = (GraphView) findViewById(R.id.graph1);
+        *//*GraphView graph1 = (GraphView) findViewById(R.id.graph1);
         StaticLabelsFormatter staticLabelsFormatter1 = new StaticLabelsFormatter(graph1);
         staticLabelsFormatter1.setHorizontalLabels(new String[] {"1", "2", "3"});
-        staticLabelsFormatter1.setVerticalLabels(new String[] {"hug", "RFID", "punch"});*/
+        staticLabelsFormatter1.setVerticalLabels(new String[] {"hug", "RFID", "punch"});*//*
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
                 new DataPoint(0, 1),
@@ -88,7 +94,7 @@ public class Statistic extends Activity {
         series.setDrawValuesOnTop(true);
         series.setValuesOnTopColor(Color.RED);
         series1.setDrawValuesOnTop(true);
-        series1.setValuesOnTopColor(Color.BLUE);
+        series1.setValuesOnTopColor(Color.BLUE);*/
 //series.setValuesOnTopSize(50);
 
     }
@@ -102,7 +108,7 @@ public class Statistic extends Activity {
         });
     }*/
 
-   public void selectDate(View v) {
+   /*public void selectDate(View v) {
 
 
            // Get Current Date
@@ -124,7 +130,7 @@ public class Statistic extends Activity {
                        }
                    }, mYear, mMonth, mDay);
            datePickerDialog.show();
-       }
+       }*/
 
     public void navigateBackLogin(View v) {
         Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);

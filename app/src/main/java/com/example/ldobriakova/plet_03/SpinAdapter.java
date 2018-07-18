@@ -14,9 +14,9 @@ public class SpinAdapter extends ArrayAdapter<Child> {
     // Your custom values for the spinner (Child)
     private Child[] values;
 
-    public SpinAdapter(Context context, int textViewResourceId,
+    public SpinAdapter(Context context,
                        Child[] values) {
-        super(context, textViewResourceId, values);
+        super(context, R.layout.activity_listview,R.id.child_alias, values);
         this.context = context;
         this.values = values;
     }
@@ -42,7 +42,8 @@ public class SpinAdapter extends ArrayAdapter<Child> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // I created a dynamic TextView here, but you can reference your own  custom layout for each spinner item
-        TextView label = (TextView) super.getView(position, convertView, parent);
+        //TextView label = (TextView) super.getView(position, convertView, parent);
+        TextView label = (TextView)super.getView(position, convertView, parent).findViewById(R.id.child_alias);
         label.setTextColor(Color.BLACK);
         // Then you can get the current item using the values array (Child array) and the current position
         // You can NOW reference each method you has created in your bean object (Child class)

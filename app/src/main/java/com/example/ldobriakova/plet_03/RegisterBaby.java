@@ -214,9 +214,5 @@ public class RegisterBaby extends Activity {
 
 	}
 
-	public void backToSelectBaby(View view) {
-		Intent i = new Intent(RegisterBaby.this,SelectBaby.class);
-		i.putExtra("userName",userName);
-		startActivity(i);
-	}
+
 }

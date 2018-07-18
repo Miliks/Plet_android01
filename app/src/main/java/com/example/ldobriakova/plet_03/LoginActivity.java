@@ -55,6 +55,7 @@ public class LoginActivity extends Activity {
 
         String userNameView = usernameET.getText().toString();
         String passwordView = pwdET.getText().toString();
+        Log.d("MILA in go to register WIFI hotspot", "MIIIIIIIIIIIIII");
         if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
             enableProgressDialog(true);
 

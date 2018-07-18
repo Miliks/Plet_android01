@@ -1,11 +1,13 @@
 package com.example.ldobriakova.plet_03;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,12 +24,13 @@ import java.util.List;
 
 public class SelectChild extends Activity {
     private Spinner spinnerBaby;
+    private ListView listChild;
     private Button goFwd;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
     String result;
     ProgressDialog progressDialog;
-    String myEtText;
+    String myEtText, child_alias;
     JSONObject json = new JSONObject();
     JSONArray babylist = new JSONArray();
     List<String> listComplete = new ArrayList<String>();
@@ -48,7 +51,7 @@ public class SelectChild extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_child);
-        spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
+        listChild = (ListView) findViewById(R.id.childList);
         goFwd = (Button)findViewById(R.id.goFwd);
         Bundle extras = getIntent().getExtras();
         progressDialog = new ProgressDialog(this);
@@ -83,7 +86,9 @@ public class SelectChild extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                addListenerOnSpinnerBabySelection();
+                //addListenerOnSpinnerBabySelection();
+                addListenerOnChildClick();
+                //addListenerOnChildSelection();
                 addItemOnSpinneraddBaby(list);
                 //addItemOnSpinneraddBabyCompleted(listCompleted);
                 //addListenerOnButtonFwd();
@@ -91,9 +96,22 @@ public class SelectChild extends Activity {
         });
     }
 
+    private void addListenerOnChildClick() {
+        listChild.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 child_alias = listChild.getItemAtPosition(position).toString();
+
+            }
+        });
+
+    }
+private void addListenerOnChildSelection(){
+        listChild.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+}
     private void addListenerOnSpinnerBabySelection() {
         Log.d("We are in listener on spinner","....");
-        spinnerBaby = (Spinner)findViewById(R.id.spinnerBaby);
+
 
         spinnerBaby.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
@@ -110,10 +128,18 @@ public class SelectChild extends Activity {
         });
     }
     private void addItemOnSpinneraddBaby(List<String> selection) {
-        spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,selection);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerBaby.setAdapter(dataAdapter);
+      //  listChild = (ListView) findViewById(R.id.childList);
+
+        //CustomAdapter childAdapter = new CustomAdapter(this, android.R.layout.activity_list_item,R.id.child_alias,selection);
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.activity_list_item,selection);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.activity_listview,R.id.child_alias,selection);
+
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.activity_list_item,selection);
+
+        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //spinnerBaby.setAdapter(dataAdapter);
+        listChild.setAdapter(dataAdapter);
 
     }
 
@@ -181,19 +207,16 @@ public class SelectChild extends Activity {
 
             }
         });
-       // Log.d("LArray returned 22222222222========", listMag.toString());
+        // Log.d("LArray returned 22222222222========", listMag.toString());
 
     }
 
    /* private void addListenerOnButtonFwd() {
-
-
         goFwd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO
                 //Add association with the current session and the babyID selected
-
                 goToProfile(v);
             }
         });
@@ -230,8 +253,11 @@ public class SelectChild extends Activity {
         Intent welcome = new Intent(getApplicationContext(),Welcome.class);
         welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         welcome.putExtra("userName",myEtText);
-        String babyAl = spinnerBaby.getSelectedItem().toString();
-        welcome.putExtra("babyAlias", babyAl);
+        //String babyAl = spinnerBaby.getSelectedItem().toString();
+       // String babyAl = listChild.getSelectedItem().toString();
+
+        //welcome.putExtra("babyAlias", babyAl);
+        welcome.putExtra("babyAlias", child_alias);
         progressDialog.dismiss();
         startActivity(welcome);
     }

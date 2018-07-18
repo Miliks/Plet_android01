@@ -12,7 +12,7 @@
     tools:context=".LoginActivity">
 
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/myTitle"
         android:layout_width="311dp"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:layout_gravity="center_horizontal"
         android:text="Login"
         android:textColor="@android:color/holo_blue_dark"
-        android:textSize="30dp" />
+        android:textSize="30dp" /-->
 
     <ImageView
         android:layout_width="309dp"
@@ -34,16 +34,15 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="478dp"
-        android:layout_gravity="center_horizontal"
-        >
+        android:layout_gravity="center_horizontal">
 
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
 
             <android.support.design.widget.TextInputLayout
@@ -76,64 +75,59 @@
                     android:maxLines="1"
                     android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
-            <Button
-                android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="left"
-                android:text="SIGN-IN"
-                android:onClick="attemptLogin"
-                android:textStyle="bold" />
-            <Button
-                android:id="@+id/forget_pwd"
-                style="?android:textAppearanceSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="right"
-                android:text="Forgot PWD"
-                android:onClick="forgetPwd"
-                android:textStyle="bold" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/email_sign_in_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_gravity="left"
+                    android:background="@drawable/button_rounded_corners"
+                    android:onClick="attemptLogin"
+                    android:text="LOG IN"
+                    android:textStyle="bold"
+                    tools:ellipsize="end" />
+
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/or"
                 android:layout_width="wrap_content"
                 android:layout_height="42dp"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="22dp"
                 android:ems="10"
                 android:inputType="text"
                 android:text="OR"
                 android:textAlignment="center"
-                android:visibility="visible"
-                android:layout_gravity="center_horizontal"
-                 />
+                android:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/go_to_register_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-               android:layout_gravity="right"
-                android:text="Register"
-                android:onClick="navigatetoRegisterActivity"
-                android:textStyle="bold" />
-            <!--Button
+                <Button
+                    android:id="@+id/go_to_register_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:onClick="navigatetoRegisterActivity"
+                    android:text="Register"
+                    android:textStyle="bold" />
+                <!--Button
                 android:id="@+id/profile"
                 style="?android:textAppearanceSmall"
                 android:layout_width="wrap_content"
@@ -142,7 +136,35 @@
                 android:text="YOUR Profile"
                 android:onClick="goToProfile"
                 android:textStyle="bold" /-->
+
+            </LinearLayout>
+            <!--Button
+                android:id="@+id/forget_pwd"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="right"
+                android:onClick="forgetPwd"
+                android:text="Forgot your password?"
+                android:textStyle="bold" /-->
+            <TextView
+                android:id="@+id/forgotPWD"
+                android:textStyle="italic"
+                android:gravity="right"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:onClick="forgetPwd"
+                android:paddingTop="30dp"
+                android:text="Forgot your password?" />
+
         </LinearLayout>
-        </LinearLayout>
+
+
     </ScrollView>
+
+
 </LinearLayout>

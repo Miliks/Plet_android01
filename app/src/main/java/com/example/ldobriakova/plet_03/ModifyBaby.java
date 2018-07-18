@@ -84,10 +84,14 @@ public class ModifyBaby extends Activity {
 		birthdayET.setText(childBD);
 		gender_m = (RadioButton)findViewById(R.id.radio_gender_m);
 		gender_f = (RadioButton)findViewById(R.id.radio_gender_f);
-		if (childGender.contains("female"))
+		if (childGender.contains("female")){
 			gender_f.setChecked(true);
+		gender_adult = "female";}
 		else
+		{
 			gender_m.setChecked(true);
+			gender_adult = "male";
+		}
 	}
 
 	public void onRadioButtonClicked(View view) {
@@ -135,7 +139,7 @@ public class ModifyBaby extends Activity {
 		//Get gender
 		//String gender = genderSpinner.getSelectedItem().toString();
 		String gender = gender_adult;
-
+Log.d("MILA ","the values of the fields babyAlias = "+babyAlias + " babybirthDate = " + babybirthDate + "userName =  " + userName + "gender = " + gender);
 		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!gender.isEmpty()) {
 
 			RegisterAPI.getInstance(this).updateBaby(userName, babyAlias, oldbabyAlias, gender, babybirthDate, new RegisterAPI.RegistrationCallback() {
@@ -208,11 +212,5 @@ public class ModifyBaby extends Activity {
 
 	}
 
-	public void backToSelectBaby(View view) {
-			Intent i = new Intent(ModifyBaby.this,SelectBaby.class);
-			i.putExtra("userName",userName);
-			startActivity(i);
 
-
-	}
 }

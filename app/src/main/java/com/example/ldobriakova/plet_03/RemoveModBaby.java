@@ -29,6 +29,7 @@ import static android.R.layout.simple_spinner_item;
 public class RemoveModBaby extends Activity {
 
     private SpinAdapter newAdapter;
+    private ListView childList;
     private Button removeBaby, modifyBaby;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
@@ -61,6 +62,7 @@ public class RemoveModBaby extends Activity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
+        childList = (ListView)findViewById(R.id.listChild);
 
         if (extras != null) {
 
@@ -121,13 +123,13 @@ public class RemoveModBaby extends Activity {
     }
 
 
-    private void addListenerOnSpinnerBabySelection() {
+   /* private void addListenerOnSpinnerBabySelection() {
         Log.d("We are in listener on spinner","....");
         spinnerBaby = (Spinner)findViewById(R.id.spinnerBaby);
         CustomAdapter adapter = new CustomAdapter(RemoveModBaby.this, R.layout.listitems_layout,R.id.child_alias,childItems);
         spinnerBaby.setAdapter(adapter);
         spinnerBaby.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-    }
+    }*/
 
 
 
@@ -168,10 +170,39 @@ public class RemoveModBaby extends Activity {
        // Log.d(" outside FOR    ========", babyAlias + " bbb" + childGender + "childGender" + childBD + "childBD");
 
 
-        newAdapter = new SpinAdapter(RemoveModBaby.this, android.R.layout.simple_spinner_item,child);
+        /*newAdapter = new SpinAdapter(RemoveModBaby.this, android.R.layout.simple_spinner_item,child);
         spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
-        spinnerBaby.setAdapter(newAdapter);
-        spinnerBaby.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerBaby.setAdapter(newAdapter);*/
+      // ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.activity_listview,R.id.child_alias,selection);
+
+       newAdapter = new SpinAdapter(RemoveModBaby.this,child);
+       childList.setAdapter(newAdapter);
+       childList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+           @Override
+           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+               Child child = (Child) newAdapter.getItem(position);
+               babyAlias =  child.getChild_alias();
+               childGender = child.getChild_gender();
+               childBD = child.getChild_birthDay();
+           }
+       });
+
+      //childList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      //    @Override
+      //    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+      //        Child child = (Child) newAdapter.getItem(position);
+      //        babyAlias =  child.getChild_alias();
+      //        childGender = child.getChild_gender();
+      //        childBD = child.getChild_birthDay();
+      //    }
+
+      //    @Override
+      //    public void onNothingSelected(AdapterView<?> parent) {
+
+      //    }
+      //});
+     /*   spinnerBaby.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
            @Override
            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                Child child = (Child) newAdapter.getItem(position);
@@ -189,7 +220,7 @@ public class RemoveModBaby extends Activity {
            public void onNothingSelected(AdapterView<?> parent) {
 
            }
-       });
+       });*/
 
     }
 

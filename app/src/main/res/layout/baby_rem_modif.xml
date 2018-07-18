@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp"
-    tools:context=".RemoveModBaby"
+      tools:context=".RemoveModBaby"
     >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -28,11 +29,18 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="22dp"
         android:gravity="center_horizontal"
-        android:text="Modify your child data"
+        android:text="Modify your childs data"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
+
+    <ListView
+        android:id="@+id/listChild"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal" />
 
     <!--RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -43,80 +51,76 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="140dp"-->
-
-    <Spinner
-        android:id="@+id/spinnerBaby"
-        android:layout_width="wrap_content"
+   <!-- <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
 
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="141dp"
-        android:background="@android:drawable/btn_dropdown" />
-    <!--/RelativeLayout-->
+        android:layout_marginTop="220dp"
+        android:orientation="vertical">-->
 
-    <LinearLayout
-        android:layout_width="357dp"
-        android:layout_height="349dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="37dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/removeBaby"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="180dp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:onClick="removeBaby"
-            android:text="remove child" />
-
-        <Button
-            android:id="@+id/modifyBaby"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="180dp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:onClick="modifyBaby"
-            android:text="modify child" />
-
-        <!--Button
-            android:id="@+id/back"
-            style="?android:textAppearanceSmall"
+       <!-- <Spinner
+            android:id="@+id/spinnerBaby"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="180dp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:onClick="navigatetoWelcome"
-            android:text="Back"
-            android:textStyle="bold" /-->
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:drawable/btn_dropdown"
+            android:gravity="center_horizontal" />-->
+        <!--/RelativeLayout-->
+        <Button
+            android:id="@+id/addBaby"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="0"
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="addBaby"
+            android:text="  add new child  " />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+
+            android:layout_marginBottom="133dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/removeBaby"
+                android:layout_width="wrap_content"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button_rounded_corners"
+                android:layout_weight="0"
+
+                android:onClick="removeBaby"
+                android:text="  remove child  " />
+
+            <Button
+                android:id="@+id/modifyBaby"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button_rounded_corners"
+                android:layout_weight="0"
+
+                android:onClick="modifyBaby"
+                android:text="  modify child  " />
+
+
+        </LinearLayout>
+
     </LinearLayout>
-
-    <Button
-        android:id="@+id/addBaby"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="84dp"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:onClick="addBaby"
-        android:text="add child" />
-
 
 </RelativeLayout>

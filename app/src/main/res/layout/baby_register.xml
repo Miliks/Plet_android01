@@ -157,7 +157,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:onClick="registerBaby"
-                android:text="Add Child"
+                android:background="@drawable/button_rounded_corners"
+                android:text="  Add Child  "
                 android:textStyle="bold" />
             <!-- -->
             <!--android:layout_marginLeft="20pt"

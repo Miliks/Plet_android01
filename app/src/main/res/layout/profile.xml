@@ -254,7 +254,8 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:onClick="updateUser"
-                    android:text="Confirm"
+                    android:background="@drawable/button_rounded_corners"
+                    android:text="  Confirm  "
                     android:textStyle="bold" />
 
                 <CheckBox
@@ -278,8 +279,9 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
+                    android:background="@drawable/button_rounded_corners"
                     android:onClick="navigatetoAddChild"
-                    android:text="child data"
+                    android:text="  child data  "
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>

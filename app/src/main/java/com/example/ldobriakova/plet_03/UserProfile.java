@@ -354,11 +354,14 @@ public class UserProfile extends Activity {
 		String re_password = repwdET.getText().toString();
 		String country = countrySpinner.getSelectedItem().toString();
 		//Log.d("country = ", country);
-
+		String  country_short;
 		int i = country.indexOf("_");
+		if (i== -1)
+			country_short=country;
+		else
 		//Log.d("country index  _  = ", String.valueOf(i));
 
-		String  country_short = country.substring(0,country.indexOf("_"));
+		country_short = country.substring(0,country.indexOf("_"));
 		//Log.d("BD = ", birthDate);
 
 //Verify is all mandatory fields are filled

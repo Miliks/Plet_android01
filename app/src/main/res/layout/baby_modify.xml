@@ -140,6 +140,7 @@
 
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
 
                 android:onClick="updateBaby"
                 android:text="UPDATE"

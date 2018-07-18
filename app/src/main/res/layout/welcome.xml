@@ -65,39 +65,10 @@
         android:gravity="center_horizontal"
         android:background="@android:drawable/btn_dropdown"
         />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/statistics"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:onClick="navigateStat"
-            android:text="TOY USAGE INFO" />
-
-        <Button
-            android:id="@+id/btnNetwork"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:text="Register New Toy" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
         <Button
             android:id="@+id/start_logging"
@@ -106,10 +77,10 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:layout_gravity="center_horizontal"
             android:onClick="startLogging"
-            android:text="Start Data Collection" />
+            android:text="   Start Data Collection   " />
         <!--Button
             android:id="@+id/backToLogin"
             android:layout_width="wrap_content"
@@ -135,6 +106,43 @@
             android:text="Quit app" /-->
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
+
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/statistics"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="navigateStat"
+            android:layout_marginLeft="5dp"
+            android:text="   TOY USAGE INFO  " />
+
+        <Button
+            android:id="@+id/btnNetwork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+
+            android:text="   Register New Toy   " />
+    </LinearLayout>
+
+
 
 
 </LinearLayout>

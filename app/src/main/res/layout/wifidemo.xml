@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="16dp"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <ImageView
@@ -21,18 +22,21 @@
 
         <TextView
             android:id="@+id/textStatus"
-            android:layout_width="2dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/select_toy_address"
-            android:textSize="30dp" />
+            android:text="Click scan WIFI to search for Toy WI-FI hotspot, click dropdown list to select it and SET UP to connect it to your home network"
+            android:textStyle="italic"
+            android:textSize="20dp" />
 
 
         <Button
             android:id="@+id/buttonScan"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="fill_parent"
+
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="attemptLogin"
             android:text="Scan WIFI" />
     </LinearLayout>
 
@@ -40,23 +44,29 @@
             android:id="@+id/spinnerWifi"
                 android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
+android:popupBackground="@drawable/button_rounded_corners"
+                android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:background="@android:drawable/btn_dropdown" />
 
     <Button
         android:id="@+id/buttonPair"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="Connect"
-        android:onClick="connectToToy_old"/>
+        android:layout_height="wrap_content"
+        android:text="   SET UP WIFI hot spot   "
+        android:background="@drawable/button_rounded_corners"
+        android:onClick="connectToToy_old"
+        />
 
     <Button
-        android:id="@+id/buttonExit"
-        android:layout_marginTop="10dp"
+        android:id="@+id/collectData"
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="Assign"
+        android:layout_height="wrap_content"
+        android:text="   START DATA COLLECTION   "
+        android:background="@drawable/button_rounded_corners"
         android:onClick="assignToy"/>
 
     <!--ListView

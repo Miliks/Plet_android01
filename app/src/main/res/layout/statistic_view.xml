@@ -55,11 +55,16 @@
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="25dp" />
 
-    <com.jjoe64.graphview.GraphView
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_height="200dip" />
-    <!--<com.jjoe64.graphview.GraphView
+    <<com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:id="@+id/graph1" />-->

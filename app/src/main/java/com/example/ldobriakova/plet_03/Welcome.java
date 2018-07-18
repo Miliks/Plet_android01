@@ -37,7 +37,9 @@ public class Welcome extends Activity  {
     NsdServiceInfo serviceInfo = new NsdServiceInfo();
     final String SERVICE_TYPE = "_smartobject._tcp.";
     final String SERVICE_NAME = "smartobject";
-    public static final String TAG = "WELCOME";
+    //final String SERVICE_NAME = "smartdolphin_ae30";
+    Button collectData;
+    public static final String TAG = "MILA";
     Boolean listenerFlag = false;
     private InetAddress hostAddress;
     private int hostPort;
@@ -52,7 +54,7 @@ public class Welcome extends Activity  {
         addListenerOnButton();
         addListenerOnSpinnerItemSelection();
         Bundle extras = getIntent().getExtras();
-
+        collectData = (Button)findViewById(R.id.start_logging) ;
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -293,7 +295,25 @@ public class Welcome extends Activity  {
         System.exit(0);
         onBackPressed();
     }
-    private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
+
+    private class MyResolveListener implements NsdManager.ResolveListener {
+        @Override
+        public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
+            Log.e(TAG, "Resolve failed " + errorCode);
+            Log.e(TAG, "service = " + serviceInfo);
+        }
+
+        @Override
+        public void onServiceResolved(NsdServiceInfo serviceInfo) {
+            Log.d("MILA", "Resolve Succeeded. " + serviceInfo);
+
+            if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
+                Log.d(TAG, "Same IP.");
+                return;
+        }
+    }}
+    //Susbstituted by class implementing the same functionality
+        private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
 
         @Override
         public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
@@ -304,7 +324,7 @@ public class Welcome extends Activity  {
 
         @Override
         public void onServiceResolved(NsdServiceInfo serviceInfo) {
-            Log.d(TAG, "Resolve Succeeded. " + serviceInfo);
+            Log.d("MILA", "Resolve Succeeded. " + serviceInfo);
 
             if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
                 Log.d(TAG, "Same IP.");
@@ -312,9 +332,9 @@ public class Welcome extends Activity  {
             }
 
             // Obtain port and IP
-            hostPort = serviceInfo.getPort();
-            hostAddress = serviceInfo.getHost();
-            Log.d(TAG, "Resolve listener ..........." + hostAddress);
+            //hostPort = serviceInfo.getPort();
+            //hostAddress = serviceInfo.getHost();
+           // Log.d("MILA", "Resolve listener ..........." + hostAddress);
             // setIPUI(hostAddress);
             // mNsdManager.unregisterService(mRegistrationListener);
             // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
@@ -337,6 +357,7 @@ public class Welcome extends Activity  {
             Log.d(TAG, "Host = "+ service.getServiceName());
             Log.d(TAG, "Host port = " + service.getHost());
             Log.d(TAG, "port = " + String.valueOf(service.getPort()));
+            Log.d("MILA FLAG  = ",listenerFlag.toString());
             //if(!listenerFlag){
             if (!service.getServiceType().equals(SERVICE_TYPE)) {
                 // Service type is the string containing the protocol and
@@ -345,15 +366,18 @@ public class Welcome extends Activity  {
             } else if (service.getServiceName().equals(SERVICE_NAME)&&(!listenerFlag)) {
                 // The name of the service tells the user what they'd be
                 // connecting to. It could be "Bob's Chat App".
+                Log.d("MILA","BEFORE RESOLVE LISTENER");
+                mNsdManager.resolveService(service, new MyResolveListener());
                 //mNsdManager.resolveService(service, mResolveListener);
-                Log.d(TAG, "Same machine: " + SERVICE_NAME);
-
-                hostAddress = service.getHost();
+                Log.d("MILA","AFTER RESOLVE LISTENER");
+                //Log.d(TAG, "Same machine: " + SERVICE_NAME);
+                //Log.d("MILA",service.getHost().getHostAddress());
+                //hostAddress = service.getHost();
                 Log.d(TAG, "NOT working hostadress: " + hostAddress);
                 //TODO
                 //Since the simulator do not work properly and do not return the IP adress of the service i'll set it up manually
                 try {
-                    hostAddress = InetAddress.getByName("192.168.0.164");
+                    hostAddress = InetAddress.getByName("192.168.0.184");
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
@@ -463,9 +487,31 @@ public class Welcome extends Activity  {
         //TODO
         //Create a method to activate a data logging on the smart toy
         //Verify what the productID of selected toy is the same returned by Toy firware
+        //After several click on button app crash
         String prodID_selected = productID;
         listenerFlag = false;
-        mNsdManager.discoverServices(SERVICE_TYPE,
-                NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+        Log.d("MILA","start discovery and logging");
+        collectData.setTag(1);
+        collectData.setText("   START DATA COLLECTION   ");
+        collectData.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick (View v) {
+                final int status =(Integer) v.getTag();
+                if(status == 1) {
+                    mNsdManager.discoverServices(SERVICE_TYPE,
+                            NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+                    collectData.setText("   STOP DATA COLLECTION   ");
+                    //collectData.setBackgroundColor(1);
+                    v.setTag(0); //started
+                } else {
+                    collectData.setText("   START DATA COLLECTION   ");
+                    //Not sure about this, but to avoi crash want to try
+                    mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                    v.setTag(1); //stopped
+                }
+            }
+        });
+        //mNsdManager.discoverServices(SERVICE_TYPE,
+          //      NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
     }
 }
