@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,9 +27,10 @@ import java.util.List;
 public class GetProduct extends Activity  {
     private Spinner spinnerProduct;
     EditText serialNumber, ETprodAlias;
+    TextView startScan;
     ProgressDialog prgDialog;
     private Button btnNetwork;
-    String userName, babyAlias, productID, productName, combined, combined1;
+    String userName, babyAlias, productID, productName, combined, combined1,serialNumb;
     String result, toyAlias;
     JSONArray productList = new JSONArray();
     List<String> listMag = new ArrayList<String>();
@@ -41,12 +46,14 @@ public class GetProduct extends Activity  {
         //addItemOnSpinnerProduct();
         Bundle extras = getIntent().getExtras();
         prgDialog = new ProgressDialog(this);
+        serialNumber = (EditText)findViewById(R.id.serialNumber);
         // Set Progress Dialog Text
         prgDialog.setMessage("Please wait...");
         // Set Cancelable as False
         prgDialog.setCancelable(false);
         prgDialog.setIndeterminate(true);
         ETprodAlias = (EditText)findViewById(R.id.productAlias);
+        startScan = (TextView)findViewById(R.id.scanToyNumber);
         if (extras != null) {
 
             userName = extras.getString("userName");
@@ -71,17 +78,7 @@ public class GetProduct extends Activity  {
 
     }
 
-   /* private void addItemOnSpinnerProduct() {
-        spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
-        List<String> list = new ArrayList<String>();
-        list.add("Smart Elephant");
-        list.add("SmartDolphin");
-        list.add("SmartPeluche");
-        list.add("TABLET-0000");
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerProduct.setAdapter(dataAdapter);
-    }*/
+
     // get the selected dropdown list value
     private void addListenerOnButton() {
         spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
@@ -168,15 +165,8 @@ public class GetProduct extends Activity  {
                                 productID = b.getString("ProductId");
                                 productName=b.getString("CommercialName");
                                 String temp = combined1.substring(0,combined1.indexOf("_"));
-                                  //String temp1 = combined.substring(0,combined.indexOf("_"));
-                                 // Log.d("product selected ======= ",combined1);
-                                  //Log.d("product selected ======= ",temp);
-                                 // Log.d("combined truncated = ",combined.substring(combined.indexOf("__"),combined.indexOf("__")+combined.lastIndexOf(combined)));
-                                //listMag.add(productID);
-                               // listName.add(combined.substring(0,combined.indexOf("_")));
-                                  listName.add(temp);
+                                            listName.add(temp);
 
-                                  //listName.add(combined.substring(combined.indexOf("__"),combined.indexOf("__")+combined.lastIndexOf(combined)));
 
                             }
                             updateUISpinner(listName);
@@ -218,30 +208,39 @@ public class GetProduct extends Activity  {
     public void backTo_(View view) {
         spinnerProduct = (Spinner)findViewById(R.id.spinnerProduct);
 
-        serialNumber = (EditText)findViewById(R.id.serialNumber);
+
         String serialNumberString = serialNumber.getText().toString();
         productName = spinnerProduct.getSelectedItem().toString();
         //TODO
         //This data have to be retrived from the toy
         Log.d("product selected ======= ",productName);
-        /*if(productName.contains("Smart Elephant")){
+        //TODO
+        //To be substituted with the Custom spinner
+
+        if(productName.contains("TenderDolf")){
+            productID = "0405ADBE3E25F231ED1AE761E3203665";
+            //serialNumb = "00000001";
+        }
+        else if (productName.contains("ELPHY")){
             productID = "512B28C8A41CE065F1493686D93717FD";
-            serialNumber = "00000001";
+            //serialNumb = "00000001";
         }
-        else if (productName.contains("SmartPeluche")){
-            productID = "E08C5D9D672C098BF605FD04B06396FB";
-            serialNumber = "00000001";
-        }
-        else if (productName.contains("SmartDolphin")){
-            productID = "D20BEAE6BD1D23B0D6569611B5BF45B3";
-            serialNumber = "00000001";
-        }
-        else
-        {
+        else if (productName.contains("TABLEAU")){
             productID = "5543DB569905454A99EA2BE5402DF0BA";
-            serialNumber = "00000001";
+            //serialNumb = "00000001";
         }
-*/
+        else if(productName.contains("iDOLPHY"))
+        {
+            productID = "D20BEAE6BD1D23B0D6569611B5BF45B3";
+            //serialNumber = "00000001";
+        }
+        else if(productName.contains("PETTY-PA"))
+        {
+            productID = "E08C5D9D672C098BF605FD04B06396FB";
+            //serialNumber = "00000001";
+        }
+        else productID = "F01DB5D40FEEEB2B1F2A98D0F4F3AE19";
+
         //After we get the product serial number we need to map the userID and product uniqui identifier to strt session
         enableProgressDialog(true);
         String toyAl = ETprodAlias.getText().toString();
@@ -291,4 +290,39 @@ public class GetProduct extends Activity  {
 
 
     }
+
+    public void scanCode(View view) {
+        //TODO
+        //Implement the BarCode QR code reader
+        startCodeScanner();
+
+    }
+
+    private void startCodeScanner() {
+        new IntentIntegrator(this).initiateScan();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        IntentResult result =   IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(this,    "Cancelled",Toast.LENGTH_LONG).show();
+            } else {
+                Log.d("CodeReader = ",result.getContents());
+                updateText(result.getContents().toString());
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void updateText(String scanCode) {
+        Log.d("CodeReader = ",scanCode);
+        serialNumber.setText(scanCode);
+    }
+
+
 }

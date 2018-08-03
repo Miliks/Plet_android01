@@ -96,11 +96,30 @@ public class SelectChild extends Activity {
         });
     }
 
-    private void addListenerOnChildClick() {
+    private void addListenerOnChildClickold() {
         listChild.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                  child_alias = listChild.getItemAtPosition(position).toString();
+
+            }
+        });
+
+    }
+    private void addListenerOnChildClick() {
+
+        listChild.requestFocus();
+        listChild.setSelection(0);
+        listChild.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                child_alias = listChild.getItemAtPosition(position).toString();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -140,6 +159,7 @@ private void addListenerOnChildSelection(){
         //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //spinnerBaby.setAdapter(dataAdapter);
         listChild.setAdapter(dataAdapter);
+       // listChild.setSelection(0);
 
     }
 

@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
 
         String userNameView = usernameET.getText().toString();
         String passwordView = pwdET.getText().toString();
-        Log.d("MILA in go to register WIFI hotspot", "MIIIIIIIIIIIIII");
+       // Log.d("MILA in go to register WIFI hotspot", "MIIIIIIIIIIIIII");
         if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
             enableProgressDialog(true);
 
@@ -134,53 +134,12 @@ public class LoginActivity extends Activity {
 
 
     public void forgetPwd(View view) {
-        //TODO
-        //Call API to passwor reset wich will send email to email assotiated with the user name
-        //String userNameView = usernameET.getText().toString();
+
         String url = "http://plet.cloud.reply.eu/PletPlatform/Account/ResetPasswordMobile.aspx";
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
     }
-        //String passwordView = pwdET.getText().toString();
-/*        if (!userNameView.isEmpty()) {
-            enableProgressDialog(true);
 
-            RegisterAPI.getInstance(this).resetPwd(userNameView, new RegisterAPI.RegistrationCallback() {
-                @Override
-                public void onResponse(String str) {
-                    try {
-                        enableProgressDialog(false);
-                        JSONObject jsonResponse = new JSONObject(str);
-                        String result = jsonResponse.getString("result");
-                        //Log.d("What is returned on activity Login view ......", result);
-                        if (result.equals("OK")) {
-                            Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
-                            Toast.makeText(getApplicationContext(), "Check your mail box for the password reset information", Toast.LENGTH_LONG).show();
-                            prgDialog.dismiss();
-
-                        } else {
-                            cleanText(jsonResponse.getString("message"));
-
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onError(RegistrationResponse.RegistrationError error) {
-                    enableProgressDialog(false);
-                }
-
-                @Override
-                public void onNetworkError() {
-                    enableProgressDialog(false);
-                }
-            });
-        } else
-            Toast.makeText(getApplicationContext(), "No data inserted", Toast.LENGTH_LONG).show();
-    }*/
 
 }

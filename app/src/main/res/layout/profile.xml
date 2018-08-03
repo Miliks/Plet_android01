@@ -40,6 +40,8 @@
 
                 <EditText
                     android:id="@+id/user_name"
+                    android:drawableLeft="@mipmap/user"
+                    
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="* Please use your email as user Name"

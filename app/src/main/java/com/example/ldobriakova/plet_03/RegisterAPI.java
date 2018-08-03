@@ -12,6 +12,7 @@ import java.lang.Object;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -457,7 +458,7 @@ public class RegisterAPI {
 
 
     //Delete baby from DB
-
+    public static final MediaType MEDIA_TYPE = MediaType.parse("application/json");
     public void deleteBaby(String username, String babyAlias, final RegistrationCallback callback)
     {
         //deletebaby?username={USERNAME}&babyAlias={BABYALIAS}
@@ -490,11 +491,75 @@ public class RegisterAPI {
 
     }
 
-    public void setAdress(String ipAddr, final RegistrationCallback callback){
-        String requestBody = "";
-        RequestBody postBody = new FormBody.Builder().add("message","{\"requestType\" : \"changeHttp\",\"ipTarget\" : \"91.218.225.130\",\"portTarget\" : 443}").build();
+    public void controllerDataCollection(String enable, String ipAddr, final RegistrationCallback callback)
+    {
+        String enableValue = enable;
+        JSONObject mainObj = new JSONObject();
+        JSONObject logObj = new JSONObject();
+        JSONObject urlData = new JSONObject();
+
+
+
+        try{
+            //postData.put("requestType", "logger");
+            urlData.put("address","plet.cloud.reply.eu");
+            urlData.put("port","443");
+            urlData.put("path","/pletapis.svc/saveComponentEvents");
+            urlData.put("protocol","https");
+            urlData.put("cert","-----BEGIN CERTIFICATE-----\\nMIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UEBhMCVVMx\\nEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAYBgNVBAoT\\nEUdvRGFkZHkuY29tLCBJbmMuMTEwLwYDVQQDEyhHbyBEYWRkeSBSb290IENlcnRp\\nZmljYXRlIEF1dGhvcml0eSAtIEcyMB4XDTExMDUwMzA3MDAwMFoXDTMxMDUwMzA3\\nMDAwMFowgbQxCzAJBgNVBAYTAlVTMRAwDgYDVQQIEwdBcml6b25hMRMwEQYDVQQH\\nEwpTY290dHNkYWxlMRowGAYDVQQKExFHb0RhZGR5LmNvbSwgSW5jLjEtMCsGA1UE\\nCxMkaHR0cDovL2NlcnRzLmdvZGFkZHkuY29tL3JlcG9zaXRvcnkvMTMwMQYDVQQD\\nEypHbyBEYWRkeSBTZWN1cmUgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IC0gRzIwggEi\\nMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC54MsQ1K92vdSTYuswZLiBCGzD\\nBNliF44v/z5lz4/OYuY8UhzaFkVLVat4a2ODYpDOD2lsmcgaFItMzEUz6ojcnqOv\\nK/6AYZ15V8TPLvQ/MDxdR/yaFrzDN5ZBUY4RS1T4KL7QjL7wMDge87Am+GZHY23e\\ncSZHjzhHU9FGHbTj3ADqRay9vHHZqm8A29vNMDp5T19MR/gd71vCxJ1gO7GyQ5HY\\npDNO6rPWJ0+tJYqlxvTV0KaudAVkV4i1RFXULSo6Pvi4vekyCgKUZMQWOlDxSq7n\\neTOvDCAHf+jfBDnCaQJsY1L6d8EbyHSHyLmTGFBUNUtpTrw700kuH9zB0lL7AgMB\\nAAGjggEaMIIBFjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBBjAdBgNV\\nHQ4EFgQUQMK9J47MNIMwojPX+2yz8LQsgM4wHwYDVR0jBBgwFoAUOpqFBxBnKLbv\\" +
+                    "n9r0FQW4gwZTaD94wNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUFBzABhhhodHRwOi8v\\nb2NzcC5nb2RhZGR5LmNvbS8wNQYDVR0fBC4wLDAqoCigJoYkaHR0cDovL2NybC5n\\nb2RhZGR5LmNvbS9nZHJvb3QtZzIuY3JsMEYGA1UdIAQ/MD0wOwYEVR0gADAzMDEG\\nCCsGAQUFBwIBFiVodHRwczovL2NlcnRzLmdvZGFkZHkuY29tL3JlcG9zaXRvcnkv\\nMA0GCSqGSIb3DQEBCwUAA4IBAQAIfmyTEMg4uJapkEv/oV9PBO9sPpyIBslQj6Zz\\n91cxG7685C/b+LrTW+C05+Z5Yg4MotdqY3MxtfWoSKQ7CC2iXZDXtHwlTxFWMMS2\\nRJ17LJ3lXubvDGGqv+QqG+6EnriDfcFDzkSnE3ANkR/0yBOtg2DZ2HKocyQetawi\\nDsoXiWJYRBuriSUBAA/NxBti21G00w9RKpv0vHP8ds42pM3Z2Czqrpv1KrKQ0U11\\nGIo/ikGQI31bS/6kA1ibRrLDYGCD+H1QQc7CoZDDu+8CL9IVVO5EFdkKrqeKM+2x\\nLXY2JtwE65/3YR8V3Idv7kaWKK2hJn0KCacuBKONvPi8BDAB\\n-----END CERTIFICATE-----\\n");
+            logObj.put("enable",enableValue);
+        logObj.put("url",urlData);
+        mainObj.put("requestType","logger");
+        mainObj.put("log",logObj);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(MEDIA_TYPE,mainObj.toString());//RequestBody.create("application/json", postData.toString());
         Request request = new Request.Builder().url("http:/" + ipAddr)
-                .post(postBody)
+                .post(body)
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("User data ",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+
+    }
+    public void setAdress(String ipAddr, final RegistrationCallback callback){
+
+        JSONObject postData = new JSONObject();
+        try{
+            postData.put("requestType", "changeHttp");
+            postData.put("ipTarget","91.128.225.130");
+            postData.put("portTarget","443");
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        //RequestBody postBody = new FormBody.Builder().add("message","{\"requestType\" : \"changeHttp\",\"ipTarget\" : \"91.218.225.130\",\"portTarget\" : 443}").build();
+        RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());//RequestBody.create("application/json", postData.toString());
+        Request request = new Request.Builder().url("http:/" + ipAddr)
+                .post(body)
                 .build();
         Log.d("RESPONSE = ", request.toString());
 

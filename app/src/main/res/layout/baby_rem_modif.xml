@@ -36,10 +36,13 @@
 
     <ListView
         android:id="@+id/listChild"
-        android:layout_width="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+
         android:layout_gravity="center_horizontal"
+        android:listSelector="#CAFE69"
         android:gravity="center_horizontal" />
 
     <!--RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

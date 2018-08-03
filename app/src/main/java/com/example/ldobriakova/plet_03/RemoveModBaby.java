@@ -114,24 +114,11 @@ public class RemoveModBaby extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                //addListenerOnSpinnerBabySelection();
-                addItemOnSpinneraddBaby(list);
+               addItemOnSpinneraddBaby(list);
 
             }
         });
     }
-
-
-   /* private void addListenerOnSpinnerBabySelection() {
-        Log.d("We are in listener on spinner","....");
-        spinnerBaby = (Spinner)findViewById(R.id.spinnerBaby);
-        CustomAdapter adapter = new CustomAdapter(RemoveModBaby.this, R.layout.listitems_layout,R.id.child_alias,childItems);
-        spinnerBaby.setAdapter(adapter);
-        spinnerBaby.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-    }*/
-
-
 
    private void addItemOnSpinneraddBaby(List<String> selection) {
 
@@ -161,20 +148,9 @@ public class RemoveModBaby extends Activity {
                 child[j].setGender(childGender);
                 child[j].setChild_birthDay(childBD);
                 child[j].setAlias(babyAlias);
-
-
             }
 
-            //Log.d("selection inizialize   ========", babyAlias + " bbb" + childGender + "childGender" + childBD + "childBD");
         }
-       // Log.d(" outside FOR    ========", babyAlias + " bbb" + childGender + "childGender" + childBD + "childBD");
-
-
-        /*newAdapter = new SpinAdapter(RemoveModBaby.this, android.R.layout.simple_spinner_item,child);
-        spinnerBaby = (Spinner) findViewById(R.id.spinnerBaby);
-        spinnerBaby.setAdapter(newAdapter);*/
-      // ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.activity_listview,R.id.child_alias,selection);
-
        newAdapter = new SpinAdapter(RemoveModBaby.this,child);
        childList.setAdapter(newAdapter);
        childList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -188,41 +164,7 @@ public class RemoveModBaby extends Activity {
            }
        });
 
-      //childList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      //    @Override
-      //    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-      //        Child child = (Child) newAdapter.getItem(position);
-      //        babyAlias =  child.getChild_alias();
-      //        childGender = child.getChild_gender();
-      //        childBD = child.getChild_birthDay();
-      //    }
-
-      //    @Override
-      //    public void onNothingSelected(AdapterView<?> parent) {
-
-      //    }
-      //});
-     /*   spinnerBaby.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-           @Override
-           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               Child child = (Child) newAdapter.getItem(position);
-            //  String cld_al =  newAdapter.getItem(position).getChild_alias();
-
-               Log.d(" Baby  at position =======", String.valueOf(position) + "....  " +child.getChild_alias());
-
-               babyAlias =  child.getChild_alias();
-               childGender = child.getChild_gender();
-               childBD = child.getChild_birthDay();
-          //     Log.d(" ALIAS =======", babyAlias + "  " + "childGender = " + childGender + "childBD = " + childBD);
-           }
-
-           @Override
-           public void onNothingSelected(AdapterView<?> parent) {
-
-           }
-       });*/
-
-    }
+     }
 
 
     public void getBabies(String myEtText){
@@ -244,12 +186,9 @@ public class RemoveModBaby extends Activity {
                     if(result_baby.equals("OK")) {
                         if (!result_baby.isEmpty()) {
                             try {
-                                //TODO
-                                //Need to handle empty list returned in case there is no babies registered on the user
-                                babylist = result_obj.getJSONArray("BabyList");
-                               // Log.d("What is returned on get baby query ......", babylist.getString(0) + "-------" + babylist.length());
 
-                                for (int i = 0; i < babylist.length(); i++) {
+                                babylist = result_obj.getJSONArray("BabyList");
+                                    for (int i = 0; i < babylist.length(); i++) {
                                     JSONObject b = babylist.getJSONObject(i);
                                     Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
@@ -261,7 +200,6 @@ public class RemoveModBaby extends Activity {
                                 }
 
                                 updateUISpinner(list);
-                                //updateUISpinner(childItems);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -307,14 +245,10 @@ public class RemoveModBaby extends Activity {
 
 
     public void removeBaby(View view) {
-        //enableBabyRemovalDialog(true);
-        enableProgressDialog(true);
-        //babyAlias = spinnerBaby.getSelectedItem().toString();
-
+         enableProgressDialog(true);
         RegisterAPI.getInstance(this).deleteBaby(myEtText,babyAlias,new RegisterAPI.RegistrationCallback() {
             @Override
             public void onResponse(String str) {
-                //enableBabyRemovalDialog(false);
                 enableProgressDialog(false);
                 try {
                     JSONObject jsonResponse = new JSONObject(str);
