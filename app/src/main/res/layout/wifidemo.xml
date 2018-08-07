@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Click scan WIFI to search for Toy WI-FI hotspot, click dropdown list to select it and SET UP to connect it to your home network"
+            android:text="Click SCAN WIFI to search for Toy WI-FI hotspot, click dropdown list to select it and then SET UP to connect it to your home network"
             android:textStyle="italic"
             android:textSize="20dp" />
 
@@ -36,7 +36,7 @@
             android:layout_height="fill_parent"
 
             android:background="@drawable/button_rounded_corners"
-            android:onClick="attemptLogin"
+            android:onClick="onWiFiSearch"
             android:text="Scan WIFI" />
     </LinearLayout>
 

@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class WiFiDemo extends Activity implements View.OnClickListener {
+public class WiFiDemo extends Activity  {
     WifiManager wifi;
     private Spinner spinnerWiFi;
     Boolean listenerButton = false;
@@ -52,12 +52,14 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
     String ipString, result;
     String wifiSpinnerValue = null;
     Boolean listenerFlag = false;
+    Boolean buttonListener = false;
+    Boolean connected = false;
+    Boolean wificonnected = false;
     Button collectData;
     String mServiceName;
     //NsdServiceInfo mServiceInfo;
     NsdServiceInfo serviceInfo = new NsdServiceInfo();
     final String SERVICE_TYPE = "_smartobject._tcp.";
-
     //final String SERVICE_NAME = "smartobject";
     final String SERVICE_NAME = "smartkitchen_35461_5461";
     int mLocalPort;
@@ -88,12 +90,11 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
         babyAlias = extras.getString("babyAlias");
         buttonScan = (Button) findViewById(R.id.buttonScan);
         collectData = (Button)findViewById(R.id.collectData);
-        buttonScan.setOnClickListener(this);
         wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
 
-        registerService();
+        //registerService();
 
         if (wifi.isWifiEnabled() == false)
         {
@@ -116,67 +117,6 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
         }, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
     }
 
-    //Let's register dummy service to discover
-    public void registerService(int port) {
-
-        serviceInfo.setServiceName(SERVICE_NAME);
-        Log.d(TAG, "REGISTER SERVICE started......");
-        serviceInfo.setServiceType(SERVICE_TYPE);
-        serviceInfo.setPort(port);
-        InetAddress s = null;
-        try {
-            s = InetAddress.getByName("192.168.0.164");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "BEFORE setHost");
-        serviceInfo.setHost(s);
-        Log.d(TAG, "Registered service address..... =" + serviceInfo.getHost());
-       // mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-
-        mNsdManager.registerService(serviceInfo,
-                NsdManager.PROTOCOL_DNS_SD,
-                mRegistrationListener);
-    }
-
-    private final NsdManager.RegistrationListener mRegistrationListener = new NsdManager.RegistrationListener() {
-
-        @Override
-        public void onServiceRegistered(NsdServiceInfo nsdServiceInfo) {
-            Log.d(TAG, "onServiceRegistered............." );
-            String mServiceName = nsdServiceInfo.getServiceName()+nsdServiceInfo.getPort();
-
-            Log.d(TAG, "Registered name : " + mServiceName);
-
-           // InetAddress addressI = nsdServiceInfo.getHost();
-            Log.d(TAG, "Registered IP : " + nsdServiceInfo.getHost());
-
-
-        }
-
-        @Override
-        public void onRegistrationFailed(NsdServiceInfo serviceInfo,
-                                         int errorCode) {
-            // Registration failed! Put debugging code here to determine
-            // why.
-        }
-
-        @Override
-        public void onServiceUnregistered(NsdServiceInfo serviceInfo) {
-            // Service has been unregistered. This only happens when you
-            // call
-            // NsdManager.unregisterService() and pass in this listener.
-            Log.d(TAG,
-                    "Service Unregistered : " + serviceInfo.getServiceName());
-        }
-
-        @Override
-        public void onUnregistrationFailed(NsdServiceInfo serviceInfo,
-                                           int errorCode) {
-            // Unregistration failed. Put debugging code here to determine
-            // why.
-        }
-    };
 
     private final NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
         // Called as soon as service discovery begins.
@@ -192,40 +132,17 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
             // A service was found! Do something with it.
             Log.d(TAG, "Service discovery success : " + service);
             Log.d(TAG, "Host = "+ service.getServiceName());
-            Log.d(TAG, "Host port = " + service.getHost());
-            Log.d(TAG, "port = " + String.valueOf(service.getPort()));
-            //if(!listenerFlag){
+
             if (!service.getServiceType().equals(SERVICE_TYPE)) {
                 // Service type is the string containing the protocol and
                 // transport layer for this service.
                 Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
-            } else if (service.getServiceName().equals(SERVICE_NAME)&&(!listenerFlag)) {
+            } else if (service.getServiceName().equals(SERVICE_NAME)) {
                 // The name of the service tells the user what they'd be
                 // connecting to. It could be "Bob's Chat App".
-              mNsdManager.resolveService(service, mResolveListener);
-                Log.d(TAG, "Same machine: " + SERVICE_NAME);
-
-               // hostAddress = service.getHost();
-                Log.d(TAG, "NOT working hostadress: " + hostAddress);
-                //TODO
-                //Since the simulator do not work properly and do not return the IP adress of the service i'll set it up manually
-               /* try {
-                    hostAddress = InetAddress.getByName("192.168.0.164");
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }*/
-               // Log.d(TAG, "Same machine hostadress: " + hostAddress);
-                //mNsdManager.resolveService(service,mResolveListener);
-               //Let's call the service to set up the IP to send the sensors datac
-
-                // setAdress
-                //mNsdManager.resolveService(service,mResolveListener);
-                listenerFlag=true;
-                setIPUI(hostAddress);
-
-
                 mNsdManager.stopServiceDiscovery(this);
-               // mNsdManager.unregisterService(this);
+                mNsdManager.resolveService(service, mResolveListener);
+                listenerFlag=true;
 
             } else {
                 Log.d(TAG, "Diff Machine : " + service.getServiceName());
@@ -258,73 +175,10 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
             Log.e(TAG, "Discovery failed: Error code:" + errorCode);
             mNsdManager.stopServiceDiscovery(this);
         }
+
     };
 
-    private void registerService(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                registerService(80);
-            }
-        });
-    }
-
-    private void setIPUI( final InetAddress hostAddress){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                setIP(hostAddress);
-            }
-        });
-    }
-
-
-
-    private void setIP(InetAddress hostAddress) {
-        enableProgressDialog(true);
-        if(!hostAddress.equals(null)){
-            //g.d("Host adress in SetIP","HOST = " + hostAddress);
-            String internalHost = hostAddress.toString().replace("/","");
-            Log.d(TAG,"HOST = " + internalHost);
-        RegisterAPI.getInstance(this).setAdress(internalHost,new RegisterAPI.RegistrationCallback(){
-            @Override
-            public void onResponse(String str) {
-                try {
-                    enableProgressDialog(false);
-
-                    JSONObject jsonResponse = new JSONObject(str);
-                    String result = jsonResponse.getString("status");
-                    if (result.equals("ok")) {
-                        Log.d(TAG, "SUCCESSSSSSSS!!!!!..");
-
-                    } else {
-
-                        Log.d(TAG, "FAILED!!!!!..");
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onError(RegistrationResponse.RegistrationError error) {
-                enableProgressDialog(false);
-                Log.d(TAG, "OnError FAILED!!!!!..");
-            }
-
-            @Override
-            public void onNetworkError() {
-
-                enableProgressDialog(false);
-                Log.d("onNetworkError SetIP", "FAILED!!!!!..");
-            }
-        });}
-
-
-    }
-
-   private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
+      private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
 
         @Override
         public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
@@ -338,24 +192,19 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
             Log.d(TAG, "Resolve Succeeded. " + serviceInfo);
 
             if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
-                Log.d(TAG, "Same IP.");
-               // return;
+                Log.d(TAG, "Same IP = " + serviceInfo.getHost());
+
+                hostAddress = serviceInfo.getHost();
+                startDataCollectionCall(hostAddress);
+               return;
             }
 
-            // Obtain port and IP
-            hostPort = serviceInfo.getPort();
-            hostAddress = serviceInfo.getHost();
-            Log.d(TAG, "Resolve listener ..........." + hostAddress);
-           // setIPUI(hostAddress);
-           // mNsdManager.unregisterService(mRegistrationListener);
-           // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }
     };
 
     private void startDataCollectionCall(InetAddress hostAddress) {
         enableProgressDialog(true);
         if(!hostAddress.equals(null)){
-            //g.d("Host adress in SetIP","HOST = " + hostAddress);
             String internalHost = hostAddress.toString().replace("/","");
             Log.d(TAG,"HOST = " + internalHost);
             RegisterAPI.getInstance(this).controllerDataCollection("1",internalHost,new RegisterAPI.RegistrationCallback(){
@@ -365,19 +214,29 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
                         enableProgressDialog(false);
 
                         JSONObject jsonResponse = new JSONObject(str);
-                        if(jsonResponse.toString().equals("{}"))
-                            Log.d(TAG, "Responsefrom toy=" + jsonResponse.toString());
-                            //Toast.makeText(getApplicationContext(), "Data logging is enabled", Toast.LENGTH_LONG).show();}
+                        //TODO
+                        //When the real service will be available if have to be substituted by the commented lines
+                        //String result = jsonResponse.getString("status");
+                        //if (result.equals("ok")) {
+                        if(jsonResponse.toString().equals("{}")) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Data logging is enabled", Toast.LENGTH_LONG).show();
+                                connected = true;
+                                }
+
+                            });
+
+                        }
                         else
-                            Toast.makeText(getApplicationContext(), "Something went wrong, please retry!", Toast.LENGTH_LONG).show();
-                        /*String result = jsonResponse.getString("status");
-                        if (result.equals("ok")) {
-                            Log.d(TAG, "SUCCESSSSSSSS!!!!!..");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                                }
 
-                        } else {
-
-                            Log.d(TAG, "FAILED!!!!!..");
-                        }*/
+                            });
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -392,91 +251,30 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
 
                 @Override
                 public void onNetworkError() {
-
                     enableProgressDialog(false);
                     Log.d("onNetworkError", "FAILED!!!!!..");
                 }
             });}
-    }
+        if(connected){
+            returnWelcome();
+        }
 
-    private void stopDataCollectionCall(InetAddress hostAddress) {
-        enableProgressDialog(true);
-        if(!hostAddress.equals(null)){
-            //g.d("Host adress in SetIP","HOST = " + hostAddress);
-            String internalHost = hostAddress.toString().replace("/","");
-            Log.d(TAG,"HOST = " + internalHost);
-            RegisterAPI.getInstance(this).controllerDataCollection("0",internalHost,new RegisterAPI.RegistrationCallback(){
+            else
+            runOnUiThread(new Runnable() {
                 @Override
-                public void onResponse(String str) {
-                    try {
-                        enableProgressDialog(false);
-
-                        JSONObject jsonResponse = new JSONObject(str);
-                        Log.d(TAG, "Responsefrom toy=" + jsonResponse.toString());
-                        if(jsonResponse.toString().equals("{}"))
-                            Log.d(TAG, "Responsefrom toy=" + jsonResponse.toString());
-                            //TODO
-                            //Popup to notify user what the logging is OK
-
-                        else
-                            Toast.makeText(getApplicationContext(), "Something went wrong, please retry!", Toast.LENGTH_LONG).show();
-                        //String result = jsonResponse.getString("status");
-                        //if (result.equals("ok")) {
-                        //  Log.d(TAG, "SUCCESSSSSSSS!!!!!..");
-
-                        //} else {
-                        //TODO
-                        //Popup to notify user what the logging is KO
-                        //  Log.d(TAG, "FAILED!!!!!..");
-                        //}
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
                 }
 
-                @Override
-                public void onError(RegistrationResponse.RegistrationError error) {
-                    enableProgressDialog(false);
-                    Log.d(TAG, "OnError FAILED!!!!!..");
-                }
-
-                @Override
-                public void onNetworkError() {
-
-                    enableProgressDialog(false);
-                    Log.d("onNetworkError SetIP", "FAILED!!!!!..");
-                }
-            });}
-    }
-
-    private void controlDataCollectionUI( final InetAddress hostAddress){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(listenerButton)
-                    startDataCollectionCall(hostAddress);
-                else
-                    stopDataCollectionCall(hostAddress);
-                //setIP(hostAddress);
+            });
             }
-        });
-    }
-
-    public void discoveryToy(){
-        Log.d(TAG, "Discovery started ...........");
-
-        mNsdManager.discoverServices(SERVICE_TYPE,
-                NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
-    }
 
 
     private void updateUISpinner( final List<String> list){
                runOnUiThread(new Runnable() {
             @Override
             public void run() {
-               //addListenerOnSpinnerWifi();
-                addOneItemOnSpinner(list);
+                 addOneItemOnSpinner(list);
             }
         });
     }
@@ -495,6 +293,13 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
         wifiSpinnerValue = spinnerWiFi.getSelectedItem().toString();
         Log.d("wifiSpinnerValue =  ........................=",wifiSpinnerValue);
 
+    }
+    public void returnWelcome()
+    {
+        Intent i = new Intent(WiFiDemo.this,Welcome.class);
+        i.putExtra("userName",userName);
+
+        startActivity(i);
     }
     public void connectToToy_old(View view)
     {
@@ -516,6 +321,7 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             startActivity(i);
+            wificonnected = true;
 
         } else  {
 
@@ -525,7 +331,7 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
     }
 
 
-    public void onClick(View view)
+    public void onWiFiSearch(View view)
     {
         arraylist.clear();
             ActivityCompat.requestPermissions(WiFiDemo.this,
@@ -544,13 +350,11 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
                 ScanResult sr = results.get(size);
                 item.put(ITEM_KEY, sr.SSID);
                 arraylist.add(item);
-                //list.add(sr.SSID + "  " + sr.capabilities);
                 list.add(sr.SSID);
                 size--;
                 adapter.notifyDataSetChanged();
             }
-            //addOneItemOnSpinner(list);
-            updateUISpinner(list);
+               updateUISpinner(list);
 
         } catch (Exception e)
         {
@@ -572,49 +376,36 @@ public class WiFiDemo extends Activity implements View.OnClickListener {
         });
     }
 
+public void discovery(){
+        if(buttonListener){
+            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+    mNsdManager.discoverServices(SERVICE_TYPE,
+            NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);}
+            else
+            mNsdManager.discoverServices(SERVICE_TYPE,
+                    NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+
+}
+
     public void assignToy(View view)
     {
-        //String prodID_selected = productID;
-        if(!listenerButton) {
-            collectData.setText("   STOP DATA COLLECTION   ");
-            listenerButton = true;
-            discoveryToy();
 
-        }
-        else
-        {
-            collectData.setText("   START DATA COLLECTION   ");
-            listenerButton = false;
-            discoveryToy();
+       if(wificonnected){
+           discovery();
+        buttonListener = true;}
+       // mNsdManager.discoverServices(SERVICE_TYPE,
+           //     NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+       else
+           runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                   Toast.makeText(getApplicationContext(), "No new Wi-Fi hotspot have been added, please try again or go back to the Welcome page", Toast.LENGTH_LONG).show();
+               }
 
-        }
+           });
+
     }
-    public void assignToyOld(View view) {
-        listenerFlag=false;
-        collectData.setTag(1);
-        collectData.setText("STOP DATA COLLECTION");
-        collectData.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick (View v) {
-                final int status =(Integer) v.getTag();
-                if(status == 1) {
-                    discoveryToy();
-                    //collectData.setText("STOP DATA COLLECTION");
-                    collectData.setBackgroundColor(1);
-                    v.setTag(0); //started
-                } else {
-                    collectData.setText("START DATA COLLECTION");
-                    v.setTag(1); //stopped
-                }
-            }
-        });
-        Log.d(TAG,"Assigning the toy to the network........");
-       /* mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
 
-                registerService();*/
-
-               // discoveryToy();
-    }
 
 
 }

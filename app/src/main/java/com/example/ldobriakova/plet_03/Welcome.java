@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,36 +44,48 @@ public class Welcome extends Activity  {
     //final String SERVICE_NAME = "smartdolphin_ae30";
     Button collectData;
     public static final String TAG = "MILA";
+    Boolean listenerButton = false;
     Boolean listenerFlag = false;
+    Boolean serviceFound = false;
     Boolean succcess = false;
    // Boolean succcess;
     private InetAddress hostAddress;
     private int hostPort;
     private NsdManager mNsdManager;
-    private Boolean listenerButton = false;
-    Boolean valueInternal = false;
+    Boolean  aliasBoolean = false;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
         addItemOnSpinnerActivity();
-        addListenerOnButton();
+        //addListenerOnButton();
         addListenerOnSpinnerItemSelection();
         Bundle extras = getIntent().getExtras();
+
+        spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
+        spinnerActivity = (Spinner) findViewById(R.id.spinnerActivity);
+        btnNetwork = (Button)findViewById(R.id.btnNetwork);
         collectData = (Button)findViewById(R.id.start_logging) ;
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
         if (extras != null) {
-
             userName = extras.getString("userName");
             babyAlias = extras.getString("babyAlias");
+            if(extras.getString("productID")!=null)
+            productID = extras.getString("productID");
+            if(extras.getString("productAlias")!=null){
+            productAlias = extras.getString("productAlias");
+                aliasBoolean = true;
+            }
 
         }
 
         getProducts(userName);
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        Log.d("TAG","NSD_SERVICE = " + mNsdManager);
     }
     private void enableProgressDialog(final boolean enable)
     {
@@ -112,7 +125,8 @@ public class Welcome extends Activity  {
                     {
 
                         try {
-
+                            if(aliasBoolean)
+                            listMag.add(productAlias);
                             productList = result_obj.getJSONArray("UserInstanceList");
                             if(productList.length()>0) {
                                 for (int i = 0; i < productList.length(); i++) {
@@ -217,26 +231,12 @@ public class Welcome extends Activity  {
 
     }
 
-     private void addListenerOnButton() {
-        spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
-        spinnerActivity = (Spinner) findViewById(R.id.spinnerActivity);
-        btnNetwork = (Button)findViewById(R.id.btnNetwork);
 
-        btnNetwork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // navigatetoWiFiSearch();
-                navigateToRegisterNewToy();
-            }
-        });
-    }
 
     private void navigateToRegisterNewToy() {
         Intent registerNewToy = new Intent(getApplicationContext(), GetProduct.class);
         registerNewToy.putExtra("userName",userName);
         registerNewToy.putExtra("babyAlias", babyAlias);
-        //Log.d("Product selected ========", spinnerProduct.toString());
-        //scanner.putExtra("productID",spinnerProduct.toString());
         registerNewToy.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(registerNewToy);
     }
@@ -249,25 +249,8 @@ public class Welcome extends Activity  {
 
 
     }
-
-   /* private class MyResolveListener implements NsdManager.ResolveListener {
-        @Override
-        public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
-            Log.e(TAG, "Resolve failed " + errorCode);
-            Log.e(TAG, "service = " + serviceInfo);
-        }
-
-        @Override
-        public void onServiceResolved(NsdServiceInfo serviceInfo) {
-            Log.d("MILA", "Resolve Succeeded. " + serviceInfo);
-
-            if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
-                Log.d(TAG, "Same IP.");
-                return;
-        }
-    }}*/
-
-        private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
+//Create listener to resolve the service found by the specific name for wifi enabled smart object
+         private final NsdManager.ResolveListener mResolveListener = new NsdManager.ResolveListener() {
 
         @Override
         public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
@@ -278,24 +261,26 @@ public class Welcome extends Activity  {
 
         @Override
         public void onServiceResolved(NsdServiceInfo serviceInfo) {
-            Log.d("MILA", "Resolve Succeeded. " + serviceInfo);
+            Log.d("MILA", "Resolve Succeeded. " + serviceInfo + listenerFlag);
 
             if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
                  // Obtain port and IP
              hostAddress = serviceInfo.getHost();
              controlDataCollectionUI(hostAddress);
-             listenerFlag = true;
+            // listenerFlag = true;
 
             }
         }
     };
-
+//TODO
+    //VERIFY Crashes if there is no services available found
     private final NsdManager.DiscoveryListener mDiscoveryListener = new NsdManager.DiscoveryListener() {
         // Called as soon as service discovery begins.
         @Override
         public void onDiscoveryStarted(String regType) {
-
+            listenerFlag=true;
             Log.d(TAG, "Service discovery started............");
+           //user mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }
 
         @Override
@@ -312,41 +297,47 @@ public class Welcome extends Activity  {
                 Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
             } else if (service.getServiceName().equals(SERVICE_NAME)) {
                 // The name of the service tells the user what they'd be
-                // connecting to. It could be "Bob's Chat App".
+                // connecting to.
+                serviceFound = true;
                 mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                Log.d(TAG, "Service Found: " + service.getServiceType());
                 mNsdManager.resolveService(service, mResolveListener);
-                listenerFlag=true;
+                listenerFlag=false;
 
             } else {
                 Log.d(TAG, "Diff Machine : " + service.getServiceName());
                 // connect to the service and obtain serviceInfo
+                mNsdManager.stopServiceDiscovery(mDiscoveryListener);
                 mNsdManager.resolveService(service, mResolveListener);
             }
+
               }
 
         @Override
         public void onServiceLost(NsdServiceInfo service) {
             // When the network service is no longer available.
             // Internal bookkeeping code goes here.
-            Log.e(TAG, "service lost" + service);
+            Log.d(TAG, "service lost" + service);
         }
 
         @Override
         public void onDiscoveryStopped(String serviceType) {
-            Log.i(TAG, "Discovery stopped: " + serviceType);
+           // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+            Log.d(TAG, "Discovery stopped: " + serviceType);
         }
 
         @Override
         public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-            Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+            Log.d(TAG, "Discovery failed: Error code:" + errorCode);
             mNsdManager.stopServiceDiscovery(this);
         }
 
         @Override
         public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-            Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+            Log.d(TAG, "Discovery failed: Error code:" + errorCode);
             mNsdManager.stopServiceDiscovery(this);
         }
+
     };
 
     private void setIPUI( final InetAddress hostAddress){
@@ -415,9 +406,11 @@ public class Welcome extends Activity  {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
-                            Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);}
+                            Log.d(TAG,"Generic ERROR  = " + succcess);}
 
                     });
+                    //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                    serviceFound=false;
                 }
 
                 @Override
@@ -429,11 +422,19 @@ public class Welcome extends Activity  {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
-                            Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);}
+                         //   mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                            Log.d(TAG,"Network ERROR  = " + succcess);
 
-                    });
+                        }
+
+                    }
+                    );
+
+                    serviceFound=false;
+                    //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
                 }
             });}
+
    }
 
     private void stopDataCollectionCall(InetAddress hostAddress) {
@@ -486,7 +487,10 @@ public class Welcome extends Activity  {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
-                            Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);}
+                           // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                            serviceFound=false;
+                            //Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);
+                        }
 
                     });
                 }
@@ -500,11 +504,15 @@ public class Welcome extends Activity  {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
-                            Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);}
+                            //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                            listenerFlag=false;
+                           // Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);
+                        }
 
                     });
                 }
             });}
+       // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
     }
     private void setIP(InetAddress hostAddress) {
         enableProgressDialog(true);
@@ -551,21 +559,55 @@ public class Welcome extends Activity  {
     }
 
     public void discoveryToy(){
-        Log.d(TAG, "Discovery started ...........");
-        listenerFlag = true;
-        mNsdManager.discoverServices(SERVICE_TYPE,
-                NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+        Log.d(TAG, "Discovery started ..........." + listenerFlag + "   serviceFound = " + serviceFound);
+       if((!serviceFound)&&(listenerFlag)){
+           runOnUiThread(new Runnable() {
+               @Override
+               public void run() {
+                   Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again later", Toast.LENGTH_LONG).show();
+                   try{
+                   mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                   catch (IllegalArgumentException ex){
+                       Log.d(TAG,"Listener already stopped ");
+                   }
+                   Log.d(TAG,"No service found = " + succcess);
+                   listenerFlag=false;
+               }
+
+           });}
+
+
+       else  {
+           Log.d(TAG, "Discovery started we r in ELSE ..........." + listenerFlag + "   serviceFound = " + serviceFound);
+           mNsdManager.discoverServices(SERVICE_TYPE,
+                   NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+
+           new Handler().postDelayed(new Runnable() {
+               @Override
+               public void run() {
+                  serviceFound=false;
+                  mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+               }
+           }, 2 * 1000);
+
+
+       }
+
+        //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 
     }
 
     public void startLogging(View view)
     {
         String prodID_selected = productID;
+        //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         if(!listenerButton) {
             listenerButton = true;
             discoveryToy();
+            //initializeDiscoveryListener();
             Log.d(TAG, "Start logging SUCCESS value = " + succcess);
             collectData.setText("   STOP DATA COLLECTION   ");
+           // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
 
 
         }
@@ -573,11 +615,15 @@ public class Welcome extends Activity  {
         {
             collectData.setText("   START DATA COLLECTION   ");
             listenerButton = false;
-            discoveryToy();
-            Log.d(TAG, "Start logging SUCCESS value = " + succcess);
+             discoveryToy();
+            Log.d(TAG, "Stop logging SUCCESS value = " + succcess);
+           // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }
 
    }
 
 
+    public void registerToy(View view) {
+        navigateToRegisterNewToy();
+    }
 }

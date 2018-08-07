@@ -374,7 +374,7 @@ public class UserProfile extends Activity {
 					if (validateAdult(birthDate)) {
 //TODO
 						//substitute with the new API to update user data
-						RegisterAPI.getInstance(this).registerEmail(userName, surName, name,email, password,phone, city,country_short,birthDate,gender_adult, new RegisterAPI.RegistrationCallback() {
+						RegisterAPI.getInstance(this).updateUser(userName, surName, name,email, password,phone, city,country_short,birthDate,gender_adult, new RegisterAPI.RegistrationCallback() {
 							@Override
 							public void onResponse(String str) {
 								try {
@@ -383,7 +383,13 @@ public class UserProfile extends Activity {
 									if (result.equals("OK")) {
 										String user = userName;
 										//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
-										Toast.makeText(getApplicationContext(), "Data have been updated successfully!", Toast.LENGTH_LONG).show();
+										runOnUiThread(new Runnable() {
+											@Override
+										public void run() {
+											Toast.makeText(getApplicationContext(), "Data have been updated successfully!", Toast.LENGTH_LONG).show();}
+
+									});
+
 
 										//navigatetoLoginActivity();
 									} else {
@@ -510,22 +516,6 @@ return true;
 		}
 	}
 
-	/*private void navigatetoAddChild(final String userName){
-		runOnUiThread(new Runnable(){
-			@Override
-			public void run() {
-
-				Intent i = new Intent(UserProfile.this, RegisterBaby.class);
-				String userNameInternal = userName;
-				//usernameET.getText().toString();
-				i.putExtra("userName", userNameInternal);
-				prgDialog.dismiss();
-				startActivity(i);
-				//startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
-			}
-		});
-
-	}*/
 
 	public void navigatetoAddChild(View view) {
 		runOnUiThread(new Runnable(){

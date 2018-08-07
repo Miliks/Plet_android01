@@ -34,28 +34,79 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
 
+                <!-- INPUT -->
                 <EditText
                     android:id="@+id/user_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="-10dp"
+                    android:layout_toRightOf="@+id/username_icon"
+
                     android:hint="* Please use your email as user Name"
-                    android:imeActionId="6"
-                    android:imeActionLabel="Sign in"
-                    android:imeOptions="actionUnspecified"
+                    android:padding="10dp"
+
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <!-- ICON -->
+                <ImageView
+                    android:padding="3dp"
+                    android:id="@+id/username_icon"
+                    android:src="@mipmap/emailicon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+
+            </RelativeLayout>
+            <!--EditText
+                android:id="@+id/user_name"
+                android:drawableLeft="@mipmap/user"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="* Please use your email as user Name"
+
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:singleLine="true" /-->
+            <!--/android.support.design.widget.TextInputLayout-->
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/owner_name"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/name_icon"
+
+                        android:hint="* Name"
+                        android:padding="10dp"
+
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/name_icon"
+                        android:src="@mipmap/user"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/owner_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -65,13 +116,41 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true" /-->
             </android.support.design.widget.TextInputLayout>
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/owner_surname"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/surname_icon"
+
+                        android:hint="* Surname"
+                        android:padding="10dp"
+
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/surname_icon"
+                        android:src="@mipmap/user"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/owner_surname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -81,27 +160,52 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true" /-->
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/owner_birthday"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/bd_icon"
+
+                        android:hint="*                       DD-MM-YYYY Birthday"
+                        android:padding="10dp"
+
+                        android:inputType="date"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/bd_icon"
+                        android:src="@mipmap/bd"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/owner_birthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="                       *DD-MM-YYYY Birthday"
+                    android:hint="*                       DD-MM-YYYY Birthday"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
                     android:inputType="date"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true" /-->
             </android.support.design.widget.TextInputLayout>
-
-
 
             <!--android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -148,7 +252,12 @@
                     android:text="@string/gender_female"
                     android:onClick="onRadioButtonClicked"/>
             </RadioGroup>
-
+            <TextView
+                android:id="@+id/country"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="*CONTRY: "
+                />
             <Spinner
                 android:id="@+id/spinnerCountry"
                 android:layout_width="wrap_content"
@@ -159,8 +268,35 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/owner_city"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/city_icon"
+
+                        android:hint="* City"
+                        android:padding="10dp"
+
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/city_icon"
+                        android:src="@mipmap/cityicon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/owner_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,7 +306,7 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true" /-->
             </android.support.design.widget.TextInputLayout>
 
 
@@ -192,8 +328,35 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/owner_phone"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/phone_icon"
+
+                        android:hint="Phone number"
+                        android:padding="10dp"
+
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/phone_icon"
+                        android:src="@mipmap/phone"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/owner_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -203,15 +366,41 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="number"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true" /-->
             </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/pwd_icon"
+
+                        android:hint="*Enter password"
+                        android:padding="10dp"
+
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/pwd_icon"
+                        android:src="@mipmap/pwd"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -221,14 +410,41 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
-            </android.support.design.widget.TextInputLayout>
+                    android:singleLine="true" /-->
 
+            </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
 
-                <EditText
+                    <!-- INPUT -->
+                    <EditText
+                        android:id="@+id/repeat_password"
+                        android:layout_marginLeft="-10dp"
+                        android:layout_toRightOf="@+id/re-pwd_icon"
+
+                        android:hint="*Re-Enter password"
+                        android:padding="10dp"
+
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:padding="3dp"
+                        android:id="@+id/re-pwd_icon"
+                        android:src="@mipmap/pwd"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp" />
+
+                </RelativeLayout>
+                <!--EditText
                     android:id="@+id/repeat_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -238,7 +454,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true" /-->
+
             </android.support.design.widget.TextInputLayout>
 
             <LinearLayout

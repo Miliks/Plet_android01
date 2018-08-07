@@ -207,8 +207,6 @@ public class GetProduct extends Activity  {
     }
     public void backTo_(View view) {
         spinnerProduct = (Spinner)findViewById(R.id.spinnerProduct);
-
-
         String serialNumberString = serialNumber.getText().toString();
         productName = spinnerProduct.getSelectedItem().toString();
         //TODO
@@ -255,12 +253,13 @@ public class GetProduct extends Activity  {
 
                     if (result.equals("OK")) {
                         Log.d("attemptToRegister", "SUCCESSSSSSSS!!!!!..");
-                        Intent i = new Intent(GetProduct.this, WiFiDemo.class);
+                          Intent i = new Intent(GetProduct.this, WiFiDemo.class);
+
                         //Intent scanner = new Intent(getApplicationContext(), WiFiDemo.class);
                         i.putExtra("userName",userName);
                         i.putExtra("babyAlias",babyAlias);
                         i.putExtra("productID", productID);
-                       // i.putExtra("serialNumber", serialNumber);
+                        i.putExtra("toyAlias", toyAlias);
                         //startActivity(scanner);
                         i.putExtra("productName", productName);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -58,7 +58,6 @@ public class LoginActivity extends Activity {
        // Log.d("MILA in go to register WIFI hotspot", "MIIIIIIIIIIIIII");
         if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
             enableProgressDialog(true);
-
             RegisterAPI.getInstance(this).userLogin(userNameView, passwordView, new RegisterAPI.RegistrationCallback() {
                 @Override
                 public void onResponse(String str) {
@@ -68,7 +67,6 @@ public class LoginActivity extends Activity {
                         String result = jsonResponse.getString("result");
                         //Log.d("What is returned on activity Login view ......", result);
                         if (result.equals("OK")) {
-                           // Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
                             Intent i = new Intent(LoginActivity.this, SelectChild.class);
                             String userName = usernameET.getText().toString();
                             i.putExtra("userName", userName);
@@ -134,7 +132,6 @@ public class LoginActivity extends Activity {
 
 
     public void forgetPwd(View view) {
-
         String url = "http://plet.cloud.reply.eu/PletPlatform/Account/ResetPasswordMobile.aspx";
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));

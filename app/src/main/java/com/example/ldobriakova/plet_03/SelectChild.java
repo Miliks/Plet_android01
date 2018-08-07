@@ -25,7 +25,7 @@ import java.util.List;
 public class SelectChild extends Activity {
     private Spinner spinnerBaby;
     private ListView listChild;
-    private Button goFwd;
+    private Button goFwd, profile;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
     String result;
@@ -44,7 +44,6 @@ public class SelectChild extends Activity {
     {
         Intent i = new Intent(SelectChild.this,LoginActivity.class);
         startActivity(i);
-
     }
 
     @Override
@@ -53,16 +52,14 @@ public class SelectChild extends Activity {
         setContentView(R.layout.select_child);
         listChild = (ListView) findViewById(R.id.childList);
         goFwd = (Button)findViewById(R.id.goFwd);
+        profile = (Button)findViewById(R.id.profile);
         Bundle extras = getIntent().getExtras();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
-
-
         if (extras != null) {
-
             myEtText = extras.getString("userName");
-            Log.d("User to query in onCreate.....=",myEtText);
+           // Log.d("User to query in onCreate.....=",myEtText);
 
         }
 
@@ -192,17 +189,13 @@ private void addListenerOnChildSelection(){
                                     JSONObject b = babylist.getJSONObject(i);
                                     // Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
-                                    // String babyGender = b.getString("Baby_Gender");
-                                    //String babyDB = b.getString("Baby_Birthdate");
                                     listMag.add(babyAlias);
-                                    //listComplete.add(babyAlias + "_" + babyGender + "_"+babyDB);
-                                    Log.d("Array returned1111 ========", listMag.toString());
                                 }
                                 updateUISpinner(listMag);
                             }
                             else
                             {
-                                Log.d("Array returned1111 ========", "No BABIES...........");
+                                Log.d("MILA", "No BABIES...........");
                                 updateUISpinner(listMag);
                             }
                         } catch (JSONException e) {
@@ -227,36 +220,7 @@ private void addListenerOnChildSelection(){
 
             }
         });
-        // Log.d("LArray returned 22222222222========", listMag.toString());
 
-    }
-
-   /* private void addListenerOnButtonFwd() {
-        goFwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO
-                //Add association with the current session and the babyID selected
-                goToProfile(v);
-            }
-        });
-    }*/
-
-
-    /*private void navigatetoWelcome(View view) {
-        Intent welcome = new Intent(getApplicationContext(),Welcome.class);
-        welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        welcome.putExtra("userName",myEtText);
-        String babyAl = spinnerBaby.getSelectedItem().toString();
-        welcome.putExtra("babyAlias", babyAl);
-        progressDialog.dismiss();
-        startActivity(welcome);
-    }*/
-
-
-    public void backtoLogin(View view) {
-        Intent i = new Intent(SelectChild.this,LoginActivity.class);
-        startActivity(i);
     }
 
 
@@ -264,7 +228,7 @@ private void addListenerOnChildSelection(){
         Intent i = new Intent(getApplicationContext(),UserProfile.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("userName",myEtText);
-        progressDialog.dismiss();
+      //  progressDialog.dismiss();
         startActivity(i);
     }
 
@@ -273,12 +237,8 @@ private void addListenerOnChildSelection(){
         Intent welcome = new Intent(getApplicationContext(),Welcome.class);
         welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         welcome.putExtra("userName",myEtText);
-        //String babyAl = spinnerBaby.getSelectedItem().toString();
-       // String babyAl = listChild.getSelectedItem().toString();
-
-        //welcome.putExtra("babyAlias", babyAl);
         welcome.putExtra("babyAlias", child_alias);
-        progressDialog.dismiss();
+     //   progressDialog.dismiss();
         startActivity(welcome);
     }
 }

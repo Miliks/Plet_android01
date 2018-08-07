@@ -87,16 +87,13 @@
                     android:id="@+id/email_sign_in_button"
                     style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
-
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_gravity="left"
                     android:background="@drawable/button_rounded_corners"
                     android:onClick="attemptLogin"
-                    android:text="LOG IN"
+                    android:text="LOGIN"
                     android:textStyle="bold"
                     tools:ellipsize="end" />
-
 
             </LinearLayout>
 
@@ -125,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:onClick="navigatetoRegisterActivity"
-                    android:text="Register"
+                    android:text="SIGNUP"
                     android:textStyle="bold" />
                 <!--Button
                 android:id="@+id/profile"
