@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -23,6 +24,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class GetProduct extends Activity  {
     private Spinner spinnerProduct;
@@ -40,6 +43,7 @@ public class GetProduct extends Activity  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.get_product);
+        Fabric.with(this, new Crashlytics());
         spinnerProduct = (Spinner) findViewById(R.id.spinnerProduct);
         //addListenerOnButton();
         //addListenerOnSpinnerItemSelection();

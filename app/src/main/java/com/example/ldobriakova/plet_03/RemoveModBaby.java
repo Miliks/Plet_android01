@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +24,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 import static android.R.layout.simple_spinner_dropdown_item;
 import static android.R.layout.simple_spinner_item;
@@ -55,6 +59,7 @@ public class RemoveModBaby extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.baby_rem_modif);
+        Fabric.with(this, new Crashlytics());
         Bundle extras = getIntent().getExtras();
         babyRemovalResult = new ProgressDialog(this);
         babyRemovalResult.setMessage("Baby removal is in progress");

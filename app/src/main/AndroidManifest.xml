@@ -16,10 +16,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/logo3"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
 
-        android:roundIcon="@mipmap/logo3"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
@@ -66,6 +66,10 @@
 
         </activity>
         <activity android:name=".Welcome"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="e5b4a7f3ba6402f764aae09629b8189fa9ef70b5"
+            />
     </application>
 
 </manifest>

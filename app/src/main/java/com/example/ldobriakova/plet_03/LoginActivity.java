@@ -16,6 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
+
 import static android.app.PendingIntent.getActivity;
 
 /**
@@ -35,6 +39,7 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Fabric.with(this, new Crashlytics());
 
         usernameET = findViewById(R.id.username);
         // Find Password Edit View control by ID
@@ -47,6 +52,13 @@ public class LoginActivity extends Activity {
         // Set Cancelable as False
         prgDialog.setCancelable(false);
         prgDialog.setIndeterminate(true);
+
+    }
+    @Override
+    public void onBackPressed()
+    {
+        finishAffinity();
+        System.exit(0);
 
     }
 

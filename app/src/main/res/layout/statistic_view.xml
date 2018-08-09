@@ -12,18 +12,37 @@
         android:adjustViewBounds="true"
         android:src="@drawable/logo1"
         tools:ignore="ContentDescription" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/title1_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+
+
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25dp" />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title1"
-        android:layout_width="311dp"
-        android:layout_height="33dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
-        android:gravity="top|center_horizontal"
+
         android:text=" usage experience"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="25dp" />
+    </LinearLayout>
 
     <EditText
         android:layout_width="200dp"
@@ -43,37 +62,56 @@
         android:layout_toEndOf="@+id/in_date"
         android:onClick="selectDate"/>
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/title2"
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:text=" Mary played today for 1H and 25 minutes"
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="25dp" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!--com.jjoe64.graphview.GraphView
-        android:id="@+id/graph"
-        android:layout_width="match_parent"
-        android:layout_height="200dip" />
-    <<com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:id="@+id/graph1" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/title2_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25dp" />
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:text="  played today for "
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="25dp" />
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/title2_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
+        android:layout_width="match_parent"
+        android:layout_height="200dip" />
+
+
 
         <!--Button
         android:id="@+id/exit_button"
@@ -85,17 +123,17 @@
         android:onClick="navigateBackLogin"
         android:text="Exit" /-->
 
-        <Button
-            android:id="@+id/update_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:onClick="updateGraph"
-            android:layout_weight="0"
-            android:text="Update data" />
-    </LinearLayout>
 
+    </LinearLayout>
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:onClick="averageTime"
+        android:layout_weight="0"
+        android:text="Update data" />
 </LinearLayout>
 
 

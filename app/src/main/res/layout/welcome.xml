@@ -66,8 +66,9 @@
         android:background="@android:drawable/btn_dropdown"
         />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
         <Button
@@ -81,19 +82,22 @@
             android:layout_gravity="center_horizontal"
             android:onClick="startLogging"
             android:text="   Start Data Collection   " />
-        <!--Button
-            android:id="@+id/backToLogin"
+
+        <Button
+            android:id="@+id/statistics"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:onClick="navigateLogin"
-            android:text="back to login" />
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="navigateStat"
+            android:layout_marginLeft="5dp"
+            android:text="   TOY USAGE INFO  " />
 
-        <Button
+
+        <!--Button
             android:id="@+id/quit_app"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -108,25 +112,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="320dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/activity_horizontal_margin"
-
+        android:gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/statistics"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_rounded_corners"
-            android:onClick="navigateStat"
-            android:layout_marginLeft="5dp"
-            android:text="   TOY USAGE INFO  " />
 
         <Button
             android:id="@+id/btnNetwork"
@@ -140,6 +130,18 @@
             android:background="@drawable/button_rounded_corners"
             android:onClick="registerToy"
             android:text="   Register New Toy   " />
+
+        <Button
+            android:id="@+id/unRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/button_rounded_corners"
+            android:layout_gravity="center_horizontal"
+            android:onClick="unregister"
+            android:text="   UNREGISTER TOY   " />
     </LinearLayout>
 
 

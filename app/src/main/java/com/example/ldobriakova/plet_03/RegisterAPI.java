@@ -158,6 +158,37 @@ public class RegisterAPI {
 
             } });
     }
+//Unregister product instance from the user account
+public void unregUser(String userName, String productID, String serialNumb,final RegistrationCallback callback) {
+    JSONObject json = new JSONObject();
+    String requestBody = "unregisterProdInstance?username="+userName+"&productid="+productID+"&serialnumber="+serialNumb;
+    Request request = new Request.Builder()
+            .url(BASE_URL + requestBody)
+            .get()
+            .build();
+    Log.d("RESPONSE = ", request.toString());
+
+    httpClient.newCall(request).enqueue(new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.d("RESPONSE on fail of network = ", e.toString());
+            if (callback != null)
+                callback.onNetworkError();
+        }
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+
+            if (response.isSuccessful()) {
+                String alternate = response.body().string();
+                callback.onResponse(alternate);
+            }
+            else {
+                if (callback != null)
+                    callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+            }
+        } });
+}
+
 
     //Adding baby to DB
     public void registerBaby(String username, String firstname, String gender, String birthDate, final RegistrationCallback callback) {

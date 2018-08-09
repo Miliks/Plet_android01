@@ -19,7 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.redmadrobot.inputmask.MaskedTextChangedListener;
+import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * 
@@ -58,6 +60,7 @@ public class RegisterActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
+		Fabric.with(this, new Crashlytics());
 		checkBox = (CheckBox) findViewById(R.id.checkbox);
 		final Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
@@ -91,7 +94,7 @@ public class RegisterActivity extends Activity {
 
 		birthdayET  = (EditText)findViewById(R.id.owner_birthday);
 
-		MaskedTextChangedListener listener = new MaskedTextChangedListener(
+	/*	MaskedTextChangedListener listener = new MaskedTextChangedListener(
 		"[00]-[00]-[0000]",	birthdayET,
 				new MaskedTextChangedListener.ValueListener() {
 					@Override
@@ -104,7 +107,7 @@ public class RegisterActivity extends Activity {
 		birthdayET.addTextChangedListener(listener);
 		birthdayET.setOnFocusChangeListener(listener);
 		birthdayET.setHint(listener.placeholder());
-
+*/
 		// Find City Edit View control by ID
 		cityET = (EditText)findViewById(R.id.owner_city);
 		// Find Email Edit View control by ID

@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,13 +24,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
+
 public class SelectChild extends Activity {
     private Spinner spinnerBaby;
+    private ListAdapter childAdapter;
     private ListView listChild;
     private Button goFwd, profile;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
-    String result;
+    String result, child_gender;
     ProgressDialog progressDialog;
     String myEtText, child_alias;
     JSONObject json = new JSONObject();
@@ -50,6 +55,7 @@ public class SelectChild extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select_child);
+        Fabric.with(this, new Crashlytics());
         listChild = (ListView) findViewById(R.id.childList);
         goFwd = (Button)findViewById(R.id.goFwd);
         profile = (Button)findViewById(R.id.profile);
@@ -84,20 +90,24 @@ public class SelectChild extends Activity {
             @Override
             public void run() {
                 //addListenerOnSpinnerBabySelection();
-                addListenerOnChildClick();
-                //addListenerOnChildSelection();
+                //addListenerOnChildClick();
                 addItemOnSpinneraddBaby(list);
+               // addListenerOnChildClickold();
+                //addListenerOnChildSelection();
+
                 //addItemOnSpinneraddBabyCompleted(listCompleted);
                 //addListenerOnButtonFwd();
             }
         });
     }
 
+
     private void addListenerOnChildClickold() {
         listChild.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                  child_alias = listChild.getItemAtPosition(position).toString();
+                Log.d("MILA", "On item selected = " + child_alias);
 
             }
         });
@@ -105,14 +115,14 @@ public class SelectChild extends Activity {
     }
     private void addListenerOnChildClick() {
 
-        listChild.requestFocus();
-        listChild.setSelection(0);
+
         listChild.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 child_alias = listChild.getItemAtPosition(position).toString();
-
+                //String childGender =
+                Log.d("MILA", "On item selected = " + child_alias);
             }
 
             @Override
@@ -133,34 +143,54 @@ private void addListenerOnChildSelection(){
     }
 
 
-    private void cleanText(final String message)
-    {
-        runOnUiThread(new Runnable() {
+    private void addItemOnSpinneraddBaby(List<String> selection) {
+        int i = selection.size();
+        Child [] child = new Child[i];
+        for (int j=0; j<i; j++) {
+            int child_index = selection.get(j).indexOf("+");
+            Log.d("MILA", "index =" + i);
+            child[j] = new Child();
+            child_alias = selection.get(j).substring(0, child_index);
+            child_gender = selection.get(j).substring(child_index + 1, selection.get(j).length());
+            Log.d("MILA", "Loop for gender = " + j + "***" + child_gender);
+            child[j].setAlias(child_alias);
+            child[j].setGender(child_gender);
+        }
+        childAdapter = new ListAdapter(this,R.layout.activity_listview,child);
+       // childAdapter = new CustomAdapter(this,R.layout.activity_listview,R.id.child_alias,child);
+             //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.activity_listview,R.id.child_alias,selection);
+            // listChild.setAdapter(dataAdapter);
+        listChild.setAdapter(childAdapter);
+        listChild.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Child child = (Child)childAdapter.getItem(position);
+                child_alias = child.getChild_alias();
+                child_gender = child.getChild_gender();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-    }
-    private void addItemOnSpinneraddBaby(List<String> selection) {
-      //  listChild = (ListView) findViewById(R.id.childList);
 
-        //CustomAdapter childAdapter = new CustomAdapter(this, android.R.layout.activity_list_item,R.id.child_alias,selection);
-        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.activity_list_item,selection);
+       /* listChild.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Child child = (Child)childAdapter.getItem(position);
+                child_alias = child.getChild_alias();
+                String childGender = child.getChild_gender();
+                Log.d("MILA", "Child data = " + child_alias + " ++" + childGender);
+            }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.activity_listview,R.id.child_alias,selection);
+        }
 
-        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.activity_list_item,selection);
-
-        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //spinnerBaby.setAdapter(dataAdapter);
-        listChild.setAdapter(dataAdapter);
-       // listChild.setSelection(0);
+        );*/
 
     }
 
-    public void getBabies(String myEtText){
+    private void getBabies(String myEtText){
         enableProgressDialog(true);
 
         RegisterAPI.getInstance(this).queryBaby(myEtText,  new RegisterAPI.RegistrationCallback() {
@@ -183,15 +213,21 @@ private void addListenerOnChildSelection(){
                             //Need to handle empty list returned in case there is no babies registered on the user
                             //json = new JSONObject(result);
                             babylist = result_obj.getJSONArray("BabyList");
+                            int j = babylist.length();
+
                             if(babylist.length()>0) {
                                 Log.d("What is returned on get baby query ......", babylist.getString(0) + "-------" + babylist.length());
-                                for (int i = 0; i < babylist.length(); i++) {
-                                    JSONObject b = babylist.getJSONObject(i);
+                                for (int i = 0; i < j; i++) {
+                               JSONObject b = babylist.getJSONObject(i);
                                     // Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
-                                    listMag.add(babyAlias);
+                                    String babyGender = b.getString("Baby_Gender");
+                                    //String child_id = b.getString("child_id");//To change to real json field
+                                    listMag.add(babyAlias+"+"+babyGender);
+
                                 }
                                 updateUISpinner(listMag);
+                                Log.d("MILA", "BABIES..........."+listMag);
                             }
                             else
                             {
@@ -237,6 +273,7 @@ private void addListenerOnChildSelection(){
         Intent welcome = new Intent(getApplicationContext(),Welcome.class);
         welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         welcome.putExtra("userName",myEtText);
+        Log.d("MILA", "Your baby selected in SelectChild activity = " + child_alias);
         welcome.putExtra("babyAlias", child_alias);
      //   progressDialog.dismiss();
         startActivity(welcome);

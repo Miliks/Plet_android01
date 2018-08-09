@@ -19,6 +19,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +29,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class Welcome extends Activity  {
     private Spinner spinnerProduct, spinnerActivity;
@@ -59,6 +63,7 @@ public class Welcome extends Activity  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
+        Fabric.with(this, new Crashlytics());
         addItemOnSpinnerActivity();
         //addListenerOnButton();
         addListenerOnSpinnerItemSelection();
@@ -85,7 +90,7 @@ public class Welcome extends Activity  {
 
         getProducts(userName);
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        Log.d("TAG","NSD_SERVICE = " + mNsdManager);
+        Log.d("TAG","Baby alias passed from previous screen = " + babyAlias);
     }
     private void enableProgressDialog(final boolean enable)
     {
@@ -220,6 +225,7 @@ public class Welcome extends Activity  {
                productAlias =  product.getProd_alias();
                productID = product.getProd_id();
                serialNumb = product.getSerial_number();
+               Log.d("MILA", "On spinner clicked productID=" + productID + " serialNumb = " + serialNumb );
            }
 
            @Override
@@ -228,10 +234,7 @@ public class Welcome extends Activity  {
            }
        });
 
-
     }
-
-
 
     private void navigateToRegisterNewToy() {
         Intent registerNewToy = new Intent(getApplicationContext(), GetProduct.class);
@@ -244,7 +247,10 @@ public class Welcome extends Activity  {
     public void navigateStat(View view) {
         Intent i = new Intent(Welcome.this,Statistic.class);
         i.putExtra("userName",userName);
+        Log.d("MILA","Before go to the statistic = "+ babyAlias);
         i.putExtra("babyAlias", babyAlias);
+        i.putExtra("productid",productID);
+        i.putExtra("serialNumber",serialNumb);
         startActivity(i);
 
 
@@ -262,13 +268,10 @@ public class Welcome extends Activity  {
         @Override
         public void onServiceResolved(NsdServiceInfo serviceInfo) {
             Log.d("MILA", "Resolve Succeeded. " + serviceInfo + listenerFlag);
-
             if (serviceInfo.getServiceName().equals(SERVICE_NAME)) {
                  // Obtain port and IP
              hostAddress = serviceInfo.getHost();
              controlDataCollectionUI(hostAddress);
-            // listenerFlag = true;
-
             }
         }
     };
@@ -299,7 +302,11 @@ public class Welcome extends Activity  {
                 // The name of the service tells the user what they'd be
                 // connecting to.
                 serviceFound = true;
-                mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                try{
+                    mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                catch (IllegalArgumentException ex){
+                    Log.d(TAG,"Listener already stopped ");
+                }
                 Log.d(TAG, "Service Found: " + service.getServiceType());
                 mNsdManager.resolveService(service, mResolveListener);
                 listenerFlag=false;
@@ -307,7 +314,11 @@ public class Welcome extends Activity  {
             } else {
                 Log.d(TAG, "Diff Machine : " + service.getServiceName());
                 // connect to the service and obtain serviceInfo
-                mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                try{
+                    mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                catch (IllegalArgumentException ex){
+                    Log.d(TAG,"Listener already stopped ");
+                }
                 mNsdManager.resolveService(service, mResolveListener);
             }
 
@@ -329,13 +340,21 @@ public class Welcome extends Activity  {
         @Override
         public void onStartDiscoveryFailed(String serviceType, int errorCode) {
             Log.d(TAG, "Discovery failed: Error code:" + errorCode);
-            mNsdManager.stopServiceDiscovery(this);
+            try{
+                mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+            catch (IllegalArgumentException ex){
+                Log.d(TAG,"Listener already stopped ");
+            }
         }
 
         @Override
         public void onStopDiscoveryFailed(String serviceType, int errorCode) {
             Log.d(TAG, "Discovery failed: Error code:" + errorCode);
-            mNsdManager.stopServiceDiscovery(this);
+            try{
+                mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+            catch (IllegalArgumentException ex){
+                Log.d(TAG,"Listener already stopped ");
+            }
         }
 
     };
@@ -409,8 +428,7 @@ public class Welcome extends Activity  {
                             Log.d(TAG,"Generic ERROR  = " + succcess);}
 
                     });
-                    //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-                    serviceFound=false;
+                            serviceFound=false;
                 }
 
                 @Override
@@ -422,8 +440,7 @@ public class Welcome extends Activity  {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
-                         //   mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-                            Log.d(TAG,"Network ERROR  = " + succcess);
+                             Log.d(TAG,"Network ERROR  = " + succcess);
 
                         }
 
@@ -431,8 +448,7 @@ public class Welcome extends Activity  {
                     );
 
                     serviceFound=false;
-                    //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
-                }
+                         }
             });}
 
    }
@@ -514,26 +530,40 @@ public class Welcome extends Activity  {
             });}
        // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
     }
-    private void setIP(InetAddress hostAddress) {
+    private void unregisterUser() {
         enableProgressDialog(true);
-        if(!hostAddress.equals(null)){
-            //g.d("Host adress in SetIP","HOST = " + hostAddress);
-            String internalHost = hostAddress.toString().replace("/","");
-            Log.d(TAG,"HOST = " + internalHost);
-            RegisterAPI.getInstance(this).setAdress(internalHost,new RegisterAPI.RegistrationCallback(){
+
+            RegisterAPI.getInstance(this).unregUser(userName, productID,serialNumb,new RegisterAPI.RegistrationCallback(){
                 @Override
                 public void onResponse(String str) {
                     try {
                         enableProgressDialog(false);
 
                         JSONObject jsonResponse = new JSONObject(str);
-                        String result = jsonResponse.getString("status");
-                         if (result.equals("ok")) {
+                        String result = jsonResponse.getString("result");
+                      //  JSONObject result_obj = jsonResponse.getJSONObject("content");
+                         if (result.equals("OK")) {
                             Log.d(TAG, "SUCCESSSSSSSS!!!!!..");
+                             runOnUiThread(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     Toast.makeText(getApplicationContext(), "Toy unregistered!", Toast.LENGTH_LONG).show();
+
+                                 }
+
+                             });
 
                         } else {
 
                             Log.d(TAG, "FAILED!!!!!..");
+                             runOnUiThread(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     Toast.makeText(getApplicationContext(), "Toy have NOT been ungeristered, please try again!", Toast.LENGTH_LONG).show();
+
+                                 }
+
+                             });
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -556,7 +586,7 @@ public class Welcome extends Activity  {
             });}
 
 
-    }
+
 
     public void discoveryToy(){
         Log.d(TAG, "Discovery started ..........." + listenerFlag + "   serviceFound = " + serviceFound);
@@ -586,9 +616,13 @@ public class Welcome extends Activity  {
                @Override
                public void run() {
                   serviceFound=false;
-                  mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                   try{
+                       mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                   catch (IllegalArgumentException ex){
+                       Log.d(TAG,"Listener already stopped ");
+                   }
                }
-           }, 2 * 1000);
+           }, 5 * 1000);
 
 
        }
@@ -625,5 +659,11 @@ public class Welcome extends Activity  {
 
     public void registerToy(View view) {
         navigateToRegisterNewToy();
+    }
+
+    public void unregister(View view) {
+        unregisterUser();
+        finish();
+        startActivity(getIntent());
     }
 }

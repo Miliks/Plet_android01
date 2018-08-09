@@ -17,6 +17,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.format.Formatter;
@@ -31,6 +32,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,6 +42,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class WiFiDemo extends Activity  {
     WifiManager wifi;
@@ -81,6 +86,7 @@ public class WiFiDemo extends Activity  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wifidemo);
+        Fabric.with(this, new Crashlytics());
         addListenerOnSpinnerWifi();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -140,7 +146,11 @@ public class WiFiDemo extends Activity  {
             } else if (service.getServiceName().equals(SERVICE_NAME)) {
                 // The name of the service tells the user what they'd be
                 // connecting to. It could be "Bob's Chat App".
-                mNsdManager.stopServiceDiscovery(this);
+                try{
+                    mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                catch (IllegalArgumentException ex){
+                    Log.d(TAG,"Listener already stopped ");
+                }
                 mNsdManager.resolveService(service, mResolveListener);
                 listenerFlag=true;
 
@@ -167,13 +177,21 @@ public class WiFiDemo extends Activity  {
         @Override
         public void onStartDiscoveryFailed(String serviceType, int errorCode) {
             Log.e(TAG, "Discovery failed: Error code:" + errorCode);
-            mNsdManager.stopServiceDiscovery(this);
+            try{
+                mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+            catch (IllegalArgumentException ex){
+                Log.d(TAG,"Listener already stopped ");
+            }
         }
 
         @Override
         public void onStopDiscoveryFailed(String serviceType, int errorCode) {
             Log.e(TAG, "Discovery failed: Error code:" + errorCode);
-            mNsdManager.stopServiceDiscovery(this);
+            try{
+                mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+            catch (IllegalArgumentException ex){
+                Log.d(TAG,"Listener already stopped ");
+            }
         }
 
     };
@@ -204,6 +222,7 @@ public class WiFiDemo extends Activity  {
 
     private void startDataCollectionCall(InetAddress hostAddress) {
         enableProgressDialog(true);
+        Log.d(TAG,"Start data collection = ");
         if(!hostAddress.equals(null)){
             String internalHost = hostAddress.toString().replace("/","");
             Log.d(TAG,"HOST = " + internalHost);
@@ -223,7 +242,8 @@ public class WiFiDemo extends Activity  {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "Data logging is enabled", Toast.LENGTH_LONG).show();
-                                connected = true;
+                                    connected = true;
+                                    returnWelcome();
                                 }
 
                             });
@@ -246,27 +266,30 @@ public class WiFiDemo extends Activity  {
                 @Override
                 public void onError(RegistrationResponse.RegistrationError error) {
                     enableProgressDialog(false);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                        }
+
+                    });
                     Log.d(TAG, "OnError FAILED!!!!!..");
                 }
 
                 @Override
                 public void onNetworkError() {
                     enableProgressDialog(false);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                        }
+
+                    });
                     Log.d("onNetworkError", "FAILED!!!!!..");
                 }
             });}
-        if(connected){
-            returnWelcome();
-        }
 
-            else
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
-                }
-
-            });
             }
 
 
@@ -378,13 +401,37 @@ public class WiFiDemo extends Activity  {
 
 public void discovery(){
         if(buttonListener){
-            mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+
     mNsdManager.discoverServices(SERVICE_TYPE,
-            NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);}
-            else
+            NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    try{
+                        mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                    catch (IllegalArgumentException ex){
+                        Log.d(TAG,"Listener already stopped ");
+                    }
+                }
+            }, 5 * 1000);
+
+        }
+            else {
             mNsdManager.discoverServices(SERVICE_TYPE,
                     NsdManager.PROTOCOL_DNS_SD, mDiscoveryListener);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+try{
+                    mNsdManager.stopServiceDiscovery(mDiscoveryListener);}
+                    catch (IllegalArgumentException ex){
+                        Log.d(TAG,"Listener already stopped ");
+                    }
+                }
+            }, 5 * 1000);
 
+        }
 }
 
     public void assignToy(View view)
