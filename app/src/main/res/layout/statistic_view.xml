@@ -12,7 +12,7 @@
         android:adjustViewBounds="true"
         android:src="@drawable/logo1"
         tools:ignore="ContentDescription" />
-    <LinearLayout
+    <!--LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -60,8 +60,35 @@
         android:layout_alignBottom="@+id/in_date"
         android:layout_toRightOf="@+id/in_date"
         android:layout_toEndOf="@+id/in_date"
-        android:onClick="selectDate"/>
-
+        android:onClick="selectDate"/-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/sessions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Sessions played today  "
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25dp" />
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/sessionsValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25dp" />
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -105,7 +132,18 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/weekly_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="Overview of weekly activity  "
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25dp" />
         <com.jjoe64.graphview.GraphView
         android:id="@+id/graph"
         android:layout_width="match_parent"
@@ -125,15 +163,36 @@
 
 
     </LinearLayout>
-    <Button
-        android:id="@+id/update_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:onClick="averageTime"
+        android:orientation="horizontal">
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/button_rounded_corners"
+        android:layout_gravity="center_horizontal"
+        android:onClick="refresh"
         android:layout_weight="0"
-        android:text="Update data" />
+        android:text="   Update data   " />
+    <Button
+        android:id="@+id/changeToMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/button_rounded_corners"
+        android:layout_gravity="center_horizontal"
+        android:onClick="averageTimeMonth"
+        android:text="   View by Month   " />
+    </LinearLayout>
 </LinearLayout>
 
 

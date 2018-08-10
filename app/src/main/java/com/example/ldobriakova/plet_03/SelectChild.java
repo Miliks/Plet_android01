@@ -33,7 +33,7 @@ public class SelectChild extends Activity {
     private Button goFwd, profile;
     private ListView lv;
     ArrayList<HashMap<String, String>> babyList;
-    String result, child_gender;
+    String result, child_id;
     ProgressDialog progressDialog;
     String myEtText, child_alias;
     JSONObject json = new JSONObject();
@@ -151,10 +151,10 @@ private void addListenerOnChildSelection(){
             Log.d("MILA", "index =" + i);
             child[j] = new Child();
             child_alias = selection.get(j).substring(0, child_index);
-            child_gender = selection.get(j).substring(child_index + 1, selection.get(j).length());
-            Log.d("MILA", "Loop for gender = " + j + "***" + child_gender);
+            child_id = selection.get(j).substring(child_index + 1, selection.get(j).length());
+            //Log.d("MILA", "Loop for gender = " + j + "***" + child_gender);
             child[j].setAlias(child_alias);
-            child[j].setGender(child_gender);
+            child[j].setChild_ID(child_id);
         }
         childAdapter = new ListAdapter(this,R.layout.activity_listview,child);
        // childAdapter = new CustomAdapter(this,R.layout.activity_listview,R.id.child_alias,child);
@@ -166,7 +166,7 @@ private void addListenerOnChildSelection(){
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Child child = (Child)childAdapter.getItem(position);
                 child_alias = child.getChild_alias();
-                child_gender = child.getChild_gender();
+                child_id = child.getChild_Id();
             }
 
             @Override
@@ -221,9 +221,9 @@ private void addListenerOnChildSelection(){
                                JSONObject b = babylist.getJSONObject(i);
                                     // Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
-                                    String babyGender = b.getString("Baby_Gender");
+                                    String babyID = b.getString("BabyID");
                                     //String child_id = b.getString("child_id");//To change to real json field
-                                    listMag.add(babyAlias+"+"+babyGender);
+                                    listMag.add(babyAlias+"+"+babyID);
 
                                 }
                                 updateUISpinner(listMag);
@@ -275,6 +275,7 @@ private void addListenerOnChildSelection(){
         welcome.putExtra("userName",myEtText);
         Log.d("MILA", "Your baby selected in SelectChild activity = " + child_alias);
         welcome.putExtra("babyAlias", child_alias);
+        welcome.putExtra("childID",child_id);
      //   progressDialog.dismiss();
         startActivity(welcome);
     }

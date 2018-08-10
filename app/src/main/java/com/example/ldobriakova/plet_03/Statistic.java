@@ -15,28 +15,43 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.LabelFormatter;
+import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import io.fabric.sdk.android.Fabric;
 
+import static java.lang.String.valueOf;
+
 public class Statistic extends Activity {
-    Button btnDatePicker;
+   // Button btnDatePicker;
     private int mYear, mMonth, mDay;
-    TextView babyAliasView, title, averageTime;
-    String productID, serialNumber;
+    TextView babyAliasView, title, averageTime, sessions;
+    Date parsedStartDate, parsedStopDate, parsedAver;
+    String productID, serialNumber, childID, userName, sessionsValue;
     EditText txtDate;
+    String startTime, stopTime, totalTime,parsedAverString;
     ProgressDialog prgDialog;
+    JSONArray sessionArray = new JSONArray();
+    ArrayList<String> valuesForGraphTS = new ArrayList<String>();
+    ArrayList<Integer> valuesForGraph = new ArrayList<Integer>();
    // private BarChart barcrt;
 
     @Override
@@ -46,33 +61,26 @@ public class Statistic extends Activity {
         Bundle extras = getIntent().getExtras();
         setContentView(R.layout.statistic_view);
         title = (TextView) findViewById(R.id.title2_1);
-        averageTime = (TextView)findViewById(R.id.title2_2);
-        babyAliasView = (TextView)findViewById(R.id.title1_1);
-        //String babyName = title.getText().toString();
         String babyName = extras.getString("babyAlias");
+        userName = extras.getString("userName");
         productID = extras.getString("productid");
         serialNumber = extras.getString("serialNumber");
+        childID = extras.getString("childID");
         prgDialog = new ProgressDialog(this);
         // Set Progress Dialog Text
         prgDialog.setMessage("Please wait...");
         // Set Cancelable as False
         prgDialog.setCancelable(false);
         prgDialog.setIndeterminate(true);
-
-        Log.d("MILA","Your baby name =" + babyName);
-        babyAliasView.setText(babyName);
         title.setText(babyName);
-        btnDatePicker=(Button)findViewById(R.id.btn_date);
+       // btnDatePicker=(Button)findViewById(R.id.btn_date);
 
-        txtDate=(EditText)findViewById(R.id.in_date);
-        //title.setText(babyName);
+      //  txtDate=(EditText)findViewById(R.id.in_date);
+        playTime();
+        averageTimeWeek();
+            // barcrt chart =  findViewById(R.id.chart);
 
-       // barcrt chart =  findViewById(R.id.chart);
 
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-        staticLabelsFormatter.setHorizontalLabels(new String[] {"punch", "RFID", "hug"});
-        staticLabelsFormatter.setVerticalLabels(new String[] {"1", "2", "3"});
 
         /*GraphView graph1 = (GraphView) findViewById(R.id.graph1);
         StaticLabelsFormatter staticLabelsFormatter1 = new StaticLabelsFormatter(graph1);
@@ -134,20 +142,18 @@ public class Statistic extends Activity {
     public void onBackPressed()
     {
         Intent i = new Intent(Statistic.this,Welcome.class);
-       // i.putExtra("userName",userName);
-        //i.putExtra("babyAlias",babyAlias);
+       i.putExtra("userName",userName);
+       i.putExtra("childID",childID);
         startActivity(i);
 
     }
 public void selectDate(View v) {
 
-
-           // Get Current Date
+          // Get Current Date
            final Calendar c = Calendar.getInstance();
            mYear = c.get(Calendar.YEAR);
            mMonth = c.get(Calendar.MONTH);
            mDay = c.get(Calendar.DAY_OF_MONTH);
-
 
            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
                    new DatePickerDialog.OnDateSetListener() {
@@ -161,6 +167,7 @@ public void selectDate(View v) {
                        }
                    }, mYear, mMonth, mDay);
            datePickerDialog.show();
+    //averageTime();
        }
    private void enableProgressDialog(final boolean enable) {
        runOnUiThread(new Runnable() {
@@ -173,26 +180,175 @@ public void selectDate(View v) {
            }
        });
    }
-public void averageTime(View v)
 
+   public void playTime()
+   {
+       enableProgressDialog(true);
+       SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+       Calendar calendar = Calendar.getInstance();
+       Date d_now = calendar.getTime();
+       String formattedDate = df.format(d_now);
+
+       calendar.add(Calendar.DATE, -1);
+       Date yesterday = calendar.getTime();
+    calendar.add(Calendar.DATE, 2);
+       Date tomorrow = calendar.getTime();
+               String formattedYesterday = df.format(yesterday);
+               String formattedTomorrow = df.format(tomorrow);
+       RegisterAPI.getInstance(this).getAverageTime(productID, serialNumber,childID, formattedYesterday, formattedTomorrow, new RegisterAPI.RegistrationCallback() {
+           @Override
+           public void onResponse(String str) {
+               try {
+                   enableProgressDialog(false);
+                   JSONObject jsonResponse = new JSONObject(str);
+                   String result = jsonResponse.getString("result");
+                   JSONObject result_obj = jsonResponse.getJSONObject("content");
+                   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                  // sessions = (TextView) findViewById(R.id.sessionsValue);
+                   //averageTime = (TextView)findViewById(R.id.title2_2);
+                   Log.d("MILA","Get average time.......");
+                   if (result.equals("OK")) {
+                       Log.d("MILA","Get average time.......resul OK for child " + childID);
+                       sessionArray = result_obj.getJSONArray("SessionList");
+                       sessionsValue = valueOf(sessionArray.length()).toString();
+
+                       Log.d("MILA","Sessions played...... " + sessionArray.length());
+                       if(sessionArray.length()>0) {
+                           for (int i = 0; i < sessionArray.length(); i++) {
+                               Log.d("MILA","Get average time inside FOR");
+                               JSONObject b = sessionArray.getJSONObject(i);
+                               startTime = b.getString("startTime") ;
+                               stopTime  = b.getString("endTime");
+                               try {
+                                   parsedStartDate = dateFormat.parse(startTime);
+                                   parsedStopDate = dateFormat.parse(stopTime);
+                                   //parsedAver = parsedStopDate.getTime() - parsedStartDate.getTime();
+
+                                   Log.d("MILA","Time elapsed =" + parsedAver);
+                               } catch (ParseException e) {
+                                   e.printStackTrace();
+                               }
+                              Long tmp = (parsedStopDate.getTime() - parsedStartDate.getTime())/60000;
+                               Log.d("MILA", "PLAYTIME = " + tmp + "rounded = " + Math.round(tmp));
+                               parsedAverString = valueOf((parsedStopDate.getTime() - parsedStartDate.getTime())/60000).toString();
+
+                           }
+                           Log.d("MILA", "PLAYTIME = " + parsedAverString);
+
+
+                       }
+                       else
+                       {
+                           Log.d("MILA", "No playtime...........");
+                           runOnUiThread(new Runnable() {
+                               @Override
+                               public void run() {
+                                   Toast.makeText(getApplicationContext(), "Your child havn't been playing in this timeframe", Toast.LENGTH_LONG).show();
+                               }
+
+                           });
+                           parsedAverString = "00";
+                           Log.d("MILA", "PLAYTIME = " + parsedAverString);
+                           averageTime.setText(parsedAverString);
+                           averageTime.append(" min");
+                       }
+                       prgDialog.dismiss();
+                       averageTime = (TextView)findViewById(R.id.title2_2);
+                       averageTime.setText(parsedAverString);
+                       averageTime.append(" min");
+                       sessions = (TextView) findViewById(R.id.sessionsValue);
+                       sessions.setText(sessionsValue);
+                       Log.d("MILA","Sessions played OUT...... " + sessionArray.length());
+
+                   } else {
+
+                       runOnUiThread(new Runnable() {
+                           @Override
+                           public void run() {
+                               Toast.makeText(getApplicationContext(), "Something went wrong, no data have been recieved", Toast.LENGTH_LONG).show();
+                           }
+
+                       });
+                       parsedAverString = "NO DATA";
+                       Log.d("MILA", "PLAYTIME = " + parsedAverString);
+                       averageTime.setText(parsedAverString);
+
+                   }
+               } catch (JSONException e) {
+                   e.printStackTrace();
+               }
+
+           }
+
+           @Override
+           public void onError(RegistrationResponse.RegistrationError error) {
+               enableProgressDialog(false);
+               runOnUiThread(new Runnable() {
+                   @Override
+                   public void run() {
+                       Toast.makeText(getApplicationContext(), "Something went wrong, no data have been recieved", Toast.LENGTH_LONG).show();
+                   }
+
+               });
+               parsedAverString = "NO DATA";
+               Log.d("MILA", "PLAYTIME = " + parsedAverString);
+               averageTime.setText(parsedAverString);
+           }
+
+           @Override
+           public void onNetworkError() {
+               enableProgressDialog(false);
+               runOnUiThread(new Runnable() {
+                   @Override
+                   public void run() {
+                       Toast.makeText(getApplicationContext(), "No connection with server have been detected, please try again later!", Toast.LENGTH_LONG).show();
+                   }
+
+               });
+               parsedAverString = "NO DATA";
+               Log.d("MILA", "PLAYTIME = " + parsedAverString);
+               averageTime.setText(parsedAverString);
+           }
+       });
+
+
+   }
+public void averageTimeWeek()
     {
         //enableProgressDialog(true);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dfny = new SimpleDateFormat("MM-dd");
 
         Calendar calendar = Calendar.getInstance();
         Date d_now = calendar.getTime();
         String formattedDate = df.format(d_now);
-      //  Date today = Calendar.getInstance().getTime();
-        Log.d("MILA","Current date ="+formattedDate);
+        //Date tomorrow = calendar.getTime();
+        calendar.add(Calendar.DATE, -7);
+        Date weekAgo = calendar.getTime();
+        String formattedWeekAgo = df.format(weekAgo);
+        Log.d("MILA in FOR","**********************");
+       // String newDate=null;
+        valuesForGraphTS.add(formattedDate);
+        for (int i = 0; i <7; i++)
+        {
+            calendar.add(Calendar.DATE, 1);
+            formattedDate = dfny.format(calendar.getTime());
+            Log.d("MILA in FOR",formattedDate);
+            valuesForGraphTS.add(formattedDate);
 
-        calendar.add(Calendar.DATE, -1);
-        Date yesterday = calendar.getTime();
-        String formattedYesterday = df.format(yesterday);
-        Log.d("MILA","Yesterday date ="+formattedYesterday);
+         }
+
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+
+        //Need to get the dates starting from now Date
+        staticLabelsFormatter.setHorizontalLabels(valuesForGraphTS.toArray(new String[0]));
+        //staticLabelsFormatter.setHorizontalLabels(new String[] {"punch", "RFID", "hug"});
+        staticLabelsFormatter.setVerticalLabels(new String[] {"0", "1", "3"});
 
 
-
-      /*  RegisterAPI.getInstance(this).getAverageTime(productID, serialNumber,babyID, startTime, stopTime, new RegisterAPI.RegistrationCallback() {
+       RegisterAPI.getInstance(this).getAverageTime(productID, serialNumber,childID, formattedWeekAgo, formattedDate, new RegisterAPI.RegistrationCallback() {
             @Override
             public void onResponse(String str) {
                 try {
@@ -200,27 +356,45 @@ public void averageTime(View v)
                     JSONObject jsonResponse = new JSONObject(str);
                     String result = jsonResponse.getString("result");
                     JSONObject result_obj = jsonResponse.getJSONObject("content");
-
+                   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                    Log.d("MILA","Get average time.......");
                     if (result.equals("OK")) {
-                        productList = result_obj.getJSONArray("ProductList");
-                        if(productList.length()>0) {
-                            for (int i = 0; i < productList.length(); i++) {
-                                JSONObject b = productList.getJSONObject(i);
-                                combined = b.getString("ProductId") + "_" + b.getString("CommercialName");
-                                combined1 = b.getString("CommercialName")+ "_" +b.getString("ProductId");
-                                productID = b.getString("ProductId");
-                                productName=b.getString("CommercialName");
-                                String temp = combined1.substring(0,combined1.indexOf("_"));
-                                listName.add(temp);
-
+                        Log.d("MILA","Get average time.......resul OK for child " + childID);
+                        sessionArray = result_obj.getJSONArray("SessionList");
+                        if(sessionArray.length()>0) {
+                            for (int i = 0; i < sessionArray.length(); i++) {
+                                Log.d("MILA","Get average time inside FOR");
+                                JSONObject b = sessionArray.getJSONObject(i);
+                                 startTime = b.getString("startTime") ;
+                                 stopTime  = b.getString("endTime");
+                                try {
+                                    parsedStartDate = dateFormat.parse(startTime);
+                                    parsedStopDate = dateFormat.parse(stopTime);
+                                     String parsedAver = valueOf(parsedStopDate.getTime() - parsedStartDate.getTime()).toString();
+                                    Log.d("MILA","Time elapsed =" + parsedAver);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
 
                             }
-                            updateUISpinner(listName);
+                           /* GraphView graph = (GraphView) findViewById(R.id.graph);
+                            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+                            //Need to get the dates starting from now Date
+                            staticLabelsFormatter.setHorizontalLabels(valuesForGraphTS.toArray(new String[0]));
+                            //staticLabelsFormatter.setHorizontalLabels(new String[] {"punch", "RFID", "hug"});
+                            staticLabelsFormatter.setVerticalLabels(new String[] {"1", "2", "3"});*/
+
                         }
                         else
                         {
-                            Log.d("Array returned1111 ========", "No BABIES...........");
-                            updateUISpinner(listName);
+                            Log.d("MILA", "No playtime...........");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "Your child havn't been playing in this timeframe", Toast.LENGTH_LONG).show();
+                                   }
+
+                            });
                         }
 
 
@@ -228,34 +402,39 @@ public void averageTime(View v)
 
                     } else {
 
-                        cleanText(jsonResponse.getString("message"));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Your child havn't been playing in this timeframe", Toast.LENGTH_LONG).show();
+                            }
+
+                        });
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
-            }
+           }
 
-            @Override
-            public void onError(RegistrationResponse.RegistrationError error) {
-                enableProgressDialog(false);
-            }
+           @Override
+           public void onError(RegistrationResponse.RegistrationError error) {
+               enableProgressDialog(false);
+           }
 
-            @Override
-            public void onNetworkError() {
-                enableProgressDialog(false);
-            }
-        });
+           @Override
+           public void onNetworkError() {
+               enableProgressDialog(false);
+           }
+       });
 
-*/
 
+
+   }
+
+
+    public void refresh(View view) {
+        finish();
+        startActivity(getIntent());
     }
-
-    public void navigateBackLogin(View v) {
-        Intent loginIntent = new Intent(getApplicationContext(),LoginActivity.class);
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(loginIntent);
-
-}
 }

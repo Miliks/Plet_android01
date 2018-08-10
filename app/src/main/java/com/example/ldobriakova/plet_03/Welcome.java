@@ -36,7 +36,7 @@ public class Welcome extends Activity  {
     private Spinner spinnerProduct, spinnerActivity;
     private ProductSpinAdapter newAdapter;
     private Button btnNetwork;
-    String userName, babyAlias, productID, serialNumb, productAlias;
+    String userName, babyAlias, productID, serialNumb, productAlias, childID;
     String result;
     ProgressDialog progressDialog;
     JSONArray productList = new JSONArray();
@@ -79,6 +79,8 @@ public class Welcome extends Activity  {
         if (extras != null) {
             userName = extras.getString("userName");
             babyAlias = extras.getString("babyAlias");
+            if(extras.getString("childID")!=null)
+            childID = extras.getString("childID");
             if(extras.getString("productID")!=null)
             productID = extras.getString("productID");
             if(extras.getString("productAlias")!=null){
@@ -87,7 +89,6 @@ public class Welcome extends Activity  {
             }
 
         }
-
         getProducts(userName);
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
         Log.d("TAG","Baby alias passed from previous screen = " + babyAlias);
@@ -251,6 +252,7 @@ public class Welcome extends Activity  {
         i.putExtra("babyAlias", babyAlias);
         i.putExtra("productid",productID);
         i.putExtra("serialNumber",serialNumb);
+        i.putExtra("childID",childID);
         startActivity(i);
 
 

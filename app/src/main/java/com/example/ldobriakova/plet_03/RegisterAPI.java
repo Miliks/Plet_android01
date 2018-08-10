@@ -225,7 +225,7 @@ public void unregUser(String userName, String productID, String serialNumb,final
 
     public void updateBaby(String username, String alias, String oldAlias, String gender, String birthDate, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
-        String requestBody = "updatebaby?username="+username+"&babyAlias="+alias+"&oldBabyAlias=" + oldAlias + "&birthDate="+birthDate+"&babyGender="+gender;
+        String requestBody = "updatebaby?username="+username+"&newbabyAlias="+alias+"&oldBabyAlias=" + oldAlias + "&birthDate="+birthDate+"&babyGender="+gender;
         Request request = new Request.Builder()
                 .url(BASE_URL + requestBody)
                 .get()
@@ -357,7 +357,35 @@ public void unregUser(String userName, String productID, String serialNumb,final
 
     }
 
+public void getAverageTime(String productID, String serialNumber,String childID,String formattedYesterday, String formattedDate, final RegistrationCallback callback)
+{
+    String requestBody = "getActivitySessionsList?babyID=" + childID + "&startTime="+formattedYesterday+"&stopTime="+formattedDate;
+    Request request = new Request.Builder()
+            .url(BASE_URL + requestBody)
+            .get()
+            .build();
+    Log.d("RESPONSE = ", request.toString());
+    httpClient.newCall(request).enqueue(new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.d("RESPONSE on fail of network = ", e.toString());
+            if (callback != null)
+                callback.onNetworkError();
+        }
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
 
+            if (response.isSuccessful()) {
+                String alternate = response.body().string();
+                Log.d("average time",alternate);
+                callback.onResponse(alternate);
+            }
+            else {
+                if (callback != null)
+                    callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+            }
+        } });
+}
     public void registerProdInstance(String username, String productID, String serial_Number, String toyAlias, final RegistrationCallback callback)
     {
         //deletebaby?username={USERNAME}&babyAlias={BABYALIAS}
