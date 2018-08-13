@@ -100,32 +100,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="10dp"
+
             android:gravity="center_horizontal"
             android:textColor="@android:color/holo_blue_dark"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginTop="10dp"
+
         android:gravity="center_horizontal"
         android:text="  played today for "
         android:textColor="@android:color/holo_blue_dark"
-        android:textSize="25dp" />
+        android:textSize="20dp" />
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/title2_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="10dp"
+
             android:gravity="center_horizontal"
             android:textColor="@android:color/holo_blue_dark"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

@@ -240,6 +240,11 @@ public void selectDate(View v) {
                        }
                        else
                        {
+                            parsedAverString = "00";
+                            sessionsValue = "0";
+                           Log.d("MILA", "PLAYTIME for no session found = " + parsedAverString);
+                          // averageTime.setText(parsedAverString);
+                           //averageTime.append(" min");
                            Log.d("MILA", "No playtime...........");
                            runOnUiThread(new Runnable() {
                                @Override
@@ -248,10 +253,6 @@ public void selectDate(View v) {
                                }
 
                            });
-                           parsedAverString = "00";
-                           Log.d("MILA", "PLAYTIME = " + parsedAverString);
-                           averageTime.setText(parsedAverString);
-                           averageTime.append(" min");
                        }
                        prgDialog.dismiss();
                        averageTime = (TextView)findViewById(R.id.title2_2);
