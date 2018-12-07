@@ -48,6 +48,7 @@ public class SelectChild extends Activity {
     public void onBackPressed()
     {
         Intent i = new Intent(SelectChild.this,LoginActivity.class);
+        i.putExtra("isTeacher",false);
         startActivity(i);
     }
 

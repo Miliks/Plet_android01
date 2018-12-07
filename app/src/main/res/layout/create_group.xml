@@ -5,20 +5,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    tools:context="com.example.ldobriakova.plet_03.ModifyBaby">
+    tools:context="com.example.ldobriakova.plet_03.CreateGroup">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/myTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="61dp"
         android:gravity="center"
-        android:text="Modify your child's information "
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="30dp" />
+        android:text="Create group"
+        android:textSize="30dp"
+        android:textColor="@android:color/holo_blue_dark" />
 
     <ImageView
-        android:layout_width="335dp"
-        android:layout_height="116dp"
+        android:layout_width="329dp"
+        android:layout_height="132dp"
+        android:layout_gravity="center_horizontal"
         android:adjustViewBounds="true"
         android:src="@drawable/logo1"
         tools:ignore="ContentDescription" />
@@ -42,10 +43,10 @@
                     android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="User Name"
                     android:clickable="false"
-                    android:focusable="false"
                     android:editable="false"
+                    android:focusable="false"
+                    android:hint="*User Name"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -59,10 +60,10 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/babyAlias"
+                    android:id="@+id/groupName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Child Alias"
+                    android:hint="*Group Name"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign in"
                     android:imeOptions="actionUnspecified"
@@ -76,92 +77,81 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/baby_birthday"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="                    DD-MM-YYYY Child Birthday"
-                    android:imeActionId="6"
-                    android:imeActionLabel="Sign in"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="date"
-                    android:maxLines="1"
-                    android:singleLine="true" />
             </android.support.design.widget.TextInputLayout>
 
-            <!--android.support.design.widget.TextInputLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <Spinner
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </RadioGroup>
+
+                <!--Spinner
                     android:id="@+id/spinnerGender"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:background="@android:drawable/btn_dropdown">
-                </Spinner>
-            </android.support.design.widget.TextInputLayout-->
+                </Spinner-->
+            </android.support.design.widget.TextInputLayout>
 
-            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/header"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="*GENDER: "
-                    />
-                <RadioButton android:id="@+id/radio_gender_m"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gender_male"
-                    android:onClick="onRadioButtonClicked"/>
-                <RadioButton android:id="@+id/radio_gender_f"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gender_female"
-                    android:onClick="onRadioButtonClicked"/>
-            </RadioGroup>
 
-        <!--LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="center_horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="50dp"
-            android:orientation="horizontal"-->
-
-            <Button
-                android:id="@+id/add_baby"
-                style="?android:textAppearanceSmall"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_rounded_corners"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-                android:onClick="updateBaby"
-                android:text="UPDATE"
-                android:textStyle="bold" />
 
-            <!--Button
-                android:id="@+id/back"
-                style="?android:textAppearanceSmall"
+                <!--Button
+                android:id="@+id/removeBaby"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
                 android:layout_gravity="center_horizontal"
                 android:onClick="backToSelectBaby"
-                android:text="back"
+                android:text="BACK" /-->
+
+
+                <Button
+                    android:id="@+id/add_baby2"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_rounded_corners"
+                    android:onClick="createGroup"
+                    android:text="  create group  "
+                    android:textStyle="bold" />
+
+                <!--Button
+                android:id="@+id/add_baby"
+                style="?android:textAppearanceSmall"
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="registerStudents"
+                android:text="  add student  "
                 android:textStyle="bold" /-->
-            <!-- -->
-            <!--android:layout_marginLeft="20pt"
+                <!-- -->
+                <!--android:layout_marginLeft="20pt"
                 android:layout_marginTop="22dp"
                 -->
-        <!--/LinearLayout-->
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

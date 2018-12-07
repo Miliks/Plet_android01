@@ -124,7 +124,42 @@ public class RegisterAPI {
         }
     }
 
-    //create a new user in DB
+    //create a new group account for user in DB
+
+    public void registerTeacher(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
+        JSONObject json = new JSONObject();
+        String requestBody = "createTeacher?username="+userName+"&surname="+surName+"&firstname="+name+"&email=" + email + "&password=" + password+"&cellular=" +phone+"&city="+city+"&country="+country_short+"&birthDate="+birthDate+ "&gender="+gender;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    callback.onResponse(alternate);
+
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+
+            } });
+    }
+
+    //create a new personal account for user in DB
 
     public void registerEmail(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
@@ -189,11 +224,289 @@ public void unregUser(String userName, String productID, String serialNumb,final
         } });
 }
 
+    //Adding baby to DB
+    public void createGroup(String username, String groupname, final RegistrationCallback callback) {
+        JSONObject json = new JSONObject();
+        String requestBody = "createGroup?teacherUsername="+username+"&groupName="+groupname;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+    }
+ //   API for HW creation
+ public void createRecognHW(String wrstName, String wrstMac, final RegistrationCallback callback) {
+    // JSONObject json = new JSONObject();
+     String requestBody = "createRecogHW?hwCodename="+wrstMac+"&hwCommonName="+wrstName;
+     Request request = new Request.Builder()
+             .url(BASE_URL + requestBody)
+             .get()
+             .build();
+     Log.d("RESPONSE = ", request.toString());
+
+     httpClient.newCall(request).enqueue(new Callback() {
+         @Override
+         public void onFailure(Call call, IOException e) {
+             Log.d("RESPONSE on fail of network = ", e.toString());
+             if (callback != null)
+                 callback.onNetworkError();
+         }
+         @Override
+         public void onResponse(Call call, Response response) throws IOException {
+
+             if (response.isSuccessful()) {
+                 String alternate = response.body().string();
+                 callback.onResponse(alternate);
+             }
+             else {
+                 if (callback != null)
+                     callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+             }
+         } });
+ }
+//deleteGroup
+public void deleteGroup(String teacherUsername,String groupID, final RegistrationCallback callback){
+    String requestBody = "deleteGroup?teacherUsername=" + teacherUsername+"&groupID="+groupID;
+    Request request = new Request.Builder()
+            .url(BASE_URL + requestBody)
+            .get()
+            .build();
+    Log.d("RESPONSE delete group = ", request.toString());
+
+    httpClient.newCall(request).enqueue(new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.d("RESPONSE on fail of network = ", e.toString());
+            if (callback != null)
+                callback.onNetworkError();
+        }
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+
+            if (response.isSuccessful()) {
+                String alternate = response.body().string();
+                Log.d("List of products",alternate);
+                callback.onResponse(alternate);
+            }
+            else {
+                if (callback != null)
+                    callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+            }
+        } });
+}
+
+ //assign wristband to student
+ public void assignWrst(String wristID, String studentID, final RegistrationCallback callback){
+     String requestBody = "associateRecogHwToStudent?studentID=" + studentID +"&recogHwID=" + wristID;
+     Request request = new Request.Builder()
+             .url(BASE_URL + requestBody)
+             .get()
+             .build();
+     Log.d("RESPONSE delete wristband = ", request.toString());
+
+     httpClient.newCall(request).enqueue(new Callback() {
+         @Override
+         public void onFailure(Call call, IOException e) {
+             Log.d("RESPONSE on fail of network = ", e.toString());
+             if (callback != null)
+                 callback.onNetworkError();
+         }
+         @Override
+         public void onResponse(Call call, Response response) throws IOException {
+
+             if (response.isSuccessful()) {
+                 String alternate = response.body().string();
+                 Log.d("List of products",alternate);
+                 callback.onResponse(alternate);
+             }
+             else {
+                 if (callback != null)
+                     callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+             }
+         } });
+ }
+ //deleteWrst
+
+    public void deleteWrst(String wristID, final RegistrationCallback callback){
+        String requestBody = "deleteRecogHW?recogHwID=" + wristID;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE delete wristband = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("List of products",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+    }
+
+
+
+    public void getWristList(final RegistrationCallback callback){
+        String requestBody = "getRecogHWList";
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE getProductlist = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("List of products",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+    }
 
     //Adding baby to DB
     public void registerBaby(String username, String firstname, String gender, String birthDate, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
         String requestBody = "createbaby?username="+username+"&babyAlias="+firstname+"&birthDate="+birthDate+"&babyGender="+gender;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+    }
+
+    public void queryStudentsByGroup(String username, String groidID, final RegistrationCallback callback) {
+        JSONObject json = new JSONObject();
+        if(groidID != null) {
+            String requestBody = "getStudentsList?teacherUsername=" + username + "&groupID=" + groidID;
+            Request request = new Request.Builder()
+                    .url(BASE_URL + requestBody)
+                    .get()
+                    .build();
+            Log.d("RESPONSE = ", request.toString());
+
+            httpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("RESPONSE on fail of network = ", e.toString());
+                    if (callback != null)
+                        callback.onNetworkError();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                    if (response.isSuccessful()) {
+                        String alternate = response.body().string();
+                        callback.onResponse(alternate);
+                    } else {
+                        if (callback != null)
+                            callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                    }
+                }
+            });
+        }
+        else
+        {
+            String requestBody = "getStudentsList?teacherUsername=" + username;
+            Request request = new Request.Builder()
+                    .url(BASE_URL + requestBody)
+                    .get()
+                    .build();
+            Log.d("RESPONSE = ", request.toString());
+
+            httpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("RESPONSE on fail of network = ", e.toString());
+                    if (callback != null)
+                        callback.onNetworkError();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                    if (response.isSuccessful()) {
+                        String alternate = response.body().string();
+                        callback.onResponse(alternate);
+                    } else {
+                        if (callback != null)
+                            callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                    }
+                }
+            });
+        }
+
+    }
+
+    public void registerStudent(String username, String firstname, String surname, String gender, String birthDate, final RegistrationCallback callback) {
+        JSONObject json = new JSONObject();
+        String requestBody = "createStudent?teacherusername="+username+"&surname="+surname+"&name="+firstname+"&birthDate="+birthDate+"&gender="+gender;
         Request request = new Request.Builder()
                 .url(BASE_URL + requestBody)
                 .get()
@@ -483,9 +796,74 @@ public void getAverageTime(String productID, String serialNumber,String childID,
     //Select Products filtered by userID
     //getUserInstances?username={USERNAME}
 
+    //start activity session from the toy
+    public void start_stop_ActivitySession(String param, String babyID, String productID, String serialNumber, String activityID, final RegistrationCallback callback) {
+        //  startActivitySession?productID={PRODUCTID}&serialnumber={SERIALNUMBER}&babyid={BABYID}&activityid={ACTIVITYID}
+        String requestBody = param + "ActivitySession?productID="+productID+"&serialnumber=" + serialNumber + "&babyid=" + babyID + "&activityid=" + activityID;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE startActivitySession = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("List of products",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+
+    }
+
     public void queryProductList(String username, final RegistrationCallback callback) {
 
         String requestBody = "getUserInstances?username="+username;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE getUserInstances = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("List of products",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+
+    }
+
+    public void queryGroups(String username, final RegistrationCallback callback) {
+
+        String requestBody = "getGroupsList?teacherUsername="+username;
         Request request = new Request.Builder()
                 .url(BASE_URL + requestBody)
                 .get()
@@ -556,8 +934,6 @@ public void getAverageTime(String productID, String serialNumber,String childID,
         JSONObject mainObj = new JSONObject();
         JSONObject logObj = new JSONObject();
         JSONObject urlData = new JSONObject();
-
-
 
         try{
             //postData.put("requestType", "logger");
@@ -713,6 +1089,50 @@ public void getAverageTime(String productID, String serialNumber,String childID,
             } });
 
     }
+
+    public void loginAPI(String username, String passhash, Integer isTeacher, final RegistrationCallback callback){
+
+        JSONObject postData = new JSONObject();
+        try{
+            postData.put("username", username);
+            postData.put("passhash",passhash);
+            postData.put("isTeacher",isTeacher);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        //RequestBody postBody = new FormBody.Builder().add("message","{\"requestType\" : \"changeHttp\",\"ipTarget\" : \"91.218.225.130\",\"portTarget\" : 443}").build();
+        RequestBody body = RequestBody.create(MEDIA_TYPE,postData.toString());//RequestBody.create("application/json", postData.toString());
+        Request request = new Request.Builder().url("https://plet.cloud.reply.eu/pletapis.svc/login")
+                .post(body)
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("User data ",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
+
+
+    }
+
 
 
     public void userLogin(String userName, String passWord, final RegistrationCallback callback) {

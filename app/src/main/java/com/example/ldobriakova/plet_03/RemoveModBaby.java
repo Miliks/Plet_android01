@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -16,6 +18,7 @@ import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +56,7 @@ public class RemoveModBaby extends Activity {
     int j;
     Spinner spinnerBaby;
     List<Child> childItems;
+    EditText birthdayET;
 
 
     @Override
@@ -68,12 +72,27 @@ public class RemoveModBaby extends Activity {
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
         childList = (ListView)findViewById(R.id.listChild);
+       /* birthdayET = (EditText)findViewById(R.id.baby_birthday);
+        MaskedTextChangedListener listener = new MaskedTextChangedListener(
+                "[00]-[00]-[0000]",	birthdayET,
+                new MaskedTextChangedListener.ValueListener() {
+                    @Override
+                    public void onTextChanged(boolean maskFilled, @NonNull final String extractedValue) {
+                        Log.d(RegisterActivity.class.getSimpleName(),extractedValue);
+                        Log.d(RegisterActivity.class.getSimpleName(), String.valueOf(maskFilled));
+                    }
+                }
+        );*/
 
         if (extras != null) {
 
             myEtText = extras.getString("userName");
 
         }
+      /*  birthdayET.addTextChangedListener(listener);
+        birthdayET.setOnFocusChangeListener(listener);
+        birthdayET.setHint(listener.placeholder());*/
+       // birthdayET.setText(childBD);
 
         getBabies(myEtText);
 
@@ -214,8 +233,8 @@ public class RemoveModBaby extends Activity {
 
                     }
                     else{
-                        Log.d("Inside cycle for ......", "No babies associated with this user");
-                    }
+                       Log.d("Inside cycle for ......", "No babies associated with this user");
+                     }
 
 
                 } catch (JSONException e) {
@@ -240,12 +259,17 @@ public class RemoveModBaby extends Activity {
 
     public void modifyBaby(View view){
         Intent modifyBaby = new Intent(getApplicationContext(),ModifyBaby.class);
-        modifyBaby.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        modifyBaby.putExtra("userName",myEtText);
-        modifyBaby.putExtra("babyAlias",babyAlias );
-        modifyBaby.putExtra("babyGender",childGender);
-        modifyBaby.putExtra("birthDay", childBD);
-        startActivity(modifyBaby);
+        if(myEtText!=null&&babyAlias!=null&&childGender!=null&childBD!=null) {
+            modifyBaby.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            modifyBaby.putExtra("userName", myEtText);
+            modifyBaby.putExtra("babyAlias", babyAlias);
+            modifyBaby.putExtra("babyGender", childGender);
+            modifyBaby.putExtra("birthDay", childBD);
+            startActivity(modifyBaby);
+        }
+        else
+            Log.d("MILA", "No babies associated with this user");
+
     }
 
 

@@ -11,15 +11,19 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,20 +51,24 @@ public class RegisterActivity extends Activity {
 	TextView errorMsg;
 	// Create Edit View Objects for all fields to fill for registration
 	EditText userNameET, nameET, surnameET, emailET, pwdET, birthdayET, phoneET,cityET,repeatpwdET;
-	//EditText genderET;
+
 	// Checkbox for privicy complience
 	CheckBox checkBox;
 	Spinner countrySpinner, genderSpinner;
 	JSONArray countryList = new JSONArray();
 	String combined, gender_adult;
 	List<String> listName = new ArrayList<String>();
+	Boolean isTeacher;
+	Boolean  isGroup = false;
+	Button btn1, btn2, btn3;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register);
 		Fabric.with(this, new Crashlytics());
+		setContentView(R.layout.activity_register);
+
 		checkBox = (CheckBox) findViewById(R.id.checkbox);
 		final Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
@@ -81,20 +89,51 @@ public class RegisterActivity extends Activity {
 		textView.setClickable(true);
 		textView.setMovementMethod(LinkMovementMethod.getInstance());
 
+		Bundle extras = getIntent().getExtras();
+		isTeacher = extras.getBoolean("isTeacher");
+		Log.d("What is returned on Register Login view ......", isTeacher.toString());
+		btn1 = (Button)findViewById(R.id.save_button);
+		btn2 = (Button)findViewById(R.id.add_group_button);
+		btn3 = (Button)findViewById(R.id.register_button);
+		if(isTeacher) {
+			/*final float scale = getResources().getDisplayMetrics().density;
+			int heightDp = (int) (33 * scale + 0.5f);
+			ViewGroup.LayoutParams params = btn1.getLayoutParams();
+			params.height = heightDp;
+			ViewGroup.LayoutParams params2 = btn2.getLayoutParams();
+			params2.height = heightDp;
+			btn1.setLayoutParams(params);*/
+			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
+					(ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
+			btn1.setLayoutParams(lp_l);
+			btn2.setLayoutParams(lp_l);
+			btn1.requestLayout();
+			btn1.setEnabled(true);
+			btn2.setEnabled(true);
+			btn3.setEnabled(false);
+			btn3.setVisibility(View.INVISIBLE);
+		}
+		else {
+			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
+					(ViewGroup.LayoutParams.MATCH_PARENT), (ViewGroup.LayoutParams.MATCH_PARENT));
+			btn3.setLayoutParams(lp_l);
+			btn1.setEnabled(false);
+			btn1.setVisibility(View.INVISIBLE);
+			btn2.setEnabled(false);
+			btn2.setVisibility(View.INVISIBLE);
+			btn3.setEnabled(true);
+		}
 		// Find User Name Edit View control by ID
 		userNameET = (EditText)findViewById(R.id.user_name);
 		// Find Name Edit View control by ID
 		nameET = (EditText)findViewById(R.id.owner_name);
 		// Find SurName Edit View control by ID
 		surnameET = (EditText)findViewById(R.id.owner_surname);
-		// Find Gender Edit View control by ID
-		//genderET = (EditText)findViewById(R.id.owner_gender);
 
-		// Find Age Edit View control by ID
 
-		birthdayET  = (EditText)findViewById(R.id.owner_birthday);
+			birthdayET  = (EditText)findViewById(R.id.owner_birthday);
 
-	/*	MaskedTextChangedListener listener = new MaskedTextChangedListener(
+		MaskedTextChangedListener listener = new MaskedTextChangedListener(
 		"[00]-[00]-[0000]",	birthdayET,
 				new MaskedTextChangedListener.ValueListener() {
 					@Override
@@ -107,7 +146,7 @@ public class RegisterActivity extends Activity {
 		birthdayET.addTextChangedListener(listener);
 		birthdayET.setOnFocusChangeListener(listener);
 		birthdayET.setHint(listener.placeholder());
-*/
+
 		// Find City Edit View control by ID
 		cityET = (EditText)findViewById(R.id.owner_city);
 		// Find Email Edit View control by ID
@@ -235,11 +274,13 @@ public class RegisterActivity extends Activity {
 	/**
 	 * Method gets triggered when Register button is clicked
 	 * 
-	 * @param view
+	 * @param
 	 *
 	 */
 
-	public void registerUser(View view){
+
+
+	public void registerUser(){
 
 		// Get NAme ET control value
 		final String userName = userNameET.getText().toString();
@@ -251,10 +292,7 @@ public class RegisterActivity extends Activity {
 		String birthDate = birthdayET.getText().toString();
 		// Get phone number ET control value
 		String phone = phoneET.getText().toString();
-		// Get gender ET control value
-		//String gender = genderET.getText().toString();
-		//String gender = genderSpinner.getSelectedItem().toString();
-				// Get city ET control value
+		// Get city ET control value
 		String city = cityET.getText().toString();
 		// Get Email ET control value
 		String email = emailET.getText().toString();
@@ -280,38 +318,75 @@ public class RegisterActivity extends Activity {
 				if (isValidDate(birthDate)) {
 
 					if (validateAdult(birthDate)) {
-
-						RegisterAPI.getInstance(this).registerEmail(userName, surName, name,email, password,phone, city,country_short,birthDate,gender_adult, new RegisterAPI.RegistrationCallback() {
-							@Override
-							public void onResponse(String str) {
-								try {
-									JSONObject jsonResponse = new JSONObject(str);
-									String result = jsonResponse.getString("result");
-									if (result.equals("OK")) {
-										String user = userName;
-										//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
-										navigatetoAddChild(user);
-										//navigatetoLoginActivity();
-									} else {
-										onFailRegistration(jsonResponse.getString("message"));
+						if (isTeacher) {
+							RegisterAPI.getInstance(this).registerTeacher(userName, surName, name, email, password, phone, city, country_short, birthDate, gender_adult, new RegisterAPI.RegistrationCallback() {
+								@Override
+								public void onResponse(String str) {
+									try {
+										JSONObject jsonResponse = new JSONObject(str);
+										String result = jsonResponse.getString("result");
+										if (result.equals("OK")) {
+											String user = userName;
+											//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
+											//navigatetoAddStudent(user);
+											if(isGroup=false)
+											navigatetoLoginActivity();
+											else
+												navigateAddGroup(user);
+										} else {
+											onFailRegistration(jsonResponse.getString("message"));
+										}
+									} catch (JSONException e) {
+										e.printStackTrace();
 									}
-								} catch (JSONException e) {
-									e.printStackTrace();
+
 								}
-							}
 
-							@Override
-							public void onError(RegistrationResponse.RegistrationError error) {
+								@Override
+								public void onError(RegistrationResponse.RegistrationError error) {
 
-							}
+								}
 
-							@Override
-							public void onNetworkError() {
+								@Override
+								public void onNetworkError() {
 
-							}
-						});
-					} else
-						Toast.makeText(getApplicationContext(), "Sorry, you are not adult!", Toast.LENGTH_LONG).show();
+								}
+							});
+
+						} else {
+							RegisterAPI.getInstance(this).registerEmail(userName, surName, name, email, password, phone, city, country_short, birthDate, gender_adult, new RegisterAPI.RegistrationCallback() {
+								@Override
+								public void onResponse(String str) {
+									try {
+										JSONObject jsonResponse = new JSONObject(str);
+										String result = jsonResponse.getString("result");
+										if (result.equals("OK")) {
+											String user = userName;
+											//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
+											navigatetoAddChild(user);
+											//navigatetoLoginActivity();
+										} else {
+											onFailRegistration(jsonResponse.getString("message"));
+										}
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								}
+
+								@Override
+								public void onError(RegistrationResponse.RegistrationError error) {
+
+								}
+
+								@Override
+								public void onNetworkError() {
+
+								}
+							});
+						}
+					}
+					else
+						Toast.makeText(getApplicationContext(), "Sorry, you are not an adult!", Toast.LENGTH_LONG).show();
 				} else
 					Toast.makeText(getApplicationContext(), "Invalid Date format!", Toast.LENGTH_SHORT).show();
 
@@ -323,7 +398,11 @@ public class RegisterActivity extends Activity {
 		//Separate message if the password do not match with the confirmation
 		Toast.makeText(getApplicationContext(), "Please fill all mandatory information to proceed and check if it's correct", Toast.LENGTH_LONG).show();
 }
-			private void navigatetoLoginActivity(){
+
+
+
+
+	private void navigatetoLoginActivity(){
 			runOnUiThread(new Runnable(){
 				@Override
 				public void run() {
@@ -346,6 +425,23 @@ public class RegisterActivity extends Activity {
 					});
 
 		}
+
+	private void navigateAddGroup(final String userName){
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+
+				Intent i = new Intent(RegisterActivity.this, CreateGroup.class);
+				String userNameInternal = userName;
+				//usernameET.getText().toString();
+				i.putExtra("userName", userNameInternal);
+				prgDialog.dismiss();
+				startActivity(i);
+
+			}
+		});
+
+	}
 
 
 	private void onFailRegistration(final String message)
@@ -431,5 +527,18 @@ return true;
 					gender_adult = "male";
 					break;
 		}
+	}
+	public void registerGroup(View view) {
+		isGroup=true;
+		registerUser();
+	}
+
+	public void registerTeacher(View view) {
+		registerUser();
+	}
+
+	public void registerParent(View view) {
+		registerUser();
+
 	}
 }

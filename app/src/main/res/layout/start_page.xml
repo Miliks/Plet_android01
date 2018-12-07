@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    tools:context=".StartActivity">
+    >
+
+
+
+    <!--TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/myTitle"
+        android:layout_width="327dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center_horizontal"
+        android:foregroundGravity="center_vertical|center_horizontal"
+        android:gravity="center_horizontal"
+        android:textSize="30dp"
+        android:text="Welcome to PLET"
+        android:textColor="@android:color/holo_blue_dark" /-->
+
+    <ImageView
+        android:layout_width="370dp"
+        android:layout_height="200dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/logo1"
+        tools:ignore="ContentDescription" />
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/start_personal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:src="@drawable/plet_backg_title"
+            android:onClick="personalPlay"
+            android:text="   personal play   " />
+
+        <!--ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:src="@drawable/icons-famiglia"
+            tools:ignore="ContentDescription" /-->
+
+
+        <!--ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="94dp"
+            android:src="@drawable/icons-famiglia" /-->
+        <ImageButton
+            android:id="@+id/statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="151dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="groupPlay"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/wrist"
+            android:text="      group play       " />
+
+
+        <!--Button
+            android:id="@+id/quit_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:onClick="quitApp"
+            android:text="Quit app" /-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

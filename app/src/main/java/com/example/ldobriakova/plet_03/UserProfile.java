@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.redmadrobot.inputmask.MaskedTextChangedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,7 +95,7 @@ public class UserProfile extends Activity {
 
 		birthdayET  = (EditText)findViewById(R.id.owner_birthday);
 
-		/*MaskedTextChangedListener listener = new MaskedTextChangedListener(
+		MaskedTextChangedListener listener = new MaskedTextChangedListener(
 		"[00]-[00]-[0000]",	birthdayET,
 				new MaskedTextChangedListener.ValueListener() {
 					@Override
@@ -107,7 +108,7 @@ public class UserProfile extends Activity {
 		birthdayET.addTextChangedListener(listener);
 		birthdayET.setOnFocusChangeListener(listener);
 		birthdayET.setHint(listener.placeholder());
-*/
+
 		// Find City Edit View control by ID
 		cityET = (EditText)findViewById(R.id.owner_city);
 		// Find Email Edit View control by ID

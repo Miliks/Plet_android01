@@ -32,6 +32,7 @@ public class LoginActivity extends Activity {
     ProgressDialog prgDialog;
     // Error Msg TextView Object
     TextView errorMsg;
+    Boolean isTeacher;
     // Passwprd Edit View Object
     EditText pwdET, usernameET;
 
@@ -40,7 +41,9 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Fabric.with(this, new Crashlytics());
-
+        Bundle extras = getIntent().getExtras();
+        isTeacher = extras.getBoolean("isTeacher");
+        Log.d("What is returned on activity Login view ......", isTeacher.toString());
         usernameET = findViewById(R.id.username);
         // Find Password Edit View control by ID
         pwdET = findViewById(R.id.password);
@@ -57,20 +60,27 @@ public class LoginActivity extends Activity {
     @Override
     public void onBackPressed()
     {
-        finishAffinity();
-        System.exit(0);
+        Intent startPersIntent = new Intent(getApplicationContext(), StartActivity.class);
+
+        startActivity(startPersIntent);
 
     }
 
 
     public void attemptLogin(final View view) {
-
+        Integer isTeacherInt;
+        if(isTeacher)
+            isTeacherInt = 1;
+        else
+            isTeacherInt = 0;
         String userNameView = usernameET.getText().toString();
         String passwordView = pwdET.getText().toString();
        // Log.d("MILA in go to register WIFI hotspot", "MIIIIIIIIIIIIII");
         if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
             enableProgressDialog(true);
-            RegisterAPI.getInstance(this).userLogin(userNameView, passwordView, new RegisterAPI.RegistrationCallback() {
+
+
+            RegisterAPI.getInstance(this).loginAPI(userNameView, passwordView,isTeacherInt, new RegisterAPI.RegistrationCallback() {
                 @Override
                 public void onResponse(String str) {
                     try {
@@ -79,11 +89,21 @@ public class LoginActivity extends Activity {
                         String result = jsonResponse.getString("result");
                         //Log.d("What is returned on activity Login view ......", result);
                         if (result.equals("OK")) {
-                            Intent i = new Intent(LoginActivity.this, SelectChild.class);
-                            String userName = usernameET.getText().toString();
-                            i.putExtra("userName", userName);
-                            prgDialog.dismiss();
-                            startActivity(i);
+                            if(isTeacher){
+                                Intent i = new Intent(LoginActivity.this, ListGroups.class);
+                                String userName = usernameET.getText().toString();
+                                i.putExtra("userName", userName);
+                                prgDialog.dismiss();
+                                startActivity(i);
+                            }
+                             else {
+                                Intent i = new Intent(LoginActivity.this, SelectChild.class);
+                                String userName = usernameET.getText().toString();
+                                i.putExtra("userName", userName);
+                                Log.d("What is returned on activity Login view ......", userName);
+                                prgDialog.dismiss();
+                                startActivity(i);
+                            }
                         } else {
                             cleanText(jsonResponse.getString("message"));
 
@@ -137,9 +157,11 @@ public class LoginActivity extends Activity {
      * @param view
      */
     public void navigatetoRegisterActivity(View view) {
-        Intent loginIntent = new Intent(getApplicationContext(), RegisterActivity.class);
-        loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(loginIntent);
+
+        Intent i = new Intent(LoginActivity.this,RegisterActivity.class);
+        i.putExtra("isTeacher",isTeacher);
+        startActivity(i);
+
     }
 
 

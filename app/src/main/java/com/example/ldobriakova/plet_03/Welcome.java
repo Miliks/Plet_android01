@@ -379,13 +379,99 @@ public class Welcome extends Activity  {
                     stopDataCollectionCall(hostAddress);
      }
 
-     private void startDataCollectionCall(InetAddress hostAddress) {
+     //private void startDataCollectionCall(InetAddress hostAddress) {
+private void startDataCollectionCall_nohost(){
 
-        if(!hostAddress.equals(null)){
+       // if(!hostAddress.equals(null)) {
             enableProgressDialog(true);
-            String internalHost = hostAddress.toString().replace("/","");
+            // String internalHost = hostAddress.toString().replace("/","");
+            Log.d(TAG, "START COLLECTION... start session11111  = ");
+            //Call to back-end API to verify if the data transmition can be started
 
-            RegisterAPI.getInstance(this).controllerDataCollection("1",internalHost,new RegisterAPI.RegistrationCallback(){
+            //  startActivitySession?productID={PRODUCTID}&serialnumber={SERIALNUMBER}&babyid={BABYID}&activityid={ACTIVITYID}
+
+            RegisterAPI.getInstance(this).start_stop_ActivitySession("start",childID, productID, serialNumb, "1", new RegisterAPI.RegistrationCallback() {
+                @Override
+                public void onResponse(String str) {
+                    Log.d(TAG, "START COLLECTION... start session 2222222222 = ");
+
+                    JSONObject jsonResponse = null;
+                    try {
+                        enableProgressDialog(false);
+                        jsonResponse = new JSONObject(str);
+                        String result = jsonResponse.getString("result");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (result.equals("OK")) {
+                        succcess = true;
+                        //we have to enable on the toy
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Communication with server established", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "value succes in startDataCollection IF  = " + succcess);
+                            }
+
+                        });
+                    } else {
+                        succcess = false;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "No communication with the server have been established, please try again", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "value succes in startDataCollection ELSE  = " + succcess);
+                            }
+
+                        });
+                    }
+                }
+
+
+                @Override
+                public void onError(RegistrationResponse.RegistrationError error) {
+                    enableProgressDialog(false);
+                    succcess = false;
+                    Log.d(TAG, "OnError FAILED!!!!!..");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Generic ERROR  = " + succcess);
+                        }
+
+                    });
+                    serviceFound = false;
+                }
+
+                @Override
+                public void onNetworkError() {
+                    succcess = false;
+                    enableProgressDialog(false);
+                    Log.d("onNetworkError", "FAILED!!!!!..");
+                    runOnUiThread(new Runnable() {
+                                      @Override
+                                      public void run() {
+                                          Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                                          Log.d(TAG, "Network ERROR  = " + succcess);
+
+                                      }
+
+                                  }
+                    );
+
+                    serviceFound = false;
+                }
+            });
+        }
+    //}
+
+    private void startDataCollectionCall(InetAddress hostAddress) {
+    {
+                String internalHost = hostAddress.toString().replace("/","");
+               //Call to the toy to start the data transmition
+          RegisterAPI.getInstance(this).controllerDataCollection("1",internalHost,new RegisterAPI.RegistrationCallback(){
                 @Override
                 public void onResponse(String str) {
                     JSONObject jsonResponse = null;
@@ -451,9 +537,89 @@ public class Welcome extends Activity  {
 
                     serviceFound=false;
                          }
-            });}
+            });
+            }
+
+
 
    }
+    private void stopDataCollectionCall_noHost() {
+        enableProgressDialog(true);
+
+        RegisterAPI.getInstance(this).start_stop_ActivitySession("stop",childID, productID, serialNumb, "1", new RegisterAPI.RegistrationCallback() {
+                @Override
+                public void onResponse(String str) {
+                    Log.d(TAG, "START COLLECTION... start session 2222222222 = ");
+
+                    JSONObject jsonResponse = null;
+                    try {
+                        enableProgressDialog(false);
+                        jsonResponse = new JSONObject(str);
+                        String result = jsonResponse.getString("result");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (result.equals("OK")) {
+                        succcess = true;
+                        //we have to enable on the toy
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "Communication with server established", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "value succes in startDataCollection IF  = " + succcess);
+                            }
+
+                        });
+                    } else {
+                        succcess = false;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "No communication with the server have been established, please try again", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "value succes in startDataCollection ELSE  = " + succcess);
+                            }
+
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(RegistrationResponse.RegistrationError error) {
+                    succcess=false;
+                    enableProgressDialog(false);
+                    Log.d(TAG, "OnError FAILED!!!!!..");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                            // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                            serviceFound=false;
+                            //Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);
+                        }
+
+                    });
+                }
+
+                @Override
+                public void onNetworkError() {
+                    succcess=false;
+                    enableProgressDialog(false);
+                    Log.d("onNetworkError SetIP", "FAILED!!!!!..");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No communication with the toy have been established, please try again", Toast.LENGTH_LONG).show();
+                            //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+                            listenerFlag=false;
+                            // Log.d(TAG,"value succes in startDataCollection ELSE  = " + succcess);
+                        }
+
+                    });
+                }
+            });}
+        // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
+
 
     private void stopDataCollectionCall(InetAddress hostAddress) {
         enableProgressDialog(true);
@@ -639,8 +805,10 @@ public class Welcome extends Activity  {
         //mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         if(!listenerButton) {
             listenerButton = true;
-            discoveryToy();
+            //Disabled since no toy will be discovered
+           // discoveryToy();
             //initializeDiscoveryListener();
+            startDataCollectionCall_nohost();
             Log.d(TAG, "Start logging SUCCESS value = " + succcess);
             collectData.setText("   STOP DATA COLLECTION   ");
            // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
@@ -650,8 +818,11 @@ public class Welcome extends Activity  {
         else
         {
             collectData.setText("   START DATA COLLECTION   ");
+            stopDataCollectionCall_noHost();
             listenerButton = false;
-             discoveryToy();
+
+            //Disabled since no toy will be discovered
+            // discoveryToy();
             Log.d(TAG, "Stop logging SUCCESS value = " + succcess);
            // mNsdManager.stopServiceDiscovery(mDiscoveryListener);
         }

@@ -18,10 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.LabelFormatter;
 import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 import org.json.JSONArray;
@@ -32,9 +36,12 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -51,8 +58,11 @@ public class Statistic extends Activity {
     ProgressDialog prgDialog;
     JSONArray sessionArray = new JSONArray();
     ArrayList<String> valuesForGraphTS = new ArrayList<String>();
-    ArrayList<Integer> valuesForGraph = new ArrayList<Integer>();
-   // private BarChart barcrt;
+    ArrayList<Double> valuesForGraph = new ArrayList<Double>();
+    LineGraphSeries<DataPoint> series;
+    Double d;
+    // private BarChart barcrt;
+   SimpleDateFormat dfsf = new SimpleDateFormat("MM-dd");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,9 +83,6 @@ public class Statistic extends Activity {
         prgDialog.setCancelable(false);
         prgDialog.setIndeterminate(true);
         title.setText(babyName);
-       // btnDatePicker=(Button)findViewById(R.id.btn_date);
-
-      //  txtDate=(EditText)findViewById(R.id.in_date);
         playTime();
         averageTimeWeek();
             // barcrt chart =  findViewById(R.id.chart);
@@ -185,17 +192,16 @@ public void selectDate(View v) {
    {
        enableProgressDialog(true);
        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
        Calendar calendar = Calendar.getInstance();
        Date d_now = calendar.getTime();
        String formattedDate = df.format(d_now);
-
        calendar.add(Calendar.DATE, -1);
        Date yesterday = calendar.getTime();
-    calendar.add(Calendar.DATE, 2);
+       calendar.add(Calendar.DATE, 2);
        Date tomorrow = calendar.getTime();
-               String formattedYesterday = df.format(yesterday);
-               String formattedTomorrow = df.format(tomorrow);
+       String formattedYesterday = df.format(yesterday);
+       String formattedTomorrow = df.format(tomorrow);
+
        RegisterAPI.getInstance(this).getAverageTime(productID, serialNumber,childID, formattedYesterday, formattedTomorrow, new RegisterAPI.RegistrationCallback() {
            @Override
            public void onResponse(String str) {
@@ -205,46 +211,33 @@ public void selectDate(View v) {
                    String result = jsonResponse.getString("result");
                    JSONObject result_obj = jsonResponse.getJSONObject("content");
                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                  // sessions = (TextView) findViewById(R.id.sessionsValue);
-                   //averageTime = (TextView)findViewById(R.id.title2_2);
-                   Log.d("MILA","Get average time.......");
-                   if (result.equals("OK")) {
+                       if (result.equals("OK")) {
                        Log.d("MILA","Get average time.......resul OK for child " + childID);
                        sessionArray = result_obj.getJSONArray("SessionList");
                        sessionsValue = valueOf(sessionArray.length()).toString();
-
-                       Log.d("MILA","Sessions played...... " + sessionArray.length());
-                       if(sessionArray.length()>0) {
+                          if(sessionArray.length()>0) {
                            for (int i = 0; i < sessionArray.length(); i++) {
-                               Log.d("MILA","Get average time inside FOR");
                                JSONObject b = sessionArray.getJSONObject(i);
                                startTime = b.getString("startTime") ;
                                stopTime  = b.getString("endTime");
                                try {
                                    parsedStartDate = dateFormat.parse(startTime);
                                    parsedStopDate = dateFormat.parse(stopTime);
-                                   //parsedAver = parsedStopDate.getTime() - parsedStartDate.getTime();
 
                                    Log.d("MILA","Time elapsed =" + parsedAver);
                                } catch (ParseException e) {
                                    e.printStackTrace();
                                }
-                              Long tmp = (parsedStopDate.getTime() - parsedStartDate.getTime())/60000;
+                               Long tmp = (parsedStopDate.getTime() - parsedStartDate.getTime())/60000;
                                Log.d("MILA", "PLAYTIME = " + tmp + "rounded = " + Math.round(tmp));
                                parsedAverString = valueOf((parsedStopDate.getTime() - parsedStartDate.getTime())/60000).toString();
-
                            }
-                           Log.d("MILA", "PLAYTIME = " + parsedAverString);
-
-
                        }
                        else
                        {
                             parsedAverString = "00";
                             sessionsValue = "0";
-                           Log.d("MILA", "PLAYTIME for no session found = " + parsedAverString);
-                          // averageTime.setText(parsedAverString);
-                           //averageTime.append(" min");
+
                            Log.d("MILA", "No playtime...........");
                            runOnUiThread(new Runnable() {
                                @Override
@@ -317,77 +310,116 @@ public void selectDate(View v) {
    }
 public void averageTimeWeek()
     {
-        //enableProgressDialog(true);
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat dfny = new SimpleDateFormat("MM-dd");
+        final SimpleDateFormat dfny = new SimpleDateFormat("MM-dd");
 
         Calendar calendar = Calendar.getInstance();
-        Date d_now = calendar.getTime();
-        String formattedDate = df.format(d_now);
-        //Date tomorrow = calendar.getTime();
-        calendar.add(Calendar.DATE, -7);
-        Date weekAgo = calendar.getTime();
-        String formattedWeekAgo = df.format(weekAgo);
-        Log.d("MILA in FOR","**********************");
-       // String newDate=null;
-        valuesForGraphTS.add(formattedDate);
-        for (int i = 0; i <7; i++)
-        {
-            calendar.add(Calendar.DATE, 1);
-            formattedDate = dfny.format(calendar.getTime());
-            Log.d("MILA in FOR",formattedDate);
-            valuesForGraphTS.add(formattedDate);
-
-         }
-
-        GraphView graph = (GraphView) findViewById(R.id.graph);
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-
-        //Need to get the dates starting from now Date
-        staticLabelsFormatter.setHorizontalLabels(valuesForGraphTS.toArray(new String[0]));
-        //staticLabelsFormatter.setHorizontalLabels(new String[] {"punch", "RFID", "hug"});
-        staticLabelsFormatter.setVerticalLabels(new String[] {"0", "1", "3"});
-
-
+        final Date d1 = calendar.getTime();
+        calendar.add(Calendar.DATE, -1);
+        final Date d2 = calendar.getTime();
+        calendar.add(Calendar.DATE, -1);
+        final Date d3 = calendar.getTime();
+        calendar.add(Calendar.DATE, -1);
+        final Date d4 = calendar.getTime();
+        calendar.add(Calendar.DATE, -1);
+        final Date d5 = calendar.getTime();
+        calendar.add(Calendar.DATE, -1);
+        final Date d6 = calendar.getTime();
+        calendar.add(Calendar.DATE, -1);
+        final Date d7 = calendar.getTime();
+        final String formattedWeekAgo = df.format(d7);
+        final String formattedDate = df.format(d1);
+       Log.d("MILA", "dddddd"+d1 + d2 + d3 + d4 + d5 + d6 +d7);
+//get data for one week
        RegisterAPI.getInstance(this).getAverageTime(productID, serialNumber,childID, formattedWeekAgo, formattedDate, new RegisterAPI.RegistrationCallback() {
             @Override
             public void onResponse(String str) {
                 try {
                     enableProgressDialog(false);
-                    JSONObject jsonResponse = new JSONObject(str);
+                   JSONObject jsonResponse = new JSONObject(str);
                     String result = jsonResponse.getString("result");
                     JSONObject result_obj = jsonResponse.getJSONObject("content");
-                   SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                    Log.d("MILA","Get average time.......");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                     if (result.equals("OK")) {
-                        Log.d("MILA","Get average time.......resul OK for child " + childID);
                         sessionArray = result_obj.getJSONArray("SessionList");
                         if(sessionArray.length()>0) {
                             for (int i = 0; i < sessionArray.length(); i++) {
-                                Log.d("MILA","Get average time inside FOR");
-                                JSONObject b = sessionArray.getJSONObject(i);
-                                 startTime = b.getString("startTime") ;
-                                 stopTime  = b.getString("endTime");
+                               JSONObject b = sessionArray.getJSONObject(i);
+                               startTime = b.getString("startTime") ;//String
+                               stopTime  = b.getString("endTime");
                                 try {
-                                    parsedStartDate = dateFormat.parse(startTime);
+                                    parsedStartDate = dateFormat.parse(startTime); //Date
                                     parsedStopDate = dateFormat.parse(stopTime);
-                                     String parsedAver = valueOf(parsedStopDate.getTime() - parsedStartDate.getTime()).toString();
-                                    Log.d("MILA","Time elapsed =" + parsedAver);
+                                    String parsedAver = valueOf(parsedStopDate.getTime() - parsedStartDate.getTime()).toString();
+                                    Log.d("MILA","Time elapsed in try =" + parsedAver);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
+                                      if(parsedStartDate.after(d7))
+                                    {
 
+                                        d = 0.0;
+                                        valuesForGraph.add(d);
+                                        Log.d("MILA","Start data timestamp = " + parsedStartDate + "d1 = " + dateFormat.format(d1) + "value = "+ valuesForGraph.get(0));
+                                    }
+                                 else
+                                    {
+                                        valuesForGraph.add(7.0);
+
+                                    }
+                                    if(parsedStartDate.after(d7)&&parsedStartDate.before(d5))
+                                    {
+                                        //add calculation for the time
+                                        valuesForGraph.add(6.0);
+                                    }
+                                    else
+                                        valuesForGraph.add(0.0);
+                                if(parsedStartDate.after(d6)&&parsedStartDate.before(d4))
+                                {
+                                    //add calculation for the time
+                                    valuesForGraph.add(5.0);
+                                }
+                                else
+                                    valuesForGraph.add(0.0);
+                                if(parsedStartDate.after(d5)&&parsedStartDate.before(d3))
+                                {
+                                    //add calculation for the time
+                                    valuesForGraph.add(4.0);
+                                }
+                                else
+                                    valuesForGraph.add(0.0);
+                                if(parsedStartDate.after(d4)&&parsedStartDate.before(d2))
+                                {
+                                    //add calculation for the time
+                                    valuesForGraph.add(3.0);
+                                }
+                                else
+                                    valuesForGraph.add(0.0);
+                                if(parsedStartDate.after(d3)&&parsedStartDate.before(d1))
+                                {
+                                    //add calculation for the time
+                                    valuesForGraph.add(2.0);
+                                }
+                                else
+                                    valuesForGraph.add(0.0);
+                                if(parsedStartDate.after(d2))
+                                {
+                                    //add calculation for the time
+                                    valuesForGraph.add(1.0);
+                                }
+                                else
+                                    valuesForGraph.add(0.0);
+                               // }
+                                Log.d("MILA","Start data timestamp = value1 = "+ valuesForGraph.get(0));
+                               // valuesForGraph.add(0.0);
                             }
-                           /* GraphView graph = (GraphView) findViewById(R.id.graph);
-                            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-                            //Need to get the dates starting from now Date
-                            staticLabelsFormatter.setHorizontalLabels(valuesForGraphTS.toArray(new String[0]));
-                            //staticLabelsFormatter.setHorizontalLabels(new String[] {"punch", "RFID", "hug"});
-                            staticLabelsFormatter.setVerticalLabels(new String[] {"1", "2", "3"});*/
-
+                            Log.d("MILA","Start data timestamp = value2 = "+ valuesForGraph.get(0));
                         }
                         else
                         {
+                            for(int i= 0;i<7; i++) {
+                                valuesForGraph.add(i,0.0);
+                            }
                             Log.d("MILA", "No playtime...........");
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -403,6 +435,9 @@ public void averageTimeWeek()
 
                     } else {
 
+                            for(int i= 0;i<7; i++) {
+                                valuesForGraph.add(i,0.0);
+                            }
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -415,7 +450,7 @@ public void averageTimeWeek()
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                // only 7 because week is 7 days
            }
 
            @Override
@@ -428,8 +463,40 @@ public void averageTimeWeek()
                enableProgressDialog(false);
            }
        });
+        GraphView graph = (GraphView) findViewById(R.id.graph);
+        Log.d("MILA", "dddddd"+d7 );
+        final LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(d7,0),
+                new DataPoint(d6, 5),
+                new DataPoint(d5, 8),
+                new DataPoint(d4,1)
+//                new DataPoint(d3, 7),
+//                new DataPoint(d2, 0),
+//                new DataPoint(d1, 7)
+        });
+        Log.d("MILA", "dddddd5 =" + d5);
+        Log.d("MILA", "dddddd6 =" + d6);
+        graph.addSeries(series);
+        //series.
+       // graph.getGridLabelRenderer().setNumHorizontalLabels(4);
 
 
+      graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+            @Override
+            public String formatLabel(double value, boolean isValueX) {
+                if (isValueX) {
+                    // show normal x values
+                    Log.d("MILA", "Not formatted =" + value);
+                    Log.d("MILA", "formatted =" + dfsf.format(value));
+                    return dfsf.format(value);
+                } else {
+                    // show currency for y values
+                    return super.formatLabel(value, isValueX);
+                }
+            }
+        });
+
+       // graph.getGridLabelRenderer().setNumHorizontalLabels(7);
 
    }
 

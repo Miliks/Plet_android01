@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:text="Modify your childs data"
+        android:text="Modify your child's information"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp" />
 

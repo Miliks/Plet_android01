@@ -12,7 +12,7 @@
         android:layout_width="fill_parent"
         android:layout_height="61dp"
         android:gravity="center"
-        android:text="Add Child to you profile"
+        android:text="Add child to your profile"
         android:textSize="30dp"
         android:textColor="@android:color/holo_blue_dark" />
 
