@@ -67,18 +67,20 @@
             android:background="@drawable/button_rounded_corners"
             android:onClick="addGroup"
             android:text="  ADD new group " />
-
         <Button
-            android:id="@+id/addStudent"
+            android:id="@+id/deleteGroup"
             android:layout_marginBottom="10dp"
-            style="?android:textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/button_rounded_corners"
-            android:onClick="studentsbyGroup"
-            android:text="  children in group  "
-            android:textStyle="bold" />
+            android:onClick="deleteGroup"
+            android:text="  DELETE group " />
+
+
 
         <!--Button
             android:id="@+id/allStudents"
@@ -101,16 +103,47 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/deleteGroup"
+            android:id="@+id/addStudent"
             android:layout_marginBottom="10dp"
+            style="?android:textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/button_rounded_corners"
-            android:onClick="deleteGroup"
-            android:text="  DELETE group " />
+            android:onClick="studentsbyGroup"
+            android:text="  children in group  "
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/modifyProfile"
+            android:layout_marginBottom="10dp"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="modifyTeacher"
+            android:text="  modify profile  "
+            android:textStyle="bold" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:dividerPadding="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/assignToy"
+            android:layout_marginBottom="10dp"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/button_rounded_corners"
+            android:onClick="assignToy"
+            android:text="  assign toy  "
+            android:textStyle="bold" />
+
     </LinearLayout>
 </LinearLayout>

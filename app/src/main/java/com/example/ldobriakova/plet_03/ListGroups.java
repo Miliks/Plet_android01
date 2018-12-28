@@ -258,4 +258,17 @@ public class ListGroups extends Activity {
             }
         });
     }
+
+    public void modifyTeacher(View view) {
+        //TODO create new screen to modify teacher profile
+    }
+
+    public void assignToy(View view) {
+        Intent welcome = new Intent(getApplicationContext(),Welcome.class);
+        welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        welcome.putExtra("userName",myEtText);
+        welcome.putExtra("groupId", groupID);
+        startActivity(welcome);
+        //TODO create new screen to assign toy to the teacher, the screen for personal usage could be used?
+    }
 }
