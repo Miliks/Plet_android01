@@ -33,8 +33,9 @@ public class GetProduct extends Activity  {
     TextView startScan;
     ProgressDialog prgDialog;
     private Button btnNetwork;
-    String userName, babyAlias, productID, productName, combined, combined1,serialNumb;
+    String userName, babyAlias, productID, productName, combined, combined1,serialNumb, groupID;
     String result, toyAlias;
+    Boolean isTeacher;
     JSONArray productList = new JSONArray();
     List<String> listMag = new ArrayList<String>();
     List<String> listName = new ArrayList<String>();
@@ -59,10 +60,13 @@ public class GetProduct extends Activity  {
         ETprodAlias = (EditText)findViewById(R.id.productAlias);
         startScan = (TextView)findViewById(R.id.scanToyNumber);
         if (extras != null) {
-
+            isTeacher = extras.getBoolean("isTeacher");
             userName = extras.getString("userName");
-            babyAlias = extras.getString("babyAlias");
+
+           // babyAlias = extras.getString("babyAlias");
         }
+        if(isTeacher)
+            groupID = extras.getString("groupID");
         getProductList();
     }
 
@@ -71,7 +75,12 @@ public class GetProduct extends Activity  {
     {
         Intent i = new Intent(GetProduct.this,Welcome.class);
         i.putExtra("userName",userName);
-        i.putExtra("babyAlias",babyAlias);
+        if(isTeacher)
+        {
+            i.putExtra("isTeacher", true);
+            i.putExtra("groupID",groupID);
+        }
+      //  i.putExtra("babyAlias",babyAlias);
         startActivity(i);
 
     }
@@ -261,7 +270,7 @@ public class GetProduct extends Activity  {
 
                         //Intent scanner = new Intent(getApplicationContext(), WiFiDemo.class);
                         i.putExtra("userName",userName);
-                        i.putExtra("babyAlias",babyAlias);
+                       // i.putExtra("babyAlias",babyAlias);
                         i.putExtra("productID", productID);
                         i.putExtra("toyAlias", toyAlias);
                         //startActivity(scanner);

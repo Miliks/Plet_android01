@@ -19,17 +19,17 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Children in a group"
+        android:text="Select child "
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp"
         tools:paddingBottom="10dp" />
 
     <LinearLayout
+
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:focusedByDefault="true"
         >
         <View
             android:layout_width="fill_parent"
@@ -40,7 +40,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dip"
             android:layout_weight="1"
-            android:layout_gravity="left"
             android:focusedByDefault="true"
             android:listSelector="#CAFE69"
             />
@@ -51,6 +50,48 @@
             android:dividerPadding="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+            <Button
+                android:id="@+id/goFwd"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="createStudent"
+                android:text="  ADD student " />
+            <!--Button
+                android:id="@+id/assignGrp"
+                style="?android:textAppearanceSmall"
+                android:layout_marginBottom="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="assignGroup"
+                android:text="  ASSIGN group  "
+                android:textStyle="bold" /-->
+
+            <Button
+                android:id="@+id/assignWrtbnd"
+                style="?android:textAppearanceSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="assignWrstbnd"
+                android:text="  ASSIGN wristband  "
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <!--LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:dividerPadding="10dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/goFwd"
@@ -63,33 +104,9 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_rounded_corners"
                 android:onClick="createStudent"
-                android:text="  ADD CHILD " />
-
-            <Button
-                android:id="@+id/removeFromGroup"
-                style="?android:textAppearanceSmall"
-                android:layout_marginBottom="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_rounded_corners"
-                android:onClick="removeFromGroup"
-                android:text="  remove from group  "
-                android:textStyle="bold" />
-
-            <!--Button
-                android:id="@+id/assignGrp"
-                style="?android:textAppearanceSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_rounded_corners"
-                android:onClick="assignTogrp"
-                android:text="  ASSIGN TO GROUP  "
-                android:textStyle="bold" /-->
-        </LinearLayout>
+                android:text="  ADD student " />
+        </LinearLayout-->
     </LinearLayout>
-
 
 
 </LinearLayout>

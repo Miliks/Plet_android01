@@ -36,7 +36,7 @@ public class Welcome extends Activity  {
     private Spinner spinnerProduct, spinnerActivity;
     private ProductSpinAdapter newAdapter;
     private Button btnNetwork;
-    String userName, babyAlias, productID, serialNumb, productAlias, childID;
+    String userName, babyAlias, productID, serialNumb, productAlias, childID, groupID;
     String result;
     ProgressDialog progressDialog;
     JSONArray productList = new JSONArray();
@@ -57,6 +57,7 @@ public class Welcome extends Activity  {
     private int hostPort;
     private NsdManager mNsdManager;
     Boolean  aliasBoolean = false;
+    Boolean isTeacher;
 
 
     @Override
@@ -78,6 +79,7 @@ public class Welcome extends Activity  {
         progressDialog.setIndeterminate(true);
         if (extras != null) {
             userName = extras.getString("userName");
+            if(extras.getString("babyAlias")!=null)
             babyAlias = extras.getString("babyAlias");
             if(extras.getString("childID")!=null)
             childID = extras.getString("childID");
@@ -87,11 +89,17 @@ public class Welcome extends Activity  {
             productAlias = extras.getString("productAlias");
                 aliasBoolean = true;
             }
+            isTeacher = extras.getBoolean("isTeacher");
+            if(isTeacher)
+            {
+               isTeacher=true;
+                groupID = extras.getString("groupID");
+            }
 
         }
         getProducts(userName);
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        Log.d("TAG","Baby alias passed from previous screen = " + babyAlias);
+       Log.d("MILA","isTeacher= " + isTeacher.toString());
     }
     private void enableProgressDialog(final boolean enable)
     {
@@ -174,9 +182,18 @@ public class Welcome extends Activity  {
     @Override
     public void onBackPressed()
     {
-        Intent i = new Intent(Welcome.this,SelectChild.class);
-        i.putExtra("userName",userName);
-        startActivity(i);
+        Intent s = new Intent(Welcome.this,SelectChild.class);
+        s.putExtra("userName",userName);
+        Intent t = new Intent(Welcome.this,ListGroups.class);
+        if(isTeacher)
+        {
+            t.putExtra("userName",userName);
+            t.putExtra("isTeacher", true);
+            t.putExtra("groupID",groupID);
+            startActivity(t);
+         }
+         else
+        startActivity(s);
 
     }
 
@@ -240,21 +257,39 @@ public class Welcome extends Activity  {
     private void navigateToRegisterNewToy() {
         Intent registerNewToy = new Intent(getApplicationContext(), GetProduct.class);
         registerNewToy.putExtra("userName",userName);
-        registerNewToy.putExtra("babyAlias", babyAlias);
+        if(isTeacher)
+        {
+            registerNewToy.putExtra("isTeacher", true);
+            registerNewToy.putExtra("groupID",groupID);
+        }
+
+       //registerNewToy.putExtra("babyAlias", babyAlias);
         registerNewToy.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(registerNewToy);
     }
 
     public void navigateStat(View view) {
-        Intent i = new Intent(Welcome.this,Statistic.class);
-        i.putExtra("userName",userName);
-        Log.d("MILA","Before go to the statistic = "+ babyAlias);
-        i.putExtra("babyAlias", babyAlias);
-        i.putExtra("productid",productID);
-        i.putExtra("serialNumber",serialNumb);
-        i.putExtra("childID",childID);
-        startActivity(i);
+         if(isTeacher) {
 
+        }
+        else {
+             Intent i = new Intent(Welcome.this,ChoiceActivity.class);
+             i.putExtra("userName",userName);
+             Log.d("MILA", "Before go to the statistic = " + babyAlias);
+             i.putExtra("babyAlias", babyAlias);
+             i.putExtra("productid", productID);
+             i.putExtra("serialNumber", serialNumb);
+             i.putExtra("childID", childID);
+             startActivity(i);
+            /*Intent i = new Intent(Welcome.this,Statistic.class);
+            i.putExtra("userName",userName);
+            Log.d("MILA", "Before go to the statistic = " + babyAlias);
+            i.putExtra("babyAlias", babyAlias);
+            i.putExtra("productid", productID);
+            i.putExtra("serialNumber", serialNumb);
+            i.putExtra("childID", childID);
+            startActivity(i);*/
+        }
 
     }
 //Create listener to resolve the service found by the specific name for wifi enabled smart object

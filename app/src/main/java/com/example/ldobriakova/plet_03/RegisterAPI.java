@@ -262,7 +262,7 @@ public void unregUser(String userName, String productID, String serialNumb,final
              .url(BASE_URL + requestBody)
              .get()
              .build();
-     Log.d("RESPONSE = ", request.toString());
+     Log.d("MILA create new wristband = ", request.toString());
 
      httpClient.newCall(request).enqueue(new Callback() {
          @Override
@@ -284,6 +284,38 @@ public void unregUser(String userName, String productID, String serialNumb,final
              }
          } });
  }
+
+ //delete student from group
+    //deleteStudentFromGroup?studentID={STUDENTID}&groupID={GROUPID}
+ public void deleteStudFromGroup(String studentID,String groupID, final RegistrationCallback callback){
+     String requestBody = "deleteStudentFromGroup?studentID=" + studentID+"&groupID="+groupID;
+     Request request = new Request.Builder()
+             .url(BASE_URL + requestBody)
+             .get()
+             .build();
+     Log.d("MILA delete student from group = ", request.toString());
+
+     httpClient.newCall(request).enqueue(new Callback() {
+         @Override
+         public void onFailure(Call call, IOException e) {
+             Log.d("RESPONSE on fail of network = ", e.toString());
+             if (callback != null)
+                 callback.onNetworkError();
+         }
+         @Override
+         public void onResponse(Call call, Response response) throws IOException {
+
+             if (response.isSuccessful()) {
+                 String alternate = response.body().string();
+                 Log.d("student deleted",alternate);
+                 callback.onResponse(alternate);
+             }
+             else {
+                 if (callback != null)
+                     callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+             }
+         } });
+ }
 //deleteGroup
 public void deleteGroup(String teacherUsername,String groupID, final RegistrationCallback callback){
     String requestBody = "deleteGroup?teacherUsername=" + teacherUsername+"&groupID="+groupID;
@@ -291,7 +323,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
             .url(BASE_URL + requestBody)
             .get()
             .build();
-    Log.d("RESPONSE delete group = ", request.toString());
+    Log.d("MILA delete group = ", request.toString());
 
     httpClient.newCall(request).enqueue(new Callback() {
         @Override
@@ -305,7 +337,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
 
             if (response.isSuccessful()) {
                 String alternate = response.body().string();
-                Log.d("List of products",alternate);
+                Log.d("MILA delete group",alternate);
                 callback.onResponse(alternate);
             }
             else {
@@ -322,7 +354,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
              .url(BASE_URL + requestBody)
              .get()
              .build();
-     Log.d("RESPONSE delete wristband = ", request.toString());
+     Log.d("MILA assign wristband = ", request.toString());
 
      httpClient.newCall(request).enqueue(new Callback() {
          @Override
@@ -336,7 +368,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
 
              if (response.isSuccessful()) {
                  String alternate = response.body().string();
-                 Log.d("List of products",alternate);
+                 Log.d("MILA assign wristband",alternate);
                  callback.onResponse(alternate);
              }
              else {
@@ -353,7 +385,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
                 .url(BASE_URL + requestBody)
                 .get()
                 .build();
-        Log.d("RESPONSE delete wristband = ", request.toString());
+        Log.d("MILA delete wristband = ", request.toString());
 
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -367,7 +399,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
 
                 if (response.isSuccessful()) {
                     String alternate = response.body().string();
-                    Log.d("List of products",alternate);
+                    Log.d("MILA delete wristband",alternate);
                     callback.onResponse(alternate);
                 }
                 else {
@@ -378,19 +410,19 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
     }
 
 
-
+//get the list of wristband
     public void getWristList(final RegistrationCallback callback){
         String requestBody = "getRecogHWList";
         Request request = new Request.Builder()
                 .url(BASE_URL + requestBody)
                 .get()
                 .build();
-        Log.d("RESPONSE getProductlist = ", request.toString());
+        Log.d("MILA get Wristband list = ", request.toString());
 
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("RESPONSE on fail of network = ", e.toString());
+                Log.d("MILA on fail of network = ", e.toString());
                 if (callback != null)
                     callback.onNetworkError();
             }
@@ -410,14 +442,14 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
     }
 
     //Adding baby to DB
-    public void registerBaby(String username, String firstname, String gender, String birthDate, final RegistrationCallback callback) {
+    public void registerBaby(String username, String firstname, String gender, String birthDate,String token, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
-        String requestBody = "createbaby?username="+username+"&babyAlias="+firstname+"&birthDate="+birthDate+"&babyGender="+gender;
+        String requestBody = "createbaby?username="+username+"&babyAlias="+firstname+"&birthDate="+birthDate+"&babyGender="+gender+"&Token="+token;
         Request request = new Request.Builder()
                 .url(BASE_URL + requestBody)
                 .get()
                 .build();
-        Log.d("RESPONSE = ", request.toString());
+        Log.d("MILA = ", request.toString());
 
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
@@ -440,10 +472,10 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
             } });
     }
 
-    public void queryStudentsByGroup(String username, String groidID, final RegistrationCallback callback) {
-        JSONObject json = new JSONObject();
-        if(groidID != null) {
-            String requestBody = "getStudentsList?teacherUsername=" + username + "&groupID=" + groidID;
+    //add student to group, the student first have to be associated to the wristband
+    public void addStudentToGroup(String studentID, String groidID, final RegistrationCallback callback) {
+
+            String requestBody = "addStudentToGroup?studentID=" + studentID + "&groupID=" + groidID;
             Request request = new Request.Builder()
                     .url(BASE_URL + requestBody)
                     .get()
@@ -470,6 +502,41 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
                     }
                 }
             });
+
+
+    }
+
+    public void queryStudentsByGroup(String username, String groidID, final RegistrationCallback callback) {
+        JSONObject json = new JSONObject();
+       if(groidID != null) {
+            String requestBody = "getStudentsList?teacherUsername=" + username + "&groupID=" + groidID;
+            Request request = new Request.Builder()
+                    .url(BASE_URL + requestBody)
+                    .get()
+                    .build();
+            Log.d("MILA = ", request.toString());
+
+            httpClient.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("RESPONSE on fail of network = ", e.toString());
+                    if (callback != null)
+                        callback.onNetworkError();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                    if (response.isSuccessful()) {
+                        String alternate = response.body().string();
+                        callback.onResponse(alternate);
+                        Log.d("MILA = ", alternate);
+                    } else {
+                        if (callback != null)
+                            callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                    }
+                }
+            });
         }
         else
         {
@@ -478,7 +545,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
                     .url(BASE_URL + requestBody)
                     .get()
                     .build();
-            Log.d("RESPONSE = ", request.toString());
+            Log.d("MILA  = ","if the groupId= null" + request.toString());
 
             httpClient.newCall(request).enqueue(new Callback() {
                 @Override

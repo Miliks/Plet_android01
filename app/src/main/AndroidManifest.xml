@@ -36,6 +36,12 @@
         android:name=".RegisterStudent"
         android:label="@string/app_name"></activity>
         <activity
+            android:name=".ChoiceActivity"
+            android:label="@string/app_name"></activity>
+        <activity
+            android:name=".ListAllStudents"
+            android:label="@string/app_name"></activity>
+        <activity
             android:name=".CreateWrist"
             android:label="@string/app_name"></activity>
         <activity

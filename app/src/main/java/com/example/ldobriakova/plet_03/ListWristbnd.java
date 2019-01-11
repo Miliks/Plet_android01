@@ -196,7 +196,51 @@ public class ListWristbnd extends Activity {
         startActivity(i);
     }
 
-    private void assignWristToStud(String studentID, String wristID){
+    public void assignToGroup() {
+        Log.d("MILA .... groupID =",groupID+" studentID=" + studentID);
+        enableProgressDialog(true);
+
+        RegisterAPI.getInstance(this).addStudentToGroup(studentID, groupID,  new RegisterAPI.RegistrationCallback() {
+            @Override
+            public void onResponse(String str) {
+                enableProgressDialog(false);
+                try {
+                    JSONObject jsonResponse = new JSONObject(str);
+                    //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
+                    //JSONObject result_obj = jsonResponse.getJSONObject("content");
+                    //Log.d("Parsing JSON, object Content = ",result_obj.toString());
+                    Log.d("MILA","groupID = " + groupID);
+                    result = jsonResponse.getString("result");
+
+                    if(result.equals("OK"))
+                    {
+                        Intent i = new Intent(getApplicationContext(),ListStudents.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.putExtra("userName",myEtText);
+                        i.putExtra("groupID",groupID);
+                        i.putExtra("isTeacher", true);
+                        startActivity(i);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(RegistrationResponse.RegistrationError error) {
+                enableProgressDialog(false);
+            }
+            @Override
+            public void onNetworkError() {
+                enableProgressDialog(false);
+
+            }
+        });
+    }
+
+    private void assignWristToStud(final String studentID, String wristID){
         enableProgressDialog(true);
         RegisterAPI.getInstance(this).assignWrst(studentID,wristID, new RegisterAPI.RegistrationCallback() {
             @Override
@@ -204,17 +248,19 @@ public class ListWristbnd extends Activity {
                 enableProgressDialog(false);
                 try {
                     JSONObject jsonResponse = new JSONObject(str);
-                    //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
-                    JSONObject result_obj = jsonResponse.getJSONObject("content");
+                    Log.d("MILA parsing json  = ",jsonResponse.toString());
+                   // JSONObject result_obj = jsonResponse.getJSONObject("content");
                     //Log.d("Parsing JSON, object Content = ",result_obj.toString());
                     result = jsonResponse.getString("result");
-                    //Log.d("What is returned on get baby query ......", result);
+                    Log.d("MILA assign wristband to student ......",studentID+ "  " +  result);
                     if(result.equals("OK"))
                     {
-                        Intent i = new Intent(ListWristbnd.this, ListGroups.class);
+                        assignToGroup();
+                        /*Intent i = new Intent(ListWristbnd.this, ListAllStudents.class);
                         i.putExtra("userName",myEtText);
+                        i.putExtra("groupID",groupID);*/
                        // i.putExtra("groupId", groupID);
-                        startActivity(i);
+                       // startActivity(i);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

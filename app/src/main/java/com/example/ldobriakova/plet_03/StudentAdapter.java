@@ -35,7 +35,8 @@ public class StudentAdapter extends ArrayAdapter<Student> {
 
             Log.d("MILA", " in updateUISpinner =" + p);
             if (tt1 != null) {
-                tt1.setText(p.getSt_alias());
+                tt1.setText(p.getSt_alias()+"  " + p.gethwLabel());
+
             }
 
                    }

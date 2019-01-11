@@ -34,7 +34,7 @@ public class RegisterBaby extends Activity {
 	// Error Msg TextView Object
 	TextView errorMsg;
 	// User Name Edit View Object
-	EditText userNameET, babyAliasET, genderET, birthdayET;
+	EditText userNameET, babyAliasET, genderET, birthdayET, babyToken;
 	String userName, gender_adult;
 	//Spinner genderSpinner;
 
@@ -47,6 +47,7 @@ public class RegisterBaby extends Activity {
 		userNameET = (EditText)findViewById(R.id.user_name);
 		// Find Name Edit View control by ID
 		babyAliasET = (EditText)findViewById(R.id.babyAlias);
+		babyToken = (EditText)findViewById(R.id.babyToken);
 		// Find Gender Edit View control by ID
 
 		// Find Age Edit View control by ID
@@ -139,6 +140,7 @@ public class RegisterBaby extends Activity {
 		String babyAlias = babyAliasET.getText().toString();
 		// Get age ET control value
 		String babybirthDate = birthdayET.getText().toString();
+		String token = babyToken.getText().toString();
 		//Get gender
 		// genderET.getText().toString();
 		String babyGender = gender_adult;
@@ -146,7 +148,7 @@ public class RegisterBaby extends Activity {
 
 		if(!userName.isEmpty()&&!babyAlias.isEmpty()&&!babybirthDate.isEmpty()&&!babyGender.isEmpty()) {
 
-			RegisterAPI.getInstance(this).registerBaby(userName, babyAlias, babyGender, babybirthDate, new RegisterAPI.RegistrationCallback() {
+			RegisterAPI.getInstance(this).registerBaby(userName, babyAlias, babyGender, babybirthDate, token, new RegisterAPI.RegistrationCallback() {
 				@Override
 				public void onResponse(String str) {
 					try {

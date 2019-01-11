@@ -9,9 +9,12 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,6 +57,8 @@ public class UserProfile extends Activity {
 	List<String> listName = new ArrayList<String>();
 	JSONArray userDatalist = new JSONArray();
 	RadioButton gender_m, gender_f;
+	Boolean isTeacher;
+	Button btn1, btn2, btn3;
 
 
 	@Override
@@ -62,6 +67,7 @@ public class UserProfile extends Activity {
 		setContentView(R.layout.profile);
         Fabric.with(this, new Crashlytics());
 		Bundle extras = getIntent().getExtras();
+		isTeacher = extras.getBoolean("isTeacher");
 		checkBox = (CheckBox) findViewById(R.id.checkbox);
 		final Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
@@ -75,7 +81,30 @@ public class UserProfile extends Activity {
 		checkBox = (CheckBox)findViewById(R.id.checkBox);
 		checkBox.setChecked(false);
 		TextView textView = (TextView)findViewById(R.id.textView2);
-
+		btn1 = (Button)findViewById(R.id.register_button);
+		btn2 = (Button)findViewById(R.id.child_data);
+		btn3 = (Button)findViewById(R.id.modify_group);
+		if(isTeacher) {
+			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
+					(ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
+			btn1.setLayoutParams(lp_l);
+			btn2.setLayoutParams(lp_l);
+			btn1.requestLayout();
+			btn1.setEnabled(true);
+			btn2.setEnabled(false);
+			btn3.setEnabled(true);
+			btn3.setVisibility(View.INVISIBLE);
+		}
+		else {
+			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
+					(ViewGroup.LayoutParams.MATCH_PARENT), (ViewGroup.LayoutParams.MATCH_PARENT));
+			btn3.setLayoutParams(lp_l);
+			btn1.setEnabled(false);
+			btn1.setVisibility(View.INVISIBLE);
+			btn2.setEnabled(true);
+			btn2.setVisibility(View.INVISIBLE);
+			btn3.setEnabled(false);
+		}
 		checkBox.setText("");
 		textView.setText(Html.fromHtml("I have read & agree to the " +
 				"<a href='https://plet.cloud.reply.eu/termsconditions.html'>TERMS AND CONDITIONS</a>"));
@@ -535,5 +564,22 @@ return true;
 
 			}
 		});
+	}
+
+	public void modify_group(View view) {
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+
+				Intent i = new Intent(UserProfile.this, CreateGroup.class);
+				String userNameInternal = userNameET.getText().toString();
+				//usernameET.getText().toString();
+				i.putExtra("userName", userNameInternal);
+				prgDialog.dismiss();
+				startActivity(i);
+
+			}
+		});
+
 	}
 }

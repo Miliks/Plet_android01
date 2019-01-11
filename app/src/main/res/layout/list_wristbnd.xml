@@ -1,11 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-
-    >
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="295dp"
@@ -19,20 +17,22 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Select your wristband"
+        android:text="Select wristband"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp"
         tools:paddingBottom="10dp" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        tools:paddingBottom="10dp">
+        android:orientation="vertical"
+        >
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp" />
 
-
-        <ListView
+        <!--ListView
             android:id="@+id/wrstbndName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,55 +42,74 @@
             android:layout_weight="0"
             android:focusedByDefault="true"
             android:listSelector="#CAFE69"
-
+            /-->
+        <ListView
+            android:id="@+id/wrstbndName"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:focusedByDefault="true"
+            android:listSelector="#CAFE69"
+            android:scrollbarSize="3dp"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical"
+            android:scrollingCache="true"
+            android:smoothScrollbar="true"
             />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:dividerPadding="20dp"
+            android:gravity="center_horizontal"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/addWrstbnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="addWrstbnd"
+
+                android:text="  ADD new wristband " />
+
+
+
+            <Button
+                android:id="@+id/deleteWrst"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="deleteWrstbnd"
+                android:text="  Delete wristband   "
+                android:textStyle="bold" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:dividerPadding="20dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/addStudent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_rounded_corners"
+                android:onClick="assignToStud"
+                android:text=" assign to student "
+                android:textStyle="bold" />
+        </LinearLayout>
 
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:dividerPadding="20dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/addWrstbnd"
-            android:layout_marginBottom="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_rounded_corners"
-            android:onClick="addWrstbnd"
-            android:text="  ADD new wristband " />
 
-        <Button
-            android:id="@+id/addStudent"
-            android:layout_marginBottom="10dp"
-            style="?android:textAppearanceSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_rounded_corners"
-            android:onClick="assignToStud"
-            android:text=" assign to student "
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/deleteWrst"
-            style="?android:textAppearanceSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_rounded_corners"
-            android:onClick="deleteWrstbnd"
-            android:text="  Delete wristband   "
-            android:textStyle="bold" />
-
-    </LinearLayout>
 </LinearLayout>

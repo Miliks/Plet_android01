@@ -73,7 +73,9 @@ public class CreateWrist extends Activity {
 	public void onBackPressed()
 	{
 		Intent i = new Intent(CreateWrist.this,ListWristbnd.class);
-
+		i.putExtra("userName",myEtText);
+		//i.putExtra("groupID",groupID);
+		i.putExtra("studentId",studentID);
 		startActivity(i);
 
 	}

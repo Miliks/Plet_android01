@@ -1,7 +1,7 @@
 package com.example.ldobriakova.plet_03;
 
 public class Student {
-    private String st_name, st_surname, st_birthDay, st_Id, st_alias;
+    private String st_name, st_surname, st_birthDay, st_Id, st_alias, hwLabel, token;
     public Student()
     {
         this.st_name = "";
@@ -9,6 +9,8 @@ public class Student {
         this.st_birthDay = "";
         this.st_Id = "";
         this.st_alias = "";
+        this.hwLabel = "";
+        this.token = "";
     }
     public void setSTName(String name){
         this.st_name = name;
@@ -39,5 +41,17 @@ public class Student {
     }
     public String getSt_Id(){
         return this.st_Id;
+    }
+    public void sethwLabel(String hwLabel){
+        this.hwLabel = hwLabel;
+    }
+    public String gethwLabel(){
+        return this.hwLabel;
+    }
+    public void settoken(String token){
+        this.token = token;
+    }
+    public String getToken(){
+        return this.token;
     }
 }

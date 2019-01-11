@@ -58,6 +58,7 @@ public class ListGroups extends Activity {
         progressDialog.setIndeterminate(true);
         if (extras != null) {
             myEtText = extras.getString("userName");
+
             Log.d("MILA", " in on Create =" + myEtText);
 
            }
@@ -202,6 +203,7 @@ public class ListGroups extends Activity {
         Intent i = new Intent(getApplicationContext(),CreateGroup.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("userName",myEtText);
+        i.putExtra("isTeacher",true);
       //  progressDialog.dismiss();
         startActivity(i);
     }
@@ -210,7 +212,8 @@ public class ListGroups extends Activity {
         Intent welcome = new Intent(getApplicationContext(),ListStudents.class);
         welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         welcome.putExtra("userName",myEtText);
-        welcome.putExtra("groupId", groupID);
+        welcome.putExtra("groupID", groupID);
+        welcome.putExtra("isTeacher",true);
         startActivity(welcome);
     }
 
@@ -223,7 +226,7 @@ public class ListGroups extends Activity {
                     enableProgressDialog(false);
                     JSONObject jsonResponse = new JSONObject(str);
                     String result = jsonResponse.getString("result");
-                    Log.d("What is returned on wrist deletion ......", result);
+                    Log.d("What is returned on wrist deletion ......", groupID);
                     //Log.d("What is returned on activity Login view ......", jsonResponse.toString());
                     if (result.equals("OK")) {
                         finish();
@@ -267,7 +270,8 @@ public class ListGroups extends Activity {
         Intent welcome = new Intent(getApplicationContext(),Welcome.class);
         welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         welcome.putExtra("userName",myEtText);
-        welcome.putExtra("groupId", groupID);
+        welcome.putExtra("groupID", groupID);
+        welcome.putExtra("isTeacher",true);
         startActivity(welcome);
         //TODO create new screen to assign toy to the teacher, the screen for personal usage could be used?
     }

@@ -47,7 +47,6 @@ public class LoginActivity extends Activity {
         usernameET = findViewById(R.id.username);
         // Find Password Edit View control by ID
         pwdET = findViewById(R.id.password);
-
         // Instantiate Progress Dialog object
         prgDialog = new ProgressDialog(this);
         // Set Progress Dialog Text
@@ -61,7 +60,6 @@ public class LoginActivity extends Activity {
     public void onBackPressed()
     {
         Intent startPersIntent = new Intent(getApplicationContext(), StartActivity.class);
-
         startActivity(startPersIntent);
 
     }
@@ -75,11 +73,8 @@ public class LoginActivity extends Activity {
             isTeacherInt = 0;
         String userNameView = usernameET.getText().toString();
         String passwordView = pwdET.getText().toString();
-       // Log.d("MILA in go to register WIFI hotspot", "MIIIIIIIIIIIIII");
-        if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
+         if (!userNameView.isEmpty() && !passwordView.isEmpty()) {
             enableProgressDialog(true);
-
-
             RegisterAPI.getInstance(this).loginAPI(userNameView, passwordView,isTeacherInt, new RegisterAPI.RegistrationCallback() {
                 @Override
                 public void onResponse(String str) {
@@ -87,7 +82,6 @@ public class LoginActivity extends Activity {
                         enableProgressDialog(false);
                         JSONObject jsonResponse = new JSONObject(str);
                         String result = jsonResponse.getString("result");
-                        //Log.d("What is returned on activity Login view ......", result);
                         if (result.equals("OK")) {
                             if(isTeacher){
                                 Intent i = new Intent(LoginActivity.this, ListGroups.class);

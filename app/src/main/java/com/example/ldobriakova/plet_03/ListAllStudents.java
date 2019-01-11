@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.fabric.sdk.android.Fabric;
 
-public class ListStudents extends Activity {
+public class ListAllStudents extends Activity {
     private Spinner spinnerBaby;
     private StudentAdapter studentAdapter;
     private ListView listChild;
@@ -32,7 +32,7 @@ public class ListStudents extends Activity {
     ArrayList<HashMap<String, String>> babyList;
     String result, Student_id;
     ProgressDialog progressDialog;
-    String myEtText, stud_alias, stud_name, stud_surname, stud_id, groupId;
+    String myEtText, stud_alias, stud_name, stud_surname, stud_id, groupId,stud_hw;
     JSONObject json = new JSONObject();
     JSONArray babylist = new JSONArray();
     List<String> listComplete = new ArrayList<String>();
@@ -44,7 +44,7 @@ public class ListStudents extends Activity {
     @Override
     public void onBackPressed()
     {
-        Intent i = new Intent(ListStudents.this,ListGroups.class);
+        Intent i = new Intent(ListAllStudents.this,ListStudents.class);
         i.putExtra("userName",myEtText);
         i.putExtra("groupID",groupId);
         i.putExtra("isTeacher", true);
@@ -54,7 +54,7 @@ public class ListStudents extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_students);
+        setContentView(R.layout.list_all_students);
         Fabric.with(this, new Crashlytics());
         listChild = (ListView) findViewById(R.id.listStudents);
         Bundle extras = getIntent().getExtras();
@@ -62,16 +62,11 @@ public class ListStudents extends Activity {
         progressDialog.setMessage("Loading...");
         progressDialog.setIndeterminate(true);
         if (extras != null) {
-            groupId = extras.getString("groupID");
-            myEtText = extras.getString("userName");
-            //if (groupId != null){
-                getStudentsByGroup(myEtText, groupId);}
-           /* }
-
-
+           groupId = extras.getString("groupID");
+           myEtText = extras.getString("userName");
+           getAllStudents(myEtText, groupId);
             }
-
-        getAllStudents(myEtText, groupId);*/
+            Log.d("MILA groupId = ",groupId);
     }
 
     private void enableProgressDialog(final boolean enable)
@@ -105,14 +100,23 @@ public class ListStudents extends Activity {
         for (int j=0; j<i; j++) {
             int stud_index = selection.get(j).indexOf("+");
             Log.d("MILA", "index =" + i);
-            stud[j] = new Student();
+           stud[j] = new Student();
            // stud_name = selection.get(j).substring(0, stud_index);
            // stud_surname = selection.get(j).substring(0, stud_index);
             stud_alias = selection.get(j).substring(0, stud_index);
-            stud_id = selection.get(j).substring(stud_index + 1, selection.get(j).length());
-            //Log.d("MILA", "Loop for gender = " + j + "***" + child_gender);
-            stud[j].setSt_ID(stud_id);
-            stud[j].setSTAlias(stud_alias);
+            int second_occurance = selection.get(j).indexOf("+",stud_index+1);
+            //stud_hw = selection.get(j).substring(second_occurance+1,selection.get(j).length());
+            //Log.d("MILA", "stud_hw = " + stud_hw);
+            //if(stud_hw.isEmpty()||stud_hw.equals(null)||stud_hw.equals("null")) {
+                stud_id = selection.get(j).substring(stud_index + 1, second_occurance);
+
+                //stud_hw = selection.get(j).substring(second_occurance + 1, selection.get(j).length());
+                Log.d("MILA", "there is nothing associated...........");
+                stud[j].setSt_ID(stud_id);
+                stud[j].setSTAlias(stud_alias);
+               // stud[j].sethwLabel(stud_hw);
+           // }
+            Log.d("MILA", "stud_id = " + stud_id);
         }
         studentAdapter = new StudentAdapter(this,R.layout.students_listview,stud);
        // childAdapter = new CustomAdapter(this,R.layout.activity_listview,R.id.child_alias,child);
@@ -125,7 +129,8 @@ public class ListStudents extends Activity {
                 Student student = (Student) studentAdapter.getItem(position);
                 stud_alias = student.getSt_alias();
                 stud_id = student.getSt_Id();
-                Log.d("MILA", "studID =" + stud_id);
+                //stud_hw = student.gethwLabel();
+                Log.d("MILA", "On item click stud_id =" + stud_id /* " hwLabel" + stud_hw*/ );
             }
         });
 
@@ -133,10 +138,82 @@ public class ListStudents extends Activity {
         Log.d("MILA", "Student_id =" + Student_id);
 
     }
-   /* private void getAllStudents(String myEtText, String groupId){
+    private void getAllStudents(String myEtText, String groupId){
         enableProgressDialog(true);
 
-        RegisterAPI.getInstance(this).queryStudentsByGroup(myEtText, groupId,  new RegisterAPI.RegistrationCallback() {
+        RegisterAPI.getInstance(this).queryStudentsByGroup(myEtText, null,  new RegisterAPI.RegistrationCallback() {
+            @Override
+            public void onResponse(String str) {
+                enableProgressDialog(false);
+                try {
+                    JSONObject jsonResponse = new JSONObject(str);
+                    //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
+                    JSONObject result_obj = jsonResponse.getJSONObject("content");
+                    //Log.d("Parsing JSON, object Content = ",result_obj.toString());
+                    result = jsonResponse.getString("result");
+
+                    if(result.equals("OK"))
+                    {
+
+                        try {
+                            //TODO
+                            //Need to handle empty list returned in case there is no babies registered on the user
+                            babylist = result_obj.getJSONArray("StudentsList");
+                            int j = babylist.length();
+
+                            if(babylist.length()>0) {
+
+                                Log.d("What is returned on get baby query ......", babylist.getString(0) + "-------" + babylist.length());
+                                for (int i = 0; i < j; i++) {
+                                    JSONObject b = babylist.getJSONObject(i);
+                                    // Log.d("Inside cycle for ......", b.toString());
+                                    String stName = b.getString("StudentName");
+                                    String stSurname = b.getString("StudentSurname");
+                                    String stID = b.getString("StudentID");
+                                    String hwLabel = b.getString("HwLabel");
+                                    //String token = b.getString("Token");
+                                    if(hwLabel.equals("null"))
+                                    //String child_id = b.getString("child_id");//To change to real json field
+                                    listMag.add(stName + " " + stSurname + "+"+stID + "+" + hwLabel);
+
+                                }
+                                updateUISpinner(listMag);
+                                Log.d("MILA", "All Students..........."+listMag);
+                            }
+                            else
+                            {
+                                Log.d("MILA", "No Students...........");
+                                updateUISpinner(listMag);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(RegistrationResponse.RegistrationError error) {
+                enableProgressDialog(false);
+            }
+            @Override
+            public void onNetworkError() {
+                enableProgressDialog(false);
+
+            }
+        });
+
+    }
+
+    private void getStudentsByGroup(String myEtText, String groupID){
+        enableProgressDialog(true);
+
+        RegisterAPI.getInstance(this).queryStudentsByGroup(myEtText, groupID,  new RegisterAPI.RegistrationCallback() {
             @Override
             public void onResponse(String str) {
                 enableProgressDialog(false);
@@ -159,7 +236,7 @@ public class ListStudents extends Activity {
                             if(babylist.length()>0) {
                                 Log.d("What is returned on get baby query ......", babylist.getString(0) + "-------" + babylist.length());
                                 for (int i = 0; i < j; i++) {
-                                    JSONObject b = babylist.getJSONObject(i);
+                               JSONObject b = babylist.getJSONObject(i);
                                     // Log.d("Inside cycle for ......", b.toString());
                                     String stName = b.getString("StudentName");
                                     String stSurname = b.getString("StudentSurname");
@@ -200,132 +277,65 @@ public class ListStudents extends Activity {
         });
 
     }
-*/
-    private void getStudentsByGroup(String myEtText, String groupID){
-        enableProgressDialog(true);
-        groupId = groupID;
-        Log.d("MILA","getStudentByGroup, where groupid = " + groupId);
-        RegisterAPI.getInstance(this).queryStudentsByGroup(myEtText, groupID,  new RegisterAPI.RegistrationCallback() {
-            @Override
-            public void onResponse(String str) {
-                enableProgressDialog(false);
-                try {
-                    JSONObject jsonResponse = new JSONObject(str);
-                    //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
-                    JSONObject result_obj = jsonResponse.getJSONObject("content");
-                    //Log.d("Parsing JSON, object Content = ",result_obj.toString());
-                    result = jsonResponse.getString("result");
-
-                    if(result.equals("OK"))
-                    {
-
-                        try {
-                            //TODO
-                            //Need to handle empty list returned in case there is no babies registered on the user
-                            babylist = result_obj.getJSONArray("StudentsList");
-                            int j = babylist.length();
-
-                            if(babylist.length()>0) {
-                                Log.d("What is returned on group list students query ......j= ", j + babylist.getString(0) + "-------" + babylist.length());
-                                for (int i = 0; i < j; i++) {
-                               JSONObject b = babylist.getJSONObject(i);
-                                    // Log.d("Inside cycle for ......", b.toString());
-                                    String stName = b.getString("StudentName");
-                                    String stSurname = b.getString("StudentSurname");
-                                    String stID = b.getString("StudentID");
-                                    String token = b.getString("Token");
-                                    //String child_id = b.getString("child_id");//To change to real json field
-                                    listMag.add(stName + " " + stSurname + " T ("+ token + ")" + "+"+stID);
-
-                                }
-                                updateUISpinner(listMag);
-                                Log.d("MILA", "Students..........."+listMag);
-                            }
-                            else
-                            {
-                                Log.d("MILA", "No Students...........");
-                                updateUISpinner(listMag);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
 
 
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(RegistrationResponse.RegistrationError error) {
-                enableProgressDialog(false);
-            }
-            @Override
-            public void onNetworkError() {
-                enableProgressDialog(false);
-
-            }
-        });
-
-    }
     public void createStudent(View view) {
-        Intent i = new Intent(getApplicationContext(),ListAllStudents.class);
+        Intent i = new Intent(getApplicationContext(),RegisterStudent.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("userName",myEtText);
         i.putExtra("groupID",groupId);
-        i.putExtra("isTeacher", true);
-       // Log.d("Add students group= ",groupId);
         startActivity(i);
     }
 
-    public void removeFromGroup(View view) {
-        enableProgressDialog(true);
-        Log.d("MILA  ","Add students group=" + groupId);
-        RegisterAPI.getInstance(this).deleteStudFromGroup(stud_id, groupId,  new RegisterAPI.RegistrationCallback() {
-            @Override
-            public void onResponse(String str) {
-                enableProgressDialog(false);
-                try {
-                    JSONObject jsonResponse = new JSONObject(str);
-                    //JSONObject result_obj = jsonResponse.getJSONObject("content");
-                    result = jsonResponse.getString("result");
+   /*     public void assignGroup(View view) {
+            Log.d("MILA .... groupID =",groupId+" studentID=" + stud_id);
+           enableProgressDialog(true);
 
-                    if(result.equals("OK"))
-                    {
-                        Intent i = new Intent(getApplicationContext(),ListStudents.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.putExtra("userName",myEtText);
-                        i.putExtra("groupID",groupId);
-                        i.putExtra("isTeacher", true);
-                        startActivity(i);
+            RegisterAPI.getInstance(this).addStudentToGroup(stud_id, groupId,  new RegisterAPI.RegistrationCallback() {
+                @Override
+                public void onResponse(String str) {
+                    enableProgressDialog(false);
+                    try {
+                        JSONObject jsonResponse = new JSONObject(str);
+                        //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
+                        JSONObject result_obj = jsonResponse.getJSONObject("content");
+                        //Log.d("Parsing JSON, object Content = ",result_obj.toString());
+                        result = jsonResponse.getString("result");
+
+                        if(result.equals("OK"))
+                        {
+                            Intent i = new Intent(getApplicationContext(),ListStudents.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.putExtra("userName",myEtText);
+                            i.putExtra("groupID",groupId);
+                            i.putExtra("isTeacher", true);
+                            startActivity(i);
+                         }
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onError(RegistrationResponse.RegistrationError error) {
-                enableProgressDialog(false);
-            }
-            @Override
-            public void onNetworkError() {
-                enableProgressDialog(false);
+                @Override
+                public void onError(RegistrationResponse.RegistrationError error) {
+                    enableProgressDialog(false);
+                }
+                @Override
+                public void onNetworkError() {
+                    enableProgressDialog(false);
 
-            }
-        });
-    }
-
-    /*public void assignWristband(View view) {
+                }
+            });
+        }
+*/
+    public void assignWrstbnd(View view) {
         Intent i = new Intent(getApplicationContext(),ListWristbnd.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("studentID",stud_id);
         i.putExtra("userName",myEtText);
         i.putExtra("groupID",groupId);
         startActivity(i);
-    }*/
+    }
 }

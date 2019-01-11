@@ -8,10 +8,12 @@ public class Child {
         this.child_birthDay = "";
         this.child_gender = "";
         this.child_Id = "";
+
     }
     public void setAlias(String alias){
         this.child_alias = alias;
     }
+
     public void setGender(String gender){
         this.child_gender = gender;
     }
@@ -33,4 +35,5 @@ public class Child {
     public String getChild_Id(){
         return this.child_Id;
     }
+
 }

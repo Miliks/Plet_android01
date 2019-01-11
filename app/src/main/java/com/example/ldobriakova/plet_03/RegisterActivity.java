@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.Html;
+import android.text.Layout;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -51,16 +52,16 @@ public class RegisterActivity extends Activity {
 	TextView errorMsg;
 	// Create Edit View Objects for all fields to fill for registration
 	EditText userNameET, nameET, surnameET, emailET, pwdET, birthdayET, phoneET,cityET,repeatpwdET;
-
 	// Checkbox for privicy complience
-	CheckBox checkBox;
+	CheckBox checkBox_child;
 	Spinner countrySpinner, genderSpinner;
 	JSONArray countryList = new JSONArray();
 	String combined, gender_adult;
 	List<String> listName = new ArrayList<String>();
 	Boolean isTeacher;
 	Boolean  isGroup = false;
-	Button btn1, btn2, btn3;
+	Button btn1, btn2, btn3,btn4;
+	//LinearLayout lt, lp;
 
 
 	@Override
@@ -68,8 +69,7 @@ public class RegisterActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Fabric.with(this, new Crashlytics());
 		setContentView(R.layout.activity_register);
-
-		checkBox = (CheckBox) findViewById(R.id.checkbox);
+		//checkBox = (CheckBox) findViewById(R.id.checkbox);
 		final Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
 		countrySpinner = (Spinner)findViewById(R.id.spinnerCountry) ;
@@ -79,50 +79,68 @@ public class RegisterActivity extends Activity {
 		// Set Cancelable as False
 		prgDialog.setCancelable(false);
 		prgDialog.setIndeterminate(true);
-		checkBox = (CheckBox)findViewById(R.id.checkBox);
-		checkBox.setChecked(false);
-		TextView textView = (TextView)findViewById(R.id.textView2);
+		//checkBox = (CheckBox)findViewById(R.id.checkBox);
+		//checkBox.setChecked(false);
+		checkBox_child= (CheckBox)findViewById(R.id.checkBox_child);
+		checkBox_child.setChecked(false);
+		//TextView textView = (TextView)findViewById(R.id.textView2);
+		TextView textView1 = (TextView)findViewById(R.id.textView3);
 
-		checkBox.setText("");
+		/*checkBox.setText("");
 		textView.setText(Html.fromHtml("I have read & agree to the " +
 				"<a href='https://plet.cloud.reply.eu/termsconditions.html'>TERMS AND CONDITIONS</a>"));
 		textView.setClickable(true);
-		textView.setMovementMethod(LinkMovementMethod.getInstance());
+		textView.setMovementMethod(LinkMovementMethod.getInstance());*/
+		checkBox_child.setText("");
+		textView1.setText(Html.fromHtml("I have read & agree to the " +
+				"<a href='https://plet.cloud.reply.eu/termsconditions.html'>TERMS AND CONDITIONS</a>"));
+		textView1.setClickable(true);
+		textView1.setMovementMethod(LinkMovementMethod.getInstance());
 
 		Bundle extras = getIntent().getExtras();
 		isTeacher = extras.getBoolean("isTeacher");
 		Log.d("What is returned on Register Login view ......", isTeacher.toString());
-		btn1 = (Button)findViewById(R.id.save_button);
+
+		/*btn1 = (Button)findViewById(R.id.save_button);
 		btn2 = (Button)findViewById(R.id.add_group_button);
 		btn3 = (Button)findViewById(R.id.register_button);
-		if(isTeacher) {
-			/*final float scale = getResources().getDisplayMetrics().density;
-			int heightDp = (int) (33 * scale + 0.5f);
-			ViewGroup.LayoutParams params = btn1.getLayoutParams();
-			params.height = heightDp;
-			ViewGroup.LayoutParams params2 = btn2.getLayoutParams();
-			params2.height = heightDp;
-			btn1.setLayoutParams(params);*/
+		btn4 = (Button)findViewById(R.id.add_student);
+		lt = (LinearLayout)findViewById(R.id.teacher_view);
+		lp = (LinearLayout)findViewById(R.id.parent_view);*/
+
+
+	/*	if(isTeacher) {
+
 			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
 					(ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
 			btn1.setLayoutParams(lp_l);
 			btn2.setLayoutParams(lp_l);
+			btn4.setLayoutParams(lp_l);
 			btn1.requestLayout();
 			btn1.setEnabled(true);
 			btn2.setEnabled(true);
 			btn3.setEnabled(false);
+			btn4.setEnabled(true);
 			btn3.setVisibility(View.INVISIBLE);
+lp.setVisibility(View.INVISIBLE);
+lt.setEnabled(true);
+lp.setEnabled(false);
 		}
 		else {
 			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
-					(ViewGroup.LayoutParams.MATCH_PARENT), (ViewGroup.LayoutParams.MATCH_PARENT));
+					(ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
 			btn3.setLayoutParams(lp_l);
 			btn1.setEnabled(false);
+			btn4.setEnabled(false);
+			btn4.setVisibility(View.INVISIBLE);
 			btn1.setVisibility(View.INVISIBLE);
 			btn2.setEnabled(false);
 			btn2.setVisibility(View.INVISIBLE);
 			btn3.setEnabled(true);
-		}
+			lt.setVisibility(View.INVISIBLE);
+			lp.setEnabled(true);
+			lt.setEnabled(false);
+		}*/
 		// Find User Name Edit View control by ID
 		userNameET = (EditText)findViewById(R.id.user_name);
 		// Find Name Edit View control by ID
@@ -313,7 +331,7 @@ public class RegisterActivity extends Activity {
 //Verify is all mandatory fields are filled
 		if(!userName.isEmpty()&&!password.isEmpty()&&password.equals(repeat_pwd)&&!name.isEmpty()&&!surName.isEmpty()&&!birthDate.isEmpty()&&!gender_adult.isEmpty()&&!city.isEmpty()&&!country.isEmpty()) {
 
-			if (checkBox.isChecked()) {
+			if (checkBox_child.isChecked()) {
 				//Birthday formal validator
 				if (isValidDate(birthDate)) {
 
@@ -327,12 +345,13 @@ public class RegisterActivity extends Activity {
 										String result = jsonResponse.getString("result");
 										if (result.equals("OK")) {
 											String user = userName;
+											navigatetoLoginActivity();
 											//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
 											//navigatetoAddStudent(user);
-											if(isGroup=false)
+											/*if(isGroup=false)
 											navigatetoLoginActivity();
 											else
-												navigateAddGroup(user);
+												navigateAddGroup(user);*/
 										} else {
 											onFailRegistration(jsonResponse.getString("message"));
 										}
@@ -363,8 +382,8 @@ public class RegisterActivity extends Activity {
 										if (result.equals("OK")) {
 											String user = userName;
 											//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
-											navigatetoAddChild(user);
-											//navigatetoLoginActivity();
+											//navigatetoAddChild(user);
+											navigatetoSelectChoice();
 										} else {
 											onFailRegistration(jsonResponse.getString("message"));
 										}
@@ -406,9 +425,27 @@ public class RegisterActivity extends Activity {
 			runOnUiThread(new Runnable(){
 				@Override
 				public void run() {
-					startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+
+					//startActivity(new Intent(RegisterActivity.this,LoginActivity.class));
+					Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+					//String userNameInternal = userName;
+					//usernameET.getText().toString();
+					i.putExtra("isTeacher", true);
+					prgDialog.dismiss();
+					startActivity(i);
 				}
 			});}
+
+	private void navigatetoSelectChoice(){
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+
+				Intent i = new Intent(RegisterActivity.this, ChoiceActivity.class);
+				prgDialog.dismiss();
+				startActivity(i);
+			}
+		});}
 				private void navigatetoAddChild(final String userName){
 					runOnUiThread(new Runnable(){
 						@Override
@@ -426,7 +463,7 @@ public class RegisterActivity extends Activity {
 
 		}
 
-	private void navigateAddGroup(final String userName){
+	/*private void navigateAddGroup(final String userName){
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
@@ -441,7 +478,7 @@ public class RegisterActivity extends Activity {
 			}
 		});
 
-	}
+	}*/
 
 
 	private void onFailRegistration(final String message)
@@ -528,17 +565,22 @@ return true;
 					break;
 		}
 	}
-	public void registerGroup(View view) {
+	/*public void registerGroup(View view) {
 		isGroup=true;
+		Log.d("isGroup...  = ", isGroup.toString());
 		registerUser();
 	}
 
 	public void registerTeacher(View view) {
 		registerUser();
-	}
+	}*/
 
 	public void registerParent(View view) {
 		registerUser();
 
 	}
+
+   /* public void add_student(View view) {
+		//TODO add GOTO create student screen
+    }*/
 }

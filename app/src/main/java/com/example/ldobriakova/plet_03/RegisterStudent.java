@@ -176,10 +176,11 @@ public class RegisterStudent extends Activity {
 				public void run() {
 					enableProgressDialog(true);
 
-					Intent i = new Intent(RegisterStudent.this,ListStudents.class);
+					Intent i = new Intent(RegisterStudent.this,ListAllStudents.class);
 					//String userName = userNameET.getText().toString();
 					i.putExtra("userName",userName);
 					i.putExtra("groupID",groupId);
+					i.putExtra("isTeacher",true);
 					startActivity(i);
 								}
 			});
