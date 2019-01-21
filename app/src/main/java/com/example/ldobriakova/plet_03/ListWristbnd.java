@@ -41,6 +41,7 @@ public class ListWristbnd extends Activity {
         Intent i = new Intent(ListWristbnd.this,ListStudents.class);
          i.putExtra("isTeacher",true);
          i.putExtra("userName",myEtText);
+         i.putExtra("groupID",groupID);
          startActivity(i);
     }
 
@@ -58,6 +59,7 @@ public class ListWristbnd extends Activity {
             myEtText = extras.getString("userName");
             studentID = extras.getString("studentID");
             groupID = extras.getString("groupID");
+            Log.d("MILA", "on create listWrist screen studentID" + studentID + "groupID = "+groupID);
            }
         getWristList(myEtText);
 
@@ -113,9 +115,10 @@ public class ListWristbnd extends Activity {
                @Override
                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                    Wristbnd wristbnd = (Wristbnd) wristAdapter.getItem(position);
-                   Log.d("MILA", "wristname =" + wristbnd.getWrst_alias());
+
                    wristName = wristbnd.getWrst_alias();
                    wristID = wristbnd.getWrst_Id();
+                   Log.d("MILA", "wristname =" + wristName + "wristID =" +wristID );
                }
            });
           /* listWrstV.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -193,10 +196,11 @@ public class ListWristbnd extends Activity {
         i.putExtra("userName",myEtText);
         i.putExtra("groupID",groupID);
         i.putExtra("studentId",studentID);
+        Log.d("MILA", "Go to the add new wristband with groupId = " + groupID + "studentID= " + studentID);
         startActivity(i);
     }
 
-    public void assignToGroup() {
+    public void assignToGroup( String studentID, final String groupID) {
         Log.d("MILA .... groupID =",groupID+" studentID=" + studentID);
         enableProgressDialog(true);
 
@@ -206,7 +210,7 @@ public class ListWristbnd extends Activity {
                 enableProgressDialog(false);
                 try {
                     JSONObject jsonResponse = new JSONObject(str);
-                    //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
+                    Log.d("Parsing JSON, object  = ",jsonResponse.toString());
                     //JSONObject result_obj = jsonResponse.getJSONObject("content");
                     //Log.d("Parsing JSON, object Content = ",result_obj.toString());
                     Log.d("MILA","groupID = " + groupID);
@@ -221,6 +225,14 @@ public class ListWristbnd extends Activity {
                         i.putExtra("isTeacher", true);
                         startActivity(i);
                     }
+                    else
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+
+                            }
+                        });
 
 
                 } catch (JSONException e) {
@@ -240,9 +252,10 @@ public class ListWristbnd extends Activity {
         });
     }
 
-    private void assignWristToStud(final String studentID, String wristID){
+    private void assignWristToStud(String studentID, String wristID, final String groupID){
         enableProgressDialog(true);
-        RegisterAPI.getInstance(this).assignWrst(studentID,wristID, new RegisterAPI.RegistrationCallback() {
+        final String  internalStudentID = studentID;
+        RegisterAPI.getInstance(this).assignWrst(internalStudentID,wristID, new RegisterAPI.RegistrationCallback() {
             @Override
             public void onResponse(String str) {
                 enableProgressDialog(false);
@@ -252,10 +265,12 @@ public class ListWristbnd extends Activity {
                    // JSONObject result_obj = jsonResponse.getJSONObject("content");
                     //Log.d("Parsing JSON, object Content = ",result_obj.toString());
                     result = jsonResponse.getString("result");
-                    Log.d("MILA assign wristband to student ......",studentID+ "  " +  result);
+                    Log.d("MILA assign wristband to student ......",internalStudentID);
                     if(result.equals("OK"))
                     {
-                        assignToGroup();
+                        Log.d("MILA ","BEFORE assign to group");
+                        assignToGroup(internalStudentID, groupID);
+                        Log.d("MILA ","AFTER assign to group");
                         /*Intent i = new Intent(ListWristbnd.this, ListAllStudents.class);
                         i.putExtra("userName",myEtText);
                         i.putExtra("groupID",groupID);*/
@@ -279,8 +294,49 @@ public class ListWristbnd extends Activity {
 
     public void assignToStud(View view) {
 //assignWrst
-        Log.d("MILA show the wrist id = ",wristID + "studentID= " + studentID);
-        assignWristToStud(wristID,studentID);
+       Log.d("MILA  in assign wrist to student call ",wristID + "groupID = " + groupID + "studentID = " + studentID);
+        //assignWristToStud(wristID,studentID, groupID);
+        enableProgressDialog(true);
+        final String  internalStudentID = studentID;
+        RegisterAPI.getInstance(this).assignWrst(studentID,wristID, new RegisterAPI.RegistrationCallback() {
+            @Override
+            public void onResponse(String str) {
+                enableProgressDialog(false);
+                try {
+                    JSONObject jsonResponse = new JSONObject(str);
+                    Log.d("MILA parsing json  = ",jsonResponse.toString());
+                    // JSONObject result_obj = jsonResponse.getJSONObject("content");
+                    //Log.d("Parsing JSON, object Content = ",result_obj.toString());
+                    result = jsonResponse.getString("result");
+                    Log.d("MILA assign wristband to student ......",internalStudentID);
+                    if(result.equals("OK"))
+                    {
+                        Log.d("MILA ","BEFORE assign to group");
+                        assignToGroup(internalStudentID, groupID);
+                        Log.d("MILA ","AFTER assign to group");
+
+                    }
+                    else
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+
+                            }
+                        });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onError(RegistrationResponse.RegistrationError error) {
+                enableProgressDialog(false);
+            }
+            @Override
+            public void onNetworkError() {
+                enableProgressDialog(false);
+            }
+        });
     }
 
     public void deleteWrstbnd(View view) {
@@ -296,6 +352,7 @@ public class ListWristbnd extends Activity {
                         //Log.d("What is returned on activity Login view ......", jsonResponse.toString());
                         if (result.equals("OK")) {
                             finish();
+
                             startActivity(getIntent());
 
                         } else {

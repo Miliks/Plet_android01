@@ -263,6 +263,12 @@ public class ListGroups extends Activity {
     }
 
     public void modifyTeacher(View view) {
+        Intent i = new Intent(getApplicationContext(),UserProfile.class);
+        Log.d("MILA","modifyTeacher + groupID = " + groupID);
+        i.putExtra("userName",myEtText);
+        i.putExtra("isTeacher",true);
+        i.putExtra("groupID",groupID);
+        startActivity(i);
         //TODO create new screen to modify teacher profile
     }
 

@@ -178,7 +178,7 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="registerStudent"
                 android:background="@drawable/button_rounded_corners"
-                android:text="    Add child    "
+                android:text="    Add student    "
                 android:textStyle="bold" />
 
             <!-- -->

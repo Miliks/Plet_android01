@@ -4,55 +4,48 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.LabelFormatter;
-import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import io.fabric.sdk.android.Fabric;
 
 import static java.lang.String.valueOf;
 
-public class Statistic extends Activity {
+public class Group_Statistic extends Activity {
    // Button btnDatePicker;
     private int mYear, mMonth, mDay;
-    TextView babyAliasView, title, averageTime, sessions;
+    TextView babyAliasView, title, averageTime, sessions, day_title, week_title;
     Date parsedStartDate, parsedStopDate, parsedAver;
-    String productID, serialNumber, childID, userName, sessionsValue;
+    String productID, serialNumber, childID, userName, sessionsValue, child_token;
     EditText txtDate;
     String startTime, stopTime, totalTime,parsedAverString;
     ProgressDialog prgDialog;
@@ -60,31 +53,66 @@ public class Statistic extends Activity {
     ArrayList<String> valuesForGraphTS = new ArrayList<String>();
     ArrayList<Double> valuesForGraph = new ArrayList<Double>();
     LineGraphSeries<DataPoint> series;
+    ImageView single_emoji_happy,single_emoji_sad ;
     Double d;
     // private BarChart barcrt;
    SimpleDateFormat dfsf = new SimpleDateFormat("MM-dd");
+   LinearLayout single_emoji, multiple_emoji;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         Bundle extras = getIntent().getExtras();
-        setContentView(R.layout.statistic_view);
+        setContentView(R.layout.group_statistic);
         title = (TextView) findViewById(R.id.title2_1);
+        day_title = (TextView) findViewById(R.id.title2);
+        week_title = (TextView) findViewById(R.id.title_week2);
         String babyName = extras.getString("babyAlias");
+        Log.d("MILA", "babyName = " + babyName);
         userName = extras.getString("userName");
         productID = extras.getString("productid");
         serialNumber = extras.getString("serialNumber");
         childID = extras.getString("childID");
         prgDialog = new ProgressDialog(this);
+        child_token = extras.getString("token");
         // Set Progress Dialog Text
         prgDialog.setMessage("Please wait...");
         // Set Cancelable as False
         prgDialog.setCancelable(false);
         prgDialog.setIndeterminate(true);
+
+        LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
+                (ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        single_emoji = (LinearLayout) findViewById(R.id.single_emoji_layout);
+        multiple_emoji = (LinearLayout) findViewById(R.id.weekly_emoji_layout);
+        single_emoji_happy = (ImageView)findViewById(R.id.emoji);
+        single_emoji.setLayoutParams(lp_l);
+        multiple_emoji.setLayoutParams(lp_l);
+
+        //LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams((ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
+       // LinearLayout.LayoutParams layoutParams= (LinearLayout.LayoutParams)day_title.getLayoutParams();
+       // RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)day_title.getLayoutParams();
+
+       // layoutParams.addRule(RelativeLayout.ALIGN_LEFT);
+        day_title.setLayoutParams(lp_l);
+        week_title.setLayoutParams(lp_l);
+        day_title.setEnabled(true);
+        day_title.setVisibility(View.VISIBLE);
+
+        week_title.setEnabled(false);
+        week_title.setVisibility(View.INVISIBLE);
+        single_emoji.setEnabled(true);
+        single_emoji_happy.setImageResource(R.drawable.sad);
+        //single_emoji_happy.setImageURI(happyUri);
+        multiple_emoji.setEnabled(false);
+        multiple_emoji.setVisibility(View.INVISIBLE);
         title.setText(babyName);
-        playTime();
-        averageTimeWeek();
+       // playExperience();
+        //averageTimeWeek();
             // barcrt chart =  findViewById(R.id.chart);
 
 
@@ -148,9 +176,9 @@ public class Statistic extends Activity {
     @Override
     public void onBackPressed()
     {
-        Intent i = new Intent(Statistic.this,Welcome.class);
+        Intent i = new Intent(Group_Statistic.this,SelectChild.class);
        i.putExtra("userName",userName);
-       i.putExtra("childID",childID);
+       //i.putExtra("childID",childID);
         startActivity(i);
 
     }
@@ -188,7 +216,7 @@ public void selectDate(View v) {
        });
    }
 
-   public void playTime()
+   public void child_playExperience()
    {
        enableProgressDialog(true);
        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -201,8 +229,8 @@ public void selectDate(View v) {
        Date tomorrow = calendar.getTime();
        String formattedYesterday = df.format(yesterday);
        String formattedTomorrow = df.format(tomorrow);
-
-       RegisterAPI.getInstance(this).getAverageTime(productID, serialNumber,childID, formattedYesterday, formattedTomorrow, new RegisterAPI.RegistrationCallback() {
+//getGroupInteractionStats?startDate=2018-10-11&endDate=2019-01-15&token=FEAC4E893D
+       RegisterAPI.getInstance(this).queryPlayBehaviour(formattedYesterday, formattedTomorrow,child_token, new RegisterAPI.RegistrationCallback() {
            @Override
            public void onResponse(String str) {
                try {
@@ -213,16 +241,27 @@ public void selectDate(View v) {
                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                        if (result.equals("OK")) {
                        Log.d("MILA","Get average time.......resul OK for child " + childID);
-                       sessionArray = result_obj.getJSONArray("SessionList");
+                       sessionArray = result_obj.getJSONArray("GroupInteractionList");
                        sessionsValue = valueOf(sessionArray.length()).toString();
-                          if(sessionArray.length()>0) {
+                           int distant = 0;
+                           int interact = 0;
+                           int indif = 0;
+                           int play = 0;
+                           if(sessionArray.length()>0) {
                            for (int i = 0; i < sessionArray.length(); i++) {
                                JSONObject b = sessionArray.getJSONObject(i);
-                               startTime = b.getString("startTime") ;
-                               stopTime  = b.getString("endTime");
+                               startTime = b.getString("Timestamp") ;
+                               String actionType = b.getString("ActionType");
+                               if(actionType.contains("DISTANT"))
+                                   distant= distant++;
+                               else if(actionType.contains("INTERACTING"))
+                                   interact=interact++;
+                               else play = play++;
+
+                               //stopTime  = b.getString("endTime");
                                try {
                                    parsedStartDate = dateFormat.parse(startTime);
-                                   parsedStopDate = dateFormat.parse(stopTime);
+                                   //parsedStopDate = dateFormat.parse(stopTime);
 
                                    Log.d("MILA","Time elapsed =" + parsedAver);
                                } catch (ParseException e) {
@@ -230,30 +269,20 @@ public void selectDate(View v) {
                                }
                                Long tmp = (parsedStopDate.getTime() - parsedStartDate.getTime())/60000;
                                Log.d("MILA", "PLAYTIME = " + tmp + "rounded = " + Math.round(tmp));
-                               parsedAverString = valueOf((parsedStopDate.getTime() - parsedStartDate.getTime())/60000).toString();
+                              // parsedAverString = valueOf((parsedStopDate.getTime() - parsedStartDate.getTime())/60000).toString();
                            }
                        }
                        else
                        {
-                            parsedAverString = "00";
-                            sessionsValue = "0";
-
-                           Log.d("MILA", "No playtime...........");
-                           runOnUiThread(new Runnable() {
-                               @Override
-                               public void run() {
-                                   Toast.makeText(getApplicationContext(), "Your child havn't been playing in this timeframe", Toast.LENGTH_LONG).show();
-                               }
-
-                           });
+                            indif=indif++;
                        }
                        prgDialog.dismiss();
-                       averageTime = (TextView)findViewById(R.id.title2_2);
+                      /* averageTime = (TextView)findViewById(R.id.title2_2);
                        averageTime.setText(parsedAverString);
                        averageTime.append(" min");
                        sessions = (TextView) findViewById(R.id.sessionsValue);
-                       sessions.setText(sessionsValue);
-                       Log.d("MILA","Sessions played OUT...... " + sessionArray.length());
+                       sessions.setText(sessionsValue);*/
+                       Log.d("MILA","Sessions played OUT...... " + sessionArray.length() +"inter= " + interact + " indif =" + indif + " play = " + play + " distant ="  + distant);
 
                    } else {
 
@@ -327,7 +356,6 @@ public void averageTimeWeek()
         final Date d6 = calendar.getTime();
         calendar.add(Calendar.DATE, -1);
         final Date d7 = calendar.getTime();
-        //final String formattedWeekAgo = df.format(d7);
         final String formattedWeekAgo = df.format(d7);
         final String formattedDate = df.format(d1);
        Log.d("MILA", "dddddd"+d1 + d2 + d3 + d4 + d5 + d6 +d7);
@@ -467,26 +495,22 @@ public void averageTimeWeek()
         GraphView graph = (GraphView) findViewById(R.id.graph);
         Log.d("MILA", "dddddd"+d7 );
         final LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(1,0),
-                new DataPoint(2, 5),
-                new DataPoint(3, 2),
-                new DataPoint(4,1),
-                new DataPoint(5, 0),
-                new DataPoint(6, 2),
-                new DataPoint(7, 0)
+                new DataPoint(d7,0),
+                new DataPoint(d6, 5),
+                new DataPoint(d5, 8),
+                new DataPoint(d4,1)
+//                new DataPoint(d3, 7),
+//                new DataPoint(d2, 0),
+//                new DataPoint(d1, 7)
         });
         Log.d("MILA", "dddddd5 =" + d5);
         Log.d("MILA", "dddddd6 =" + d6);
         graph.addSeries(series);
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-        staticLabelsFormatter.setHorizontalLabels(new String[] {"mon", "tue", "wed","thu","fri","sat","sun"});
-        //staticLabelsFormatter.setVerticalLabels(new String[] {"minutes"});
-        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         //series.
        // graph.getGridLabelRenderer().setNumHorizontalLabels(4);
 
 
-      /*graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+      graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
             @Override
             public String formatLabel(double value, boolean isValueX) {
                 if (isValueX) {
@@ -499,7 +523,7 @@ public void averageTimeWeek()
                     return super.formatLabel(value, isValueX);
                 }
             }
-        });*/
+        });
 
        // graph.getGridLabelRenderer().setNumHorizontalLabels(7);
 
@@ -509,5 +533,17 @@ public void averageTimeWeek()
     public void refresh(View view) {
         finish();
         startActivity(getIntent());
+    }
+//change screen on clicking the week view button
+    public void weekView(View view) {
+        single_emoji.setEnabled(false);
+        single_emoji.setVisibility(View.INVISIBLE);
+       // single_emoji_happy.setImageURI(happyUri);
+        multiple_emoji.setEnabled(true);
+        multiple_emoji.setVisibility(View.VISIBLE);
+        day_title.setEnabled(false);
+        day_title.setVisibility(View.INVISIBLE);
+        week_title.setEnabled(true);
+        week_title.setVisibility(View.VISIBLE);
     }
 }

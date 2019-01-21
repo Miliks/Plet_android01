@@ -348,7 +348,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
 }
 
  //assign wristband to student
- public void assignWrst(String wristID, String studentID, final RegistrationCallback callback){
+ public void assignWrst(String studentID, String wristID, final RegistrationCallback callback){
      String requestBody = "associateRecogHwToStudent?studentID=" + studentID +"&recogHwID=" + wristID;
      Request request = new Request.Builder()
              .url(BASE_URL + requestBody)
@@ -444,7 +444,7 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
     //Adding baby to DB
     public void registerBaby(String username, String firstname, String gender, String birthDate,String token, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
-        String requestBody = "createbaby?username="+username+"&babyAlias="+firstname+"&birthDate="+birthDate+"&babyGender="+gender+"&Token="+token;
+        String requestBody = "createbaby?username="+username+"&babyAlias="+firstname+"&birthDate="+birthDate+"&babyGender="+gender+"&token="+token;
         Request request = new Request.Builder()
                 .url(BASE_URL + requestBody)
                 .get()
@@ -471,6 +471,43 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
                 }
             } });
     }
+//get info about group play
+    //getGroupInteractionStats?startDate=2018-10-11&endDate=2019-01-15&token=FEAC4E893D
+public void queryPlayBehaviour(String startTime, String stopTime, String token, final RegistrationCallback callback) {
+    JSONObject json = new JSONObject();
+String startDate = "";
+String stopDate = "";
+        String requestBody = "getGroupInteractionStats?startDate=" + startDate + "&endDate==" + stopDate + "&token=";
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("MILA = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    callback.onResponse(alternate);
+                    Log.d("MILA = ", alternate);
+                } else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            }
+        });
+
+
+}
 
     //add student to group, the student first have to be associated to the wristband
     public void addStudentToGroup(String studentID, String groidID, final RegistrationCallback callback) {
@@ -632,7 +669,39 @@ public void deleteGroup(String teacherUsername,String groupID, final Registratio
                 }
             } });
     }
+//update teacher updateTeacher
+public void updateTeacher(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
+    JSONObject json = new JSONObject();
+    String requestBody = "updateTeacher?username="+userName+"&surname="+surName+"&firstname="+name+"&email=" + email + "&password=" + password+"&cellular=" +phone+"&city="+city+"&country="+country_short+"&birthDate="+birthDate+ "&gender="+gender;
+    Request request = new Request.Builder()
+            .url(BASE_URL + requestBody)
+            .get()
+            .build();
+    Log.d("RESPONSE = ", request.toString());
 
+    httpClient.newCall(request).enqueue(new Callback() {
+        @Override
+        public void onFailure(Call call, IOException e) {
+            Log.d("RESPONSE on fail of network = ", e.toString());
+            if (callback != null)
+                callback.onNetworkError();
+        }
+
+        @Override
+        public void onResponse(Call call, Response response) throws IOException {
+
+            if (response.isSuccessful()) {
+                String alternate = response.body().string();
+                callback.onResponse(alternate);
+
+            }
+            else {
+                if (callback != null)
+                    callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+            }
+
+        } });
+}
     //update user
     public void updateUser(String userName,String surName,String name,String email,String password,String phone,String city,String country_short,String birthDate,String gender, final RegistrationCallback callback) {
         JSONObject json = new JSONObject();
@@ -1086,6 +1155,38 @@ public void getAverageTime(String productID, String serialNumber,String childID,
                 }
             } });
 
+
+    }
+    //get teacher info
+    public void getTeacherInfo(String username, final RegistrationCallback callback) {
+
+        String requestBody = "getTeacherData?username="+username;
+        Request request = new Request.Builder()
+                .url(BASE_URL + requestBody)
+                .get()
+                .build();
+        Log.d("RESPONSE = ", request.toString());
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("RESPONSE on fail of network = ", e.toString());
+                if (callback != null)
+                    callback.onNetworkError();
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    String alternate = response.body().string();
+                    Log.d("User data ",alternate);
+                    callback.onResponse(alternate);
+                }
+                else {
+                    if (callback != null)
+                        callback.onError(RegistrationResponse.RegistrationError.UNDEFINED_ERROR);
+                }
+            } });
 
     }
 

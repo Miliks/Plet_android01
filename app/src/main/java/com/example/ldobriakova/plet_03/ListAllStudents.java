@@ -32,7 +32,7 @@ public class ListAllStudents extends Activity {
     ArrayList<HashMap<String, String>> babyList;
     String result, Student_id;
     ProgressDialog progressDialog;
-    String myEtText, stud_alias, stud_name, stud_surname, stud_id, groupId,stud_hw;
+    String myEtText, stud_alias, stud_name, stud_surname, stud_id, groupId,stud_hw, stud_id_global;
     JSONObject json = new JSONObject();
     JSONArray babylist = new JSONArray();
     List<String> listComplete = new ArrayList<String>();
@@ -66,7 +66,7 @@ public class ListAllStudents extends Activity {
            myEtText = extras.getString("userName");
            getAllStudents(myEtText, groupId);
             }
-            Log.d("MILA groupId = ",groupId);
+           // Log.d("MILA groupId = ",groupId);
     }
 
     private void enableProgressDialog(final boolean enable)
@@ -128,14 +128,14 @@ public class ListAllStudents extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Student student = (Student) studentAdapter.getItem(position);
                 stud_alias = student.getSt_alias();
-                stud_id = student.getSt_Id();
+                stud_id_global = student.getSt_Id();
                 //stud_hw = student.gethwLabel();
-                Log.d("MILA", "On item click stud_id =" + stud_id /* " hwLabel" + stud_hw*/ );
+                Log.d("MILA", "On item click stud_id =" + stud_id_global /* " hwLabel" + stud_hw*/ );
             }
         });
 
         Student_id = stud_id;
-        Log.d("MILA", "Student_id =" + Student_id);
+        Log.d("MILA", "Student_id =" + stud_id_global);
 
     }
     private void getAllStudents(String myEtText, String groupId){
@@ -149,7 +149,7 @@ public class ListAllStudents extends Activity {
                     JSONObject jsonResponse = new JSONObject(str);
                     //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
                     JSONObject result_obj = jsonResponse.getJSONObject("content");
-                    //Log.d("Parsing JSON, object Content = ",result_obj.toString());
+                    Log.d("MILA: Parsing JSON, object Content = ",result_obj.toString());
                     result = jsonResponse.getString("result");
 
                     if(result.equals("OK"))
@@ -163,7 +163,7 @@ public class ListAllStudents extends Activity {
 
                             if(babylist.length()>0) {
 
-                                Log.d("What is returned on get baby query ......", babylist.getString(0) + "-------" + babylist.length());
+                                Log.d("MILA ......", babylist.getString(0) + "-------" + babylist.length());
                                 for (int i = 0; i < j; i++) {
                                     JSONObject b = babylist.getJSONObject(i);
                                     // Log.d("Inside cycle for ......", b.toString());
@@ -172,7 +172,8 @@ public class ListAllStudents extends Activity {
                                     String stID = b.getString("StudentID");
                                     String hwLabel = b.getString("HwLabel");
                                     //String token = b.getString("Token");
-                                    if(hwLabel.equals("null"))
+                                   // if(hwLabel.equals("null"))
+                                        Log.d("MILA",hwLabel);
                                     //String child_id = b.getString("child_id");//To change to real json field
                                     listMag.add(stName + " " + stSurname + "+"+stID + "+" + hwLabel);
 
@@ -333,9 +334,52 @@ public class ListAllStudents extends Activity {
     public void assignWrstbnd(View view) {
         Intent i = new Intent(getApplicationContext(),ListWristbnd.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.putExtra("studentID",stud_id);
+        i.putExtra("studentID",stud_id_global);
         i.putExtra("userName",myEtText);
         i.putExtra("groupID",groupId);
+        Log.d("MILA","assign wristband to studentID =" +stud_id_global + "groupID = " + groupId );
         startActivity(i);
+    }
+
+    public void deleteStudent(View view) {
+       /* enableProgressDialog(true);
+
+        RegisterAPI.getInstance(this).deleteStudent(stud_id, groupId,  new RegisterAPI.RegistrationCallback() {
+            @Override
+            public void onResponse(String str) {
+                enableProgressDialog(false);
+                try {
+                    JSONObject jsonResponse = new JSONObject(str);
+                    //Log.d("Parsing JSON, object  = ",jsonResponse.toString());
+                    JSONObject result_obj = jsonResponse.getJSONObject("content");
+                    //Log.d("Parsing JSON, object Content = ",result_obj.toString());
+                    result = jsonResponse.getString("result");
+
+                    if(result.equals("OK"))
+                    {
+                        Intent i = new Intent(getApplicationContext(),ListStudents.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.putExtra("userName",myEtText);
+                        i.putExtra("groupID",groupId);
+                        i.putExtra("isTeacher", true);
+                        startActivity(i);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(RegistrationResponse.RegistrationError error) {
+                enableProgressDialog(false);
+            }
+            @Override
+            public void onNetworkError() {
+                enableProgressDialog(false);
+
+            }
+        });*/
     }
 }

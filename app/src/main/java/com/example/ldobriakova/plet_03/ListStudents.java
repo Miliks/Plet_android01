@@ -65,7 +65,9 @@ public class ListStudents extends Activity {
             groupId = extras.getString("groupID");
             myEtText = extras.getString("userName");
             //if (groupId != null){
-                getStudentsByGroup(myEtText, groupId);}
+                getStudentsByGroup(myEtText, groupId);
+        Log.d("MILA", "On create List students filtered by groupID= " + groupId);
+        }
            /* }
 
 
@@ -276,7 +278,7 @@ public class ListStudents extends Activity {
         i.putExtra("userName",myEtText);
         i.putExtra("groupID",groupId);
         i.putExtra("isTeacher", true);
-       // Log.d("Add students group= ",groupId);
+       Log.d("Add students to groupID= ",groupId);
         startActivity(i);
     }
 

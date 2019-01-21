@@ -1,19 +1,22 @@
 package com.example.ldobriakova.plet_03;
 
 public class Child {
-    private String child_alias, child_gender, child_birthDay, child_Id;
+    private String child_alias, child_gender, child_birthDay, child_Id, token;
     public Child()
     {
         this.child_alias = "";
         this.child_birthDay = "";
         this.child_gender = "";
         this.child_Id = "";
+        this.token = "";
 
     }
     public void setAlias(String alias){
         this.child_alias = alias;
     }
-
+    public void setToken(String token){
+        this.token = token;
+    }
     public void setGender(String gender){
         this.child_gender = gender;
     }
@@ -25,6 +28,9 @@ public class Child {
     }
     public String getChild_alias(){
         return this.child_alias;
+    }
+    public String getChild_token(){
+        return this.token;
     }
     public String getChild_gender(){
         return this.child_gender;

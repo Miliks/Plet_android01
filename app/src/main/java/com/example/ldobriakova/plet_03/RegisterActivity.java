@@ -383,7 +383,7 @@ lp.setEnabled(false);
 											String user = userName;
 											//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
 											//navigatetoAddChild(user);
-											navigatetoSelectChoice();
+											navigatetoSelectChoice(userName);
 										} else {
 											onFailRegistration(jsonResponse.getString("message"));
 										}
@@ -436,12 +436,15 @@ lp.setEnabled(false);
 				}
 			});}
 
-	private void navigatetoSelectChoice(){
+	private void navigatetoSelectChoice(final String userName){
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
 
 				Intent i = new Intent(RegisterActivity.this, ChoiceActivity.class);
+				i.putExtra("userName", userName);
+				i.putExtra("isTeacher", false);
+
 				prgDialog.dismiss();
 				startActivity(i);
 			}
@@ -455,6 +458,7 @@ lp.setEnabled(false);
 							String userNameInternal = userName;
 									//usernameET.getText().toString();
 							i.putExtra("userName", userNameInternal);
+							i.putExtra("isTeacher", false);
 							prgDialog.dismiss();
 							startActivity(i);
 							//startActivity(new Intent(RegisterActivity.this,LoginActivity.class));

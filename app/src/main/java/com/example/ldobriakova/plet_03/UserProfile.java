@@ -53,7 +53,7 @@ public class UserProfile extends Activity {
 	CheckBox checkBox;
 	Spinner countrySpinner, genderSpinner;
 	JSONArray countryList = new JSONArray();
-	String combined, gender_adult, userBD, cel, city, country, email, gend, name, username, surname, userData, userBD_external;
+	String combined, gender_adult, userBD, cel, city, country, email, gend, name, username, surname, userData,groupID, userBD_external;
 	List<String> listName = new ArrayList<String>();
 	JSONArray userDatalist = new JSONArray();
 	RadioButton gender_m, gender_f;
@@ -66,8 +66,7 @@ public class UserProfile extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.profile);
         Fabric.with(this, new Crashlytics());
-		Bundle extras = getIntent().getExtras();
-		isTeacher = extras.getBoolean("isTeacher");
+
 		checkBox = (CheckBox) findViewById(R.id.checkbox);
 		final Calendar c = Calendar.getInstance();
 		int year = c.get(Calendar.YEAR);
@@ -82,9 +81,9 @@ public class UserProfile extends Activity {
 		checkBox.setChecked(false);
 		TextView textView = (TextView)findViewById(R.id.textView2);
 		btn1 = (Button)findViewById(R.id.register_button);
-		btn2 = (Button)findViewById(R.id.child_data);
-		btn3 = (Button)findViewById(R.id.modify_group);
-		if(isTeacher) {
+		//btn2 = (Button)findViewById(R.id.child_data);
+		//btn3 = (Button)findViewById(R.id.modify_group);
+		/*if(isTeacher) {
 			LinearLayout.LayoutParams lp_l = new LinearLayout.LayoutParams(
 					(ViewGroup.LayoutParams.WRAP_CONTENT), (ViewGroup.LayoutParams.WRAP_CONTENT));
 			btn1.setLayoutParams(lp_l);
@@ -104,7 +103,7 @@ public class UserProfile extends Activity {
 			btn2.setEnabled(true);
 			btn2.setVisibility(View.INVISIBLE);
 			btn3.setEnabled(false);
-		}
+		}*/
 		checkBox.setText("");
 		textView.setText(Html.fromHtml("I have read & agree to the " +
 				"<a href='https://plet.cloud.reply.eu/termsconditions.html'>TERMS AND CONDITIONS</a>"));
@@ -154,16 +153,24 @@ public class UserProfile extends Activity {
         prgDialog.setMessage("Please wait...");
         // Set Cancelable as False
         prgDialog.setCancelable(false);
-
-		if (extras != null) {
+        Bundle extras = getIntent().getExtras();
+       		if (extras != null) {
 			username = extras.getString("userName");
-		}
-		getUserInfo(username);
+			isTeacher = extras.getBoolean("isTeacher");
 
-		Log.d("User to query in onCreate in RemoveModify Baby.....=",username);
-		userNameET.setText(username);
-		gender_m = (RadioButton)findViewById(R.id.radio_gender_m);
-		gender_f = (RadioButton)findViewById(R.id.radio_gender_f);
+			 if(isTeacher){
+                 groupID = extras.getString("groupID");
+				getTeacherInfo(username, groupID);}
+
+			else
+				getUserInfo(username);
+
+			Log.d("MILA on user profile create = ",username + "groupID = " + groupID);
+			userNameET.setText(username);
+			gender_m = (RadioButton)findViewById(R.id.radio_gender_m);
+			gender_f = (RadioButton)findViewById(R.id.radio_gender_f);
+		}
+
 		//getCountryList();
 
 	}
@@ -197,7 +204,11 @@ public class UserProfile extends Activity {
 					nameET.setText(name);
 					surname = usr.getString("Surname");
 					surnameET.setText(surname);
+
 					country = usr.getString("Country");
+					if(country.isEmpty()||country==null) {
+						country = "Italy";
+					}
 					getCountryList();
 					gender_adult = usr.getString("Gender");
 					if (gender_adult.contains("female"))
@@ -288,6 +299,56 @@ public class UserProfile extends Activity {
 				enableProgressDialog(false);
 			}
 		});
+
+	}
+	//get info about the teacher
+
+	public void getTeacherInfo(String userName, String groupID)
+	{
+		enableProgressDialog(true);
+
+		RegisterAPI.getInstance(this).getTeacherInfo(userName, new RegisterAPI.RegistrationCallback() {
+			@Override
+			public void onResponse(String str) {
+				try {
+					enableProgressDialog(false);
+					JSONObject jsonResponse = new JSONObject(str);
+					JSONObject result_obj = jsonResponse.getJSONObject("content");
+					userData = jsonResponse.getString("result");
+
+					if(userData.equals("OK")) {
+						if (!userData.isEmpty()) {
+							try {
+								userDatalist = result_obj.getJSONArray("UserData");
+
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							createProfile(userDatalist);
+						}
+					}
+					else{
+						Log.d("Inside cycle for ......", "No data associated with this user");
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+			}
+
+			@Override
+			public void onError(RegistrationResponse.RegistrationError error) {
+				enableProgressDialog(false);
+			}
+			@Override
+			public void onNetworkError() {
+				enableProgressDialog(false);
+
+			}
+		});
+
+
 
 	}
 
@@ -405,7 +466,46 @@ public class UserProfile extends Activity {
 				if (isValidDate(birthDate)) {
 
 					if (validateAdult(birthDate)) {
-//TODO
+						if(isTeacher)
+						{
+							//updateTeacher?username={USERNAME}&surname={SURNAME}&firstname={FIRSTNAME}&email={EMAIL}&password={PASSWORD}&cellular={CELLULAR}&city={CITY}&country={COUNTRY}&birthDate={BIRTHDATE}&gender={GENDER}
+							RegisterAPI.getInstance(this).updateTeacher(userName, surName, name,email, password,phone, city,country_short,birthDate,gender_adult, new RegisterAPI.RegistrationCallback(){
+							@Override
+							public void onResponse(String str) {
+							try {
+								JSONObject jsonResponse = new JSONObject(str);
+								String result = jsonResponse.getString("result");
+								if (result.equals("OK")) {
+									String user = userName;
+									//Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
+									runOnUiThread(new Runnable() {
+										@Override
+										public void run() {
+											Toast.makeText(getApplicationContext(), "Data have been updated successfully!", Toast.LENGTH_LONG).show();}
+
+									});
+									//navigatetoLoginActivity();
+								} else {
+									onFailRegistration(jsonResponse.getString("message"));
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							}
+
+								@Override
+								public void onError(RegistrationResponse.RegistrationError error) {
+
+								}
+
+								@Override
+								public void onNetworkError() {
+
+								}
+							});
+						}
+						else
+
 						//substitute with the new API to update user data
 						RegisterAPI.getInstance(this).updateUser(userName, surName, name,email, password,phone, city,country_short,birthDate,gender_adult, new RegisterAPI.RegistrationCallback() {
 							@Override
@@ -554,14 +654,25 @@ return true;
 		runOnUiThread(new Runnable(){
 			@Override
 			public void run() {
-
-				Intent i = new Intent(UserProfile.this, RemoveModBaby.class);
-				String userNameInternal = userNameET.getText().toString();
-				//usernameET.getText().toString();
-				i.putExtra("userName", userNameInternal);
-				prgDialog.dismiss();
-				startActivity(i);
-
+				if(isTeacher)
+				{
+					Intent i = new Intent(UserProfile.this,ListStudents.class);
+					String userNameInternal = userNameET.getText().toString();
+					//usernameET.getText().toString();
+					Log.d("MILA","WE are in navigate to add child with groupID = " + groupID);
+					i.putExtra("userName", userNameInternal);
+					i.putExtra("groupID",groupID);
+					prgDialog.dismiss();
+					startActivity(i);
+				}
+else {
+					Intent i = new Intent(UserProfile.this, ChoiceActivity.class);
+					String userNameInternal = userNameET.getText().toString();
+					//usernameET.getText().toString();
+					i.putExtra("userName", userNameInternal);
+					prgDialog.dismiss();
+					startActivity(i);
+				}
 			}
 		});
 	}

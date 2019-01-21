@@ -45,7 +45,7 @@ public class CreateWrist extends Activity {
 		if (extras != null) {
 			groupId = extras.getString("groupID");
 			myEtText = extras.getString("userName");
-			studentID = extras.getString("studentID");
+			studentID = extras.getString("studentId");
 		}
 		// Instantiate Progress Dialog object
 		prgDialog = new ProgressDialog(this);
@@ -53,6 +53,7 @@ public class CreateWrist extends Activity {
         prgDialog.setMessage("Please wait...");
         // Set Cancelable as False
         prgDialog.setCancelable(false);
+        Log.d("MILA","On create new wristband view with groupID =" + groupId + "studentID = " + studentID);
 
 	}
     private void enableProgressDialog(final boolean enable)
@@ -74,7 +75,7 @@ public class CreateWrist extends Activity {
 	{
 		Intent i = new Intent(CreateWrist.this,ListWristbnd.class);
 		i.putExtra("userName",myEtText);
-		//i.putExtra("groupID",groupID);
+		i.putExtra("groupID",groupId);
 		i.putExtra("studentId",studentID);
 		startActivity(i);
 

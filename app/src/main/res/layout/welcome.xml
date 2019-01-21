@@ -94,7 +94,7 @@
             android:background="@drawable/button_rounded_corners"
             android:onClick="navigateStat"
             android:layout_marginLeft="5dp"
-            android:text="   TOY USAGE INFO  " />
+            android:text="   statistic  " />
 
 
         <!--Button

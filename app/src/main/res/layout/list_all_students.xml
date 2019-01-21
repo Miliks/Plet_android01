@@ -19,7 +19,7 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Select child "
+        android:text="Select student "
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp"
         tools:paddingBottom="10dp" />
@@ -61,18 +61,17 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_rounded_corners"
                 android:onClick="createStudent"
-                android:text="  ADD student " />
-            <!--Button
-                android:id="@+id/assignGrp"
+                android:text="  ADD new " />
+            <Button
+                android:id="@+id/deleteStudent"
                 style="?android:textAppearanceSmall"
-                android:layout_marginBottom="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_rounded_corners"
-                android:onClick="assignGroup"
-                android:text="  ASSIGN group  "
-                android:textStyle="bold" /-->
+                android:onClick="deleteStudent"
+                android:text="  delete   "
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/assignWrtbnd"

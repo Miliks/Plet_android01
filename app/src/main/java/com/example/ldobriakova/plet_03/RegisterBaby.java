@@ -36,6 +36,7 @@ public class RegisterBaby extends Activity {
 	// User Name Edit View Object
 	EditText userNameET, babyAliasET, genderET, birthdayET, babyToken;
 	String userName, gender_adult;
+	Boolean isPersonal, isTeacher;
 	//Spinner genderSpinner;
 
 
@@ -61,6 +62,8 @@ public class RegisterBaby extends Activity {
         prgDialog.setCancelable(false);
 		Bundle extras = getIntent().getExtras();
 		userNameET.setText(extras.getString("userName"));
+		isTeacher = extras.getBoolean("isTeacher");
+		isPersonal = extras.getBoolean("isPersonal");
 		userName = userNameET.getText().toString();
 		//userNameET.setText();
 		birthdayET  = (EditText)findViewById(R.id.baby_birthday);
@@ -121,9 +124,10 @@ public class RegisterBaby extends Activity {
 	@Override
 	public void onBackPressed()
 	{
-		Intent i = new Intent(RegisterBaby.this,SelectChild.class);
-		i.putExtra("userName",userName);
-		startActivity(i);
+			Intent i = new Intent(RegisterBaby.this, SelectChild.class);
+			i.putExtra("userName", userName);
+			i.putExtra("isTeacher", false);
+			startActivity(i);
 
 	}
 
@@ -191,6 +195,7 @@ public class RegisterBaby extends Activity {
 					Intent i = new Intent(RegisterBaby.this,SelectChild.class);
 					//String userName = userNameET.getText().toString();
 					i.putExtra("userName",userName);
+					i.putExtra("isTeacher", false);
 					startActivity(i);
 								}
 			});

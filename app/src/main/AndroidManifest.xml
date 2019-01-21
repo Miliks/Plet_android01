@@ -36,7 +36,13 @@
         android:name=".RegisterStudent"
         android:label="@string/app_name"></activity>
         <activity
+            android:name=".Teacher_Group_Stat"
+            android:label="@string/app_name"></activity>
+        <activity
             android:name=".ChoiceActivity"
+            android:label="@string/app_name"></activity>
+        <activity
+            android:name=".Group_Statistic"
             android:label="@string/app_name"></activity>
         <activity
             android:name=".ListAllStudents"

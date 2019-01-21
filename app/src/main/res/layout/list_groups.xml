@@ -17,7 +17,7 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Select your group"
+        android:text="Select group"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp"
         tools:paddingBottom="10dp" />
@@ -92,7 +92,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_rounded_corners"
                 android:onClick="studentsbyGroup"
-                android:text="  child in group  "
+                android:text="  students in group  "
                 android:textStyle="bold" />
             <Button
                 android:id="@+id/modifyProfile"

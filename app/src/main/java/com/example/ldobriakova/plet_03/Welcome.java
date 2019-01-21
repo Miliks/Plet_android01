@@ -36,7 +36,7 @@ public class Welcome extends Activity  {
     private Spinner spinnerProduct, spinnerActivity;
     private ProductSpinAdapter newAdapter;
     private Button btnNetwork;
-    String userName, babyAlias, productID, serialNumb, productAlias, childID, groupID;
+    String userName, babyAlias, productID, serialNumb, productAlias, childID, groupID, child_token;
     String result;
     ProgressDialog progressDialog;
     JSONArray productList = new JSONArray();
@@ -88,7 +88,10 @@ public class Welcome extends Activity  {
             if(extras.getString("productAlias")!=null){
             productAlias = extras.getString("productAlias");
                 aliasBoolean = true;
+
             }
+            if(extras.getString("token")!=null)
+                child_token = extras.getString("token");
             isTeacher = extras.getBoolean("isTeacher");
             if(isTeacher)
             {
@@ -99,7 +102,7 @@ public class Welcome extends Activity  {
         }
         getProducts(userName);
         mNsdManager = (NsdManager) getSystemService(Context.NSD_SERVICE);
-       Log.d("MILA","isTeacher= " + isTeacher.toString());
+       Log.d("MILA","On Welcome create isTeacher= " + isTeacher.toString() + "token =" + child_token);
     }
     private void enableProgressDialog(final boolean enable)
     {
@@ -270,6 +273,12 @@ public class Welcome extends Activity  {
 
     public void navigateStat(View view) {
          if(isTeacher) {
+             Intent i = new Intent(Welcome.this,Teacher_Group_Stat.class);
+             i.putExtra("groupID", groupID);
+             i.putExtra("userName",userName);
+             i.putExtra("productid",productID);
+             i.putExtra("serialNumber",serialNumb);
+             startActivity(i);
 
         }
         else {
@@ -280,6 +289,7 @@ public class Welcome extends Activity  {
              i.putExtra("productid", productID);
              i.putExtra("serialNumber", serialNumb);
              i.putExtra("childID", childID);
+             i.putExtra("token",child_token);
              startActivity(i);
             /*Intent i = new Intent(Welcome.this,Statistic.class);
             i.putExtra("userName",userName);

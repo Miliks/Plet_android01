@@ -47,7 +47,7 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
 
-            android:onClick="personalPlay"
+            android:onClick="groupPlay"
             android:src="@drawable/teacher"
             android:text="   personal play   " />
 

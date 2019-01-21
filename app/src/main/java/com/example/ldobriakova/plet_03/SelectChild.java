@@ -35,12 +35,13 @@ public class SelectChild extends Activity {
     ArrayList<HashMap<String, String>> babyList;
     String result, child_id;
     ProgressDialog progressDialog;
-    String myEtText, child_alias;
+    String myEtText, child_alias, child_token;
     JSONObject json = new JSONObject();
     JSONArray babylist = new JSONArray();
     List<String> listComplete = new ArrayList<String>();
     List<String> listMag = new ArrayList<String>();
     String ITEM_KEY = "key";
+    Boolean isTeacher;
     ArrayList<HashMap<String, String>> arraylist = new ArrayList<HashMap<String, String>>();
 
 
@@ -66,6 +67,7 @@ public class SelectChild extends Activity {
         progressDialog.setIndeterminate(true);
         if (extras != null) {
             myEtText = extras.getString("userName");
+            isTeacher = false;
            // Log.d("User to query in onCreate.....=",myEtText);
 
         }
@@ -149,31 +151,35 @@ private void addListenerOnChildSelection(){
         Child [] child = new Child[i];
         for (int j=0; j<i; j++) {
             int child_index = selection.get(j).indexOf("+");
+            int token_index = selection.get(j).indexOf("+",child_index +1);
             Log.d("MILA", "index =" + i);
             child[j] = new Child();
             child_alias = selection.get(j).substring(0, child_index);
-            child_id = selection.get(j).substring(child_index + 1, selection.get(j).length());
-            //Log.d("MILA", "Loop for gender = " + j + "***" + child_gender);
+            child_id = selection.get(j).substring(child_index + 1, token_index);
+            child_token = selection.get(j).substring(token_index+1,selection.get(j).length());
+            Log.d("MILA", "Loop for babies = " + j + "***" + child_alias + " " + child_token + " " + child_id);
             child[j].setAlias(child_alias);
             child[j].setChild_ID(child_id);
+            child[j].setToken(child_token);
         }
         childAdapter = new ListAdapter(this,R.layout.activity_listview,child);
        // childAdapter = new CustomAdapter(this,R.layout.activity_listview,R.id.child_alias,child);
              //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.activity_listview,R.id.child_alias,selection);
             // listChild.setAdapter(dataAdapter);
+
+
         listChild.setAdapter(childAdapter);
-        listChild.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        listChild.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Child child = (Child)childAdapter.getItem(position);
                 child_alias = child.getChild_alias();
                 child_id = child.getChild_Id();
+                child_token = child.getChild_token();
+                Log.d("MILA", child_alias + " " + child_token + " " + child_id);
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
 
-            }
         });
 
        /* listChild.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -223,8 +229,12 @@ private void addListenerOnChildSelection(){
                                     // Log.d("Inside cycle for ......", b.toString());
                                     String babyAlias = b.getString("Baby_Alias");
                                     String babyID = b.getString("BabyID");
+                                    String token = "";
+                                    if(b.getString("Token")!= null)
+                                     token = b.getString("Token");
+
                                     //String child_id = b.getString("child_id");//To change to real json field
-                                    listMag.add(babyAlias+"+"+babyID);
+                                    listMag.add(babyAlias+"+"+babyID+"+"+ token);
 
                                 }
                                 updateUISpinner(listMag);
@@ -274,10 +284,23 @@ private void addListenerOnChildSelection(){
         Intent welcome = new Intent(getApplicationContext(),Welcome.class);
         welcome.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         welcome.putExtra("userName",myEtText);
-        Log.d("MILA", "Your baby selected in SelectChild activity = " + child_alias);
+
         welcome.putExtra("babyAlias", child_alias);
         welcome.putExtra("childID",child_id);
+        welcome.putExtra("isTeacher", false);
+        welcome.putExtra("token",child_token);
      //   progressDialog.dismiss();
+        Log.d("MILA", "Your baby selected in SelectChild activity = " + child_alias + "child_token = " + child_token);
         startActivity(welcome);
+    }
+
+    public void addNewChild(View view) {
+        Intent i = new Intent(getApplicationContext(),RegisterBaby.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.putExtra("isTeacher", false);
+        i.putExtra("userName",myEtText);
+        //  progressDialog.dismiss();
+        startActivity(i);
+
     }
 }

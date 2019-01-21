@@ -19,7 +19,7 @@
         android:layout_width="311dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Children in a group"
+        android:text="Students in a group"
         android:textColor="@android:color/holo_blue_dark"
         android:textSize="30dp"
         tools:paddingBottom="10dp" />
@@ -63,7 +63,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_rounded_corners"
                 android:onClick="createStudent"
-                android:text="  ADD CHILD " />
+                android:text="  add new " />
 
             <Button
                 android:id="@+id/removeFromGroup"

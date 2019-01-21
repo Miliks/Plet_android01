@@ -56,6 +56,7 @@ public class RegisterStudent extends Activity {
 		Bundle extras = getIntent().getExtras();
 		userNameET.setText(extras.getString("userName"));
 		groupId = extras.getString("groupID");
+		Log.d("MILA on create ......with groupID =", groupId);
 		userName = userNameET.getText().toString();
 		//userNameET.setText();
 		birthdayET  = (EditText)findViewById(R.id.baby_birthday);
@@ -109,6 +110,7 @@ public class RegisterStudent extends Activity {
 	{
 		Intent i = new Intent(RegisterStudent.this,ListGroups.class);
 		i.putExtra("userName",userName);
+
 		startActivity(i);
 
 	}
@@ -132,7 +134,7 @@ public class RegisterStudent extends Activity {
 		String babyGender = gender_adult;
 
 				//genderSpinner.getSelectedItem().toString();
-
+		Log.d("MILA register student before verify ......", "");
 		if(!userName.isEmpty()&&!babyName.isEmpty()&&!babySurname.isEmpty()&&!babybirthDate.isEmpty()&&!babyGender.isEmpty()) {
 
 			RegisterAPI.getInstance(this).registerStudent(userName, babyName, babySurname, babyGender, babybirthDate, new RegisterAPI.RegistrationCallback() {
@@ -145,11 +147,11 @@ public class RegisterStudent extends Activity {
 						Log.d("What is returned on activity Register student view ......", result);
 						//Log.d("What is returned on activity Login view ......", jsonResponse.toString());
 						if (result.equals("OK")) {
-							Log.d("attemptToLogin", "SUCCESSSSSSSS!!!!!..");
+							Log.d("MILA", "register student SUCCESSSSSSSS!!!!!..");
 							navigatetoListStudent();
 
 						} else {
-							onFailRegistration(jsonResponse.getString("message"));
+							onFailRegistration(jsonResponse.getString("ERROR!!!"));
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
@@ -170,13 +172,14 @@ public class RegisterStudent extends Activity {
 		}
 
 
+
 			private void navigatetoListStudent(){
 			runOnUiThread(new Runnable(){
 				@Override
 				public void run() {
 					enableProgressDialog(true);
-
-					Intent i = new Intent(RegisterStudent.this,ListAllStudents.class);
+					Log.d("MILA","We are in navigate to List students with groupID =" + groupId);
+					Intent i = new Intent(RegisterStudent.this,ListStudents.class);
 					//String userName = userNameET.getText().toString();
 					i.putExtra("userName",userName);
 					i.putExtra("groupID",groupId);
